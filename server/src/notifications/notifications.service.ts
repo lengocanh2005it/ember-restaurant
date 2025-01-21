@@ -2,29 +2,19 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  OnModuleInit,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateNotificationDto } from 'src/notifications/dtos/create-notification.dto';
 import { UpdateNotificationDto } from 'src/notifications/dtos/update-notification.dto';
 import { Notification } from 'src/notifications/entities/notifications.entity';
-import { UsersService } from 'src/users/users.service';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
-export class NotificationsService implements OnModuleInit {
+export class NotificationsService {
   constructor(
     @InjectRepository(Notification)
     private readonly notificationRepository: Repository<Notification>,
-    @InjectDataSource() private readonly dataSource: DataSource,
-    private readonly configService: ConfigService,
-    private readonly usersService: UsersService,
   ) {}
-
-  async onModuleInit() {
-    await this.createDefaultNotification();
-  }
 
   async findAll(): Promise<Notification[]> {
     const notifications = await this.notificationRepository.find({
@@ -106,27 +96,5 @@ export class NotificationsService implements OnModuleInit {
     if (!notification) throw new BadRequestException('Notification not found.');
     await this.notificationRepository.delete({ id });
     return await this.findAll();
-  }
-
-  async createDefaultNotification(): Promise<void> {
-    const notification = await this.notificationRepository.findOneBy({
-      title: this.configService.get<string>('DEFAULT_TITLE_NOTIFICATION'),
-    });
-
-    if (!notification) {
-      const defaultNotification = this.notificationRepository.create({
-        title: this.configService.get<string>('DEFAULT_TITLE_NOTIFICATION'),
-        content: this.configService.get<string>('DEFAULT_CONTENT_NOTIFICATION'),
-        image: this.configService.get<string>('DEFAULT_IMAGE_URL_NOTIFICATION'),
-      });
-
-      const admin = await this.usersService.createUserAdmin();
-
-      await this.notificationRepository
-        .createQueryBuilder('notification')
-        .relation(Notification, 'user')
-        .of(defaultNotification.id)
-        .set(admin.id);
-    }
   }
 }

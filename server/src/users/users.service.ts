@@ -510,35 +510,4 @@ export class UsersService {
 
     throw new Error('Invalid query parameter');
   }
-
-  public createUserAdmin = async () => {
-    const findAdmin = await this.userRepository.findOneBy({
-      name: this.configService.get<string>('ADMIN_NAME'),
-    });
-
-    if (!findAdmin) {
-      const newAdmin = this.userRepository.create({
-        username: this.configService.get<string>('ADMIN_NAME'),
-        password: encodePassword(
-          this.configService.get<string>('ADMIN_PASSWORD'),
-        ),
-        name: this.configService.get<string>('ADMIN_FULL_NAME'),
-      });
-
-      await this.userRepository.save(newAdmin);
-
-      const adminRole = await this.rolesService.findRoleByName('admin');
-      const userRole = await this.rolesService.findRoleByName('user');
-
-      await this.userRepository
-        .createQueryBuilder('user')
-        .relation(User, 'roles')
-        .of(newAdmin.id)
-        .add([adminRole.id, userRole.id]);
-
-      return newAdmin;
-    }
-
-    return findAdmin;
-  };
 }
