@@ -14,7 +14,7 @@ async function bootstrap() {
   const databaseService = app.get(DatabaseService);
   const PORT = configService.get<number>('PORT') || 3001;
   app.enableCors({
-    origin: configService.get<string>('ORIGINAL_URL'),
+    origin: configService.get<string>('ORIGINAL_FE_URL'),
     credentials: true,
     exposedHeaders: ['x-user-role', 'theme'],
   });
