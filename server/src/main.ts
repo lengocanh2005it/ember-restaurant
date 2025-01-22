@@ -7,6 +7,7 @@ import helmet from 'helmet';
 import * as passport from 'passport';
 import { DatabaseService } from 'src/database/database.service';
 import { AppModule } from './app.module';
+import { getEnvValue } from 'src/utils';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,9 +15,9 @@ async function bootstrap() {
   expressApp.set('trust proxy', 1);
   const configService = app.get(ConfigService);
   const databaseService = app.get(DatabaseService);
-  const PORT = configService.get<number>('PORT') || 3001;
+  const PORT = configService.get<number>('PORT_DEV');
   app.enableCors({
-    origin: configService.get<string>('ORIGINAL_FE_URL'),
+    origin: getEnvValue('ORIGINAL_FE_URL_PROD', 'ORIGINAL_FE_URL_DEV'),
     credentials: true,
     exposedHeaders: ['x-user-role', 'theme'],
   });
@@ -27,10 +28,13 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: 1000 * 60 * 60,
-        secure: true,
-        httpOnly: true,
-        sameSite: 'none',
+        maxAge: 1000 * 60 * 30,
+        secure: configService.get<string>('NODE_ENV') === 'production',
+        httpOnly: configService.get<string>('NODE_ENV') === 'production',
+        sameSite:
+          configService.get<string>('NODE_ENV') === 'production'
+            ? 'none'
+            : 'lax',
       },
     }),
   );

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { getEnvValue } from 'src/utils';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
 @Injectable()
 export class DatabaseService {
   private dataSource: DataSource;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor() {
     const dataSourceOptions: DataSourceOptions = this.getDataSourceOptions();
     this.dataSource = new DataSource(dataSourceOptions);
   }
@@ -14,11 +14,14 @@ export class DatabaseService {
   getDataSourceOptions(): DataSourceOptions {
     return {
       type: 'mysql',
-      host: this.configService.get<string>('DB_HOST'),
-      port: this.configService.get<number>('DB_PORT'),
-      username: this.configService.get<string>('DB_USERNAME'),
-      password: this.configService.get<string>('MYSQL_ROOT_PASSWORD'),
-      database: this.configService.get<string>('MYSQL_DATABASE'),
+      host: getEnvValue('DB_HOST_PROD', 'DB_HOST_DEV'),
+      port: +getEnvValue('DB_PORT_PROD', 'DB_PORT_DEV'),
+      username: getEnvValue('DB_USERNAME_PROD', 'DB_USERNAME_DEV'),
+      password: getEnvValue(
+        'MYSQL_ROOT_PASSWORD_PROD',
+        'MYSQL_ROOT_PASSWORD_DEV',
+      ),
+      database: getEnvValue('MYSQL_DATABASE_PROD', 'MYSQL_DATABASE_DEV'),
       entities: ['dist/**/*.entity.js'],
       migrations: ['dist/database/migrations/*.js'],
       logging: false,
@@ -26,7 +29,7 @@ export class DatabaseService {
     };
   }
 
-  getDataSource(): DataSource {
+  public getDataSource(): DataSource {
     return this.dataSource;
   }
 

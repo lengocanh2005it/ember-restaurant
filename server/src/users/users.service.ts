@@ -76,6 +76,7 @@ export class UsersService {
       .getMany();
 
     return users
+      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
       .filter(
         (user) =>
           user.roles.length === 1 &&

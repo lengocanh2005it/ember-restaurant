@@ -47,7 +47,14 @@ export class SupportTicketController {
     @Body() createSupportTicketDto: CreateSupportTicketDto,
   ): Promise<any> {
     await this.supportTicketService.createOne(createSupportTicketDto);
-    return await this.usersService.findOne(createSupportTicketDto.userId);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, createdAt, updatedAt, ...res } =
+      await this.usersService.findOne(createSupportTicketDto.userId);
+
+    console.log(res);
+
+    return res;
   }
 
   @Patch(':id')
@@ -81,13 +88,16 @@ export class SupportTicketController {
   async deleteOne(
     @Param('id') id: string,
     @Query() queries: Record<string, string>,
-  ): Promise<SupportTicket[]> {
+  ): Promise<any> {
     await this.supportTicketService.deleteOne(id, queries);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, createdAt, updatedAt, ...res } =
       await this.usersService.findOne(queries.userId);
 
-    return res;
+    return {
+      support_tickets_user: res,
+      support_tickets: await this.getAll(),
+    };
   }
 }

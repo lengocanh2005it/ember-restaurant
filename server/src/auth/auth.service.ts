@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
 import { InjectDataSource } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { AuthPayloadDto } from 'src/auth/dtos/auth.dto';
@@ -181,25 +181,33 @@ export class AuthService {
   }
 
   async refreshToken(token: string): Promise<string> {
-    const { userId } = this.jwtService.verify(token, {
-      secret: this.configService.get('JWT_SECRET_KEY'),
-    });
+    try {
+      const { userId } = this.jwtService.verify(token, {
+        secret: this.configService.get('JWT_SECRET_KEY'),
+      });
 
-    let user = null as User;
+      let user = null as User;
 
-    if (userId) {
-      user = await this.usersService.findOne(userId);
+      if (userId) {
+        user = await this.usersService.findOne(userId);
+      }
+
+      if (!user) throw new UnauthorizedException('Unauthenticated.');
+
+      const payload = {
+        userId: user.id,
+      };
+
+      return this.jwtService.sign(payload, {
+        expiresIn: this.configService.get('ACCESS_TOKEN_LIFE'),
+      });
+    } catch (err: any) {
+      if (err instanceof JsonWebTokenError) {
+        throw new UnauthorizedException('Refresh token expired.');
+      } else {
+        throw new UnauthorizedException('Invalid refresh token.');
+      }
     }
-
-    if (!user) throw new UnauthorizedException('Unauthenticated.');
-
-    const payload = {
-      userId: user.id,
-    };
-
-    return this.jwtService.sign(payload, {
-      expiresIn: this.configService.get('ACCESS_TOKEN_LIFE'),
-    });
   }
 
   async generateResetToken(email: string): Promise<string> {
