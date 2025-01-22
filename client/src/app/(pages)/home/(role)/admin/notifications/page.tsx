@@ -6,6 +6,7 @@ import { useNotifications } from "@/hooks/use-notifications";
 import LoadingComponent from "@/components/LoadingComponent";
 import { usePathname, useRouter } from "next/navigation";
 import { Notification } from "@/utils/types";
+import LoadingPage from "@/components/LoadingPage";
 
 const NotificationsPage: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -37,7 +38,7 @@ const NotificationsPage: React.FC = () => {
   }, [data]);
 
   if (isLoading) {
-    return <LoadingComponent />;
+    return <LoadingPage />;
   }
 
   if (isError) {
