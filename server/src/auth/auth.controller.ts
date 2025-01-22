@@ -30,6 +30,7 @@ import {
   Theme,
   encodePassword,
   generateVerificationCode,
+  getEnvValue,
 } from 'src/utils';
 
 @Controller('auth')
@@ -208,12 +209,12 @@ export class AuthController {
       initCookies(res, user, 'user', 'google', this.configService);
 
       return res.redirect(
-        this.configService.get<string>('REDIRECT_URL_HOMEPAGE'),
+        getEnvValue('REDIRECT_URL_HOMEPAGE_PROD', 'REDIRECT_URL_HOMEPAGE_PROD'),
       );
     }
 
     return res.redirect(
-      this.configService.get<string>('REDIRECT_URL_LOGINPAGE'),
+      getEnvValue('REDIRECT_URL_LOGINPAGE_PROD', 'REDIRECT_URL_LOGINPAGE_PROD'),
     );
   }
 

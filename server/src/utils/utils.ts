@@ -3,6 +3,12 @@ import { CreateProductDto } from 'src/products/dtos/create-product.dto';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ApiResponse } from 'src/interfaces/api-response.interface';
+import { config } from 'dotenv';
+import { ConfigService } from '@nestjs/config';
+
+config();
+
+const configService = new ConfigService();
 
 export const generateID = (prefix: string) => {
   const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
@@ -154,4 +160,12 @@ export const formatApiResponse = <T>(
     ...(data && { data }),
     ...(error && { error }),
   };
+};
+
+export const getEnvValue = (prodKey: string, devKey: string) => {
+  const environment = configService.get<string>('NODE_ENV');
+
+  return environment === 'production'
+    ? configService.get<string>(prodKey)
+    : configService.get<string>(devKey);
 };

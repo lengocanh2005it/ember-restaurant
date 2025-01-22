@@ -8,6 +8,7 @@ import Mail from 'nodemailer/lib/mailer';
 import * as path from 'path';
 import { Email } from 'src/emails/entities/emails.entity';
 import { UploadsService } from 'src/uploads/uploads.service';
+import { getEnvValue } from 'src/utils';
 import { LessThan, Repository } from 'typeorm';
 
 @Injectable()
@@ -112,7 +113,7 @@ export class EmailsService implements OnModuleInit {
   };
 
   public sendResetEmail = async (email: string, token: string) => {
-    const resetLink = `${this.configService.get('RESET_PASSWORD_LINK')}/?token=${token}`;
+    const resetLink = `${getEnvValue('RESET_PASSWORD_LINK_PROD', 'RESET_PASSWORD_LINK_DEV')}/?token=${token}`;
 
     const htmlContent = `
         <p>Hi there,</p>

@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Response, Request } from 'express';
+import { getEnvValue } from 'src/utils/utils';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -24,11 +25,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (exception instanceof BadRequestException) {
       if (message.includes('Google authentication failed')) {
         return response.redirect(
-          this.configService.get<string>('GOOGLE_AUTH_FAILED_URI'),
+          getEnvValue('GOOGLE_AUTH_FAILED_URI_PROD', 'GOOGLE_AUTH_FAILED_DEV'),
         );
       } else if (message.includes('Facebook authentication failed')) {
         return response.redirect(
-          this.configService.get<string>('FACEBOOK_AUTH_FAILED_URI'),
+          getEnvValue(
+            'FACEBOOK_AUTH_FAILED_URI_PROD',
+            'FACEBOOK_AUTH_FAILED_DEV',
+          ),
         );
       }
     }

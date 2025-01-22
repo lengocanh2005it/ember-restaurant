@@ -9,40 +9,38 @@ export const initCookies = (
   refreshToken?: string,
 ) => {
   response.cookie('role', role, {
-    httpOnly: true,
-    secure: true,
-    maxAge: 1000 * 60 * 60,
+    httpOnly: configService.get<string>('NODE_ENV') === 'production',
+    secure: configService.get<string>('NODE_ENV') === 'production',
+    maxAge: 1000 * 60 * 30,
   });
 
   response.cookie('isLoggedIn', 'true', {
-    httpOnly: true,
-    secure: true,
-    maxAge: 1000 * 60 * 60,
+    httpOnly: configService.get<string>('NODE_ENV') === 'production',
+    secure: configService.get<string>('NODE_ENV') === 'production',
+    maxAge: 1000 * 60 * 30,
   });
 
   response.cookie('theme', user.theme, {
-    httpOnly: false,
-    secure: true,
-    maxAge: 1000 * 60 * 60,
+    httpOnly: configService.get<string>('NODE_ENV') === 'production',
+    secure: configService.get<string>('NODE_ENV') === 'production',
+    maxAge: 1000 * 60 * 30,
   });
 
-  method !== 'local'
-    ? response.cookie('refreshToken', user.refreshToken, {
-        httpOnly: true,
-        secure: true,
-        maxAge: 1000 * 60 * 60,
-      })
-    : response.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        secure: true,
-        maxAge: 1000 * 60 * 60,
-      });
+  response.cookie(
+    'refreshToken',
+    method !== 'local' ? user.refreshToken : refreshToken,
+    {
+      httpOnly: configService.get<string>('NODE_ENV') === 'production',
+      secure: configService.get<string>('NODE_ENV') === 'production',
+      maxAge: 1000 * 60 * 30,
+    },
+  );
 
-  method !== 'local'
-    ? response.cookie('accessToken', user.accessToken, {
-        httpOnly: false,
-        secure: true,
-        maxAge: 1000 * 60 * 60,
-      })
-    : '';
+  if (method !== 'local') {
+    response.cookie('accessToken', user.accessToken, {
+      httpOnly: configService.get<string>('NODE_ENV') === 'production',
+      secure: configService.get<string>('NODE_ENV') === 'production',
+      maxAge: 1000 * 60 * 2,
+    });
+  }
 };

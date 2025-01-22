@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-facebook';
 import { AuthService } from 'src/auth/auth.service';
+import { getEnvValue } from 'src/utils';
 
 @Injectable()
 export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
@@ -13,7 +14,10 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     super({
       clientID: configService.get('FACEBOOK_APP_ID'),
       clientSecret: configService.get('FACEBOOK_APP_SECRET'),
-      callbackURL: configService.get('FACEBOOK_REDIRECT_URI'),
+      callbackURL: getEnvValue(
+        'FACEBOOK_REDIRECT_URI_PROD',
+        'FACEBOOK_REDIRECT_URI_DEV',
+      ),
       scope: ['email', 'public_profile'],
     });
   }
