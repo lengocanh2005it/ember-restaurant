@@ -1,7 +1,6 @@
 import { CreateAreaDto } from "@/api/areas/utils/types";
 import axios from "@/lib/axios";
 import { getValidAccessToken } from "@/lib/token";
-import { AxiosResponse } from "axios";
 
 export const handleCreateArea = async (
   createAreaDto: CreateAreaDto

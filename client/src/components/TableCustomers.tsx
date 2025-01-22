@@ -2,7 +2,7 @@
 import ModalDeleteCustomer from "@/components/modal/ModalDeleteCustomer";
 import ModalUpdateProfile from "@/components/modal/ModalUpdateProfile";
 import ModalViewCustomer from "@/components/modal/ModalViewCustomer";
-import { User } from "@/utils";
+import { createUUID, User } from "@/utils";
 import {
   Chip,
   ChipProps,
@@ -24,6 +24,8 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 
 const columns = [
   { name: "CUSTOMER", uid: "name" },
+  { name: "LOGIN METHOD", uid: "login_method" },
+  { name: "EMAIL", uid: "email" },
   { name: "JOB", uid: "job" },
   { name: "PHONE", uid: "phone" },
   { name: "ADDRESS", uid: "address" },
@@ -57,7 +59,7 @@ const TableCustomers: React.FC<TableCustomersProps> = ({ users }) => {
     switch (columnKey) {
       case "name": {
         return (
-          <div className="flex items-center gap-4 cursor-pointer">
+          <div className="flex items-center gap-4 cursor-pointer max-w-full truncate">
             <div className="relative rounded-full w-[50px] h-[50px] lg:block hidden">
               {user && user.image && (
                 <Image
@@ -79,11 +81,22 @@ const TableCustomers: React.FC<TableCustomersProps> = ({ users }) => {
               </h1>
 
               <p className="dark:text-white/80 text-black/80">
-                {user.email ? "Email: " + user.email : "Email: Null"}
+                {user?.username
+                  ? "Username: " + user.username
+                  : "Username: Null"}
               </p>
             </div>
           </div>
         );
+      }
+
+      case "login_method": {
+        if (user.google_id) {
+          return <p>Google</p>;
+        } else if (user.facebook_id) {
+          return <p>Facebook</p>;
+        }
+        return <p>Local</p>;
       }
 
       case "status":
@@ -105,16 +118,25 @@ const TableCustomers: React.FC<TableCustomersProps> = ({ users }) => {
       case "actions":
         return (
           <div className="relative flex items-center gap-4">
-            <ModalViewCustomer key={1} user={user} />
+            <ModalViewCustomer
+              key={(new Date().getTime() + 1).toString()}
+              user={user}
+            />
 
-            <ModalUpdateProfile key={2} user={user} />
+            <ModalUpdateProfile
+              key={(new Date().getTime() + 2).toString()}
+              user={user}
+            />
 
-            <ModalDeleteCustomer key={3} userId={user.id} />
+            <ModalDeleteCustomer
+              key={(new Date().getTime() + 3).toString()}
+              userId={user.id}
+            />
           </div>
         );
       default:
         return (
-          <p>
+          <p className="max-w-full truncate">
             {(cellValue as string | number)
               ? (cellValue as string | number)
               : "Null"}
@@ -125,7 +147,7 @@ const TableCustomers: React.FC<TableCustomersProps> = ({ users }) => {
 
   return (
     <div className="flex flex-col gap-3">
-      <Table aria-label="Customers List" isHeaderSticky>
+      <Table aria-label="Customers List">
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn key={column.uid}>{column.name}</TableColumn>

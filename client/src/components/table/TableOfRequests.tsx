@@ -22,8 +22,8 @@ import { Request } from "@/utils";
 import { useUserStore } from "@/store";
 
 const columns = [
-  { name: "DATE", uid: "createdAt" },
-  { name: "REQUEST", uid: "original_request" },
+  { name: "DATE TIME", uid: "createdAt" },
+  { name: "ORIGINAL REQUEST", uid: "original_request" },
   { name: "STATUS", uid: "status" },
   { name: "OPTIONS", uid: "options" },
 ];
@@ -44,6 +44,7 @@ const TableOfRequests: React.FC = () => {
 
   useEffect(() => {
     if (user && user.support_tickets) {
+      console.log(user);
       setRequests(user.support_tickets as Request[]);
     }
   }, [user]);
@@ -109,14 +110,18 @@ const TableOfRequests: React.FC = () => {
 
         case "original_request": {
           return (
-            <p className="lg:max-w-[600px] truncate w-[600px]">
+            <p className="lg:max-w-[400px] max-w-full break-words truncate">
               {cellValue as string}
             </p>
           );
         }
 
         case "createdAt": {
-          return <p>{format(request.createdAt, "dd/MM/yyyy")}</p>;
+          return (
+            <p className="lg:max-w-[150px] truncate max-w-fit">
+              {format(request.createdAt, "dd/MM/yyyy HH:mm:ss")}
+            </p>
+          );
         }
 
         default:
@@ -128,7 +133,10 @@ const TableOfRequests: React.FC = () => {
 
   return (
     <>
-      <Table aria-label="Table of requests" isStriped isHeaderSticky>
+      <Table
+        aria-label="Table of request"
+        className="relative lg:w-[85%] w-full mx-auto"
+      >
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn key={column.uid}>{column.name}</TableColumn>
@@ -146,7 +154,7 @@ const TableOfRequests: React.FC = () => {
       </Table>
 
       {requests.length !== 0 && (
-        <div className="relative flex lg:items-start lg:justify-start items-center justify-center">
+        <div className="relative flex items-center justify-center">
           <Pagination
             initialPage={page}
             total={totalPages}

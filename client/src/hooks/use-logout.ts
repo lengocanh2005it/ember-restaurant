@@ -12,6 +12,8 @@ export const useLogout = () => {
     mutationFn: handleLogout,
     onSuccess: (data: any) => {
       localStorage.removeItem("accessToken");
+      localStorage.removeItem("app-storage");
+      localStorage.removeItem("user-storage");
       setTimeout(() => {
         setTheme("light");
         document.documentElement.classList.remove("dark");

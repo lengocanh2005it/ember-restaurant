@@ -53,13 +53,6 @@ const formSchema = z.object({
     .max(50, {
       message: "Job can't be exceeded 50 characters.",
     }),
-  email: z.string().email({ message: "Invalid email." }),
-  phone: z
-    .string({ message: "Phone number can't be empty." })
-    .min(5, { message: "Phone number must be at least 5 characters" })
-    .max(50, {
-      message: "Phone number can't be exceeded 50 characters.",
-    }),
   address: z
     .string({ message: "Address can't be empty" })
     .min(5, { message: "Address must be at least 5 characters." })
@@ -121,8 +114,6 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       job: user?.job ? user.job : "",
-      email: user?.email ? user.email : "",
-      phone: user?.phone ? user.phone : "",
       address: user?.address ? user.address : "",
       name: user?.name ? user.name : "",
       total_reservations: user?.total_reservations
@@ -137,8 +128,6 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
     setIsConfirmModalOpen(true);
     const {
       name,
-      email,
-      phone,
       address,
       loyalty_points,
       total_reservations,
@@ -149,8 +138,8 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
     const data: UpdateUserDto = {
       userId: user.id,
       name,
-      email,
-      phone,
+      email: user.email,
+      phone: user.phone,
       address,
       loyalty_points,
       total_reservations,
@@ -174,8 +163,10 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
       <Modal
         backdrop="opaque"
         isOpen={isOpen}
-        size="3xl"
+        size="xl"
         placement="center"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         motionProps={{
           variants: {
@@ -209,7 +200,7 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="flex flex-col lg:gap-4 gap-1"
+                    className="flex flex-col lg:gap-4 gap-2"
                   >
                     <div className="grid lg:grid-cols-2 grid-cols-1 lg:gap-3 gap-1">
                       <FormField
@@ -217,7 +208,7 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
                         name="name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="dark:text-white">
+                            <FormLabel className="dark:text-white text-black">
                               Name
                             </FormLabel>
                             <FormControl>
@@ -228,7 +219,7 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
                                 aria-labelledby="username"
                               />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage className="dark:text-red-400 text-red-500" />
                           </FormItem>
                         )}
                       />
@@ -238,7 +229,7 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
                         name="job"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="dark:text-white">
+                            <FormLabel className="dark:text-white text-black">
                               Job
                             </FormLabel>
                             <FormControl>
@@ -246,52 +237,11 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
                                 startContent={<BriefcaseIcon />}
                                 {...field}
                                 placeholder="Fullstack Developer"
+                                aria-label="job"
                                 aria-labelledby="job"
                               />
                             </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="dark:text-white">
-                              Email
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                startContent={<MailIcon />}
-                                {...field}
-                                placeholder="user123@gmail.com.uk"
-                                aria-labelledby="email"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="phone"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="dark:text-white">
-                              Phone number
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                startContent={<PhoneCallIcon />}
-                                {...field}
-                                placeholder="0393873630"
-                                aria-labelledby="phone"
-                              />
-                            </FormControl>
-                            <FormMessage />
+                            <FormMessage className="dark:text-red-400 text-red-500" />
                           </FormItem>
                         )}
                       />
@@ -302,7 +252,7 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
                       name="address"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="dark:text-white">
+                          <FormLabel className="dark:text-white text-black">
                             Address
                           </FormLabel>
                           <FormControl>
@@ -310,10 +260,11 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
                               startContent={<MapPinIcon />}
                               {...field}
                               placeholder="England"
+                              aria-label="address"
                               aria-labelledby="address"
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className="dark:text-red-400 text-red-500" />
                         </FormItem>
                       )}
                     />
@@ -324,7 +275,7 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
                         name="total_orders"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="dark:text-white">
+                            <FormLabel className="dark:text-white text-black">
                               Total Orders
                             </FormLabel>
                             <FormControl>
@@ -333,10 +284,11 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
                                 {...field}
                                 value={String(field.value)}
                                 placeholder="10"
+                                aria-label="total_orders"
                                 aria-labelledby="total_orders"
                               />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage className="dark:text-red-400 text-red-500" />
                           </FormItem>
                         )}
                       />
@@ -346,7 +298,7 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
                         name="total_reservations"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="dark:text-white">
+                            <FormLabel className="dark:text-white text-black">
                               Total Reservations
                             </FormLabel>
 
@@ -356,10 +308,11 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
                                 startContent={<HandPlatterIcon />}
                                 value={String(field.value)}
                                 placeholder="10"
+                                aria-label="total_reservations"
                                 aria-labelledby="total_reservations"
                               />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage className="dark:text-red-400 text-red-500" />
                           </FormItem>
                         )}
                       />
@@ -369,7 +322,7 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
                         name="loyalty_points"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="dark:text-white">
+                            <FormLabel className="dark:text-white text-black">
                               Loyalty Points
                             </FormLabel>
 
@@ -379,16 +332,17 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
                                 {...field}
                                 value={String(field.value)}
                                 placeholder="10"
+                                aria-label="loyalty_points"
                                 aria-labelledby="loyalty_points"
                               />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage className="dark:text-red-400 text-red-500" />
                           </FormItem>
                         )}
                       />
                     </div>
 
-                    <div className="flex items-center justify-end gap-3">
+                    <div className="flex items-center md:justify-end justify-center md:gap-3 gap-2">
                       <Button
                         color="primary"
                         className="dark:bg-white dark:text-black"
