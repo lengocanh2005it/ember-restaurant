@@ -1,4 +1,6 @@
+import { handleLogout } from "@/api/logout/logout";
 import axios from "@/lib/axios";
+import { showErrorToast } from "@/utils";
 import Cookies from "js-cookie";
 
 const isTokenExpired = (): boolean => {
@@ -59,22 +61,26 @@ export const getValidAccessToken = async (): Promise<string> => {
       } else {
         throw new Error("Unauthorized.");
       }
-    } catch (error) {
-      if ((error as Error).message === "Unauthorized") {
+    } catch (error: any) {
+      if (
+        error.response?.status === 401 ||
+        (error.response?.data?.message &&
+          error.response?.data?.message.includes("Refresh token expired."))
+      ) {
+        await handleLogout();
+        localStorage.removeItem("accessToken");
+        Cookies.remove("accessToken");
         window.location.href = "/login";
-        axios
-          .post("/auth/logout", null, {
-            withCredentials: true,
-          })
-          .then((response) => {
-            localStorage.removeItem("accessToken");
-            window.location.href = "/login";
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+        showErrorToast(
+          "Your session has expired. Please log in again.",
+          "bottom-right",
+          {
+            backgroundColor: "#dc3545",
+            color: "#fff",
+          }
+        );
       } else {
-        console.error("Has error:", error);
+        console.error("An unexpected error occurred:", error);
       }
     }
   }

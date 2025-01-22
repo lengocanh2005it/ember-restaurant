@@ -169,30 +169,34 @@ const ModalOrderDetails: React.FC<ModalOrderProps> = ({ order }) => {
               </ModalBody>
 
               <ModalFooter className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Tooltip
-                    content="Delete"
-                    className="dark:text-white text-black"
-                  >
-                    <TrashIcon
-                      className="opacity-50 hover:opacity-100 
+                {(order.status === "pending" || order.status === "error") && (
+                  <div className="flex items-center gap-2">
+                    <Tooltip
+                      content="Delete"
+                      className="dark:text-white text-black"
+                    >
+                      <TrashIcon
+                        className="opacity-50 hover:opacity-100 
                   transition-opacity duration-300 ease-in-out cursor-pointer"
-                      onClick={() => {
-                        onClose();
-                        if (order.id) {
-                          const payload: DeleteOrderOptionsDto = {
-                            orderId: order.id,
-                            modeOption: "normal",
-                            userId: user?.id!,
-                          };
-                          mutateDeleteOrder(payload);
-                        }
-                      }}
-                    />
-                  </Tooltip>
+                        onClick={() => {
+                          onClose();
+                          if (order.id) {
+                            const payload: DeleteOrderOptionsDto = {
+                              orderId: order.id,
+                              modeOption: "normal",
+                              userId: user?.id!,
+                            };
+                            mutateDeleteOrder(payload);
+                          }
+                        }}
+                      />
+                    </Tooltip>
 
-                  {!order.is_paid && <ModalUpdateOrder onCloseFC={onClose} />}
-                </div>
+                    {order.status === "pending" && (
+                      <ModalUpdateOrder onCloseFC={onClose} />
+                    )}
+                  </div>
+                )}
 
                 <Button
                   color="primary"

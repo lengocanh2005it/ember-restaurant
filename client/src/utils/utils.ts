@@ -8,6 +8,7 @@ import { Cart } from "@/utils/types";
 import { CalendarDate, Time } from "@internationalized/date";
 import { toast, ToastPosition } from "react-toastify";
 import { z } from "zod";
+import { v4 as uuidv4 } from "uuid";
 
 export const handleTransportOrderName = (carts: Cart[]): string => {
   return carts
@@ -114,3 +115,7 @@ export function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
+
+export const createUUID = () => {
+  return uuidv4();
+};

@@ -128,7 +128,12 @@ const TableOfAreas: React.FC<TableOfAreasProps> = ({ areas }) => {
       <Table aria-label="areas_table">
         <TableHeader columns={columns}>
           {(column) => (
-            <TableColumn key={column.uid}>{column.name}</TableColumn>
+            <TableColumn
+              key={column.uid}
+              align={column.uid === "status" ? "center" : "start"}
+            >
+              {column.name}
+            </TableColumn>
           )}
         </TableHeader>
         <TableBody items={items} emptyContent="Empty areas.">

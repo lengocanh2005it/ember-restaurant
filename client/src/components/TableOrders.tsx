@@ -33,13 +33,13 @@ import {
 import { format } from "date-fns";
 import { TrashIcon, XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
-
+// le ngoc
 const columns = [
   { name: "ID", uid: "id" },
   { name: "DATE", uid: "createdAt", sortable: true },
   { name: "ORDER DETAILS", uid: "order" },
   { name: "TOTAL PRICE", uid: "total_price", sortable: true },
-  { name: "PAYMENT STATUS", uid: "payment_status" },
+  { name: "PAYMENT STATUS", uid: "is_paid" },
   { name: "STATUS", uid: "status" },
   { name: "OTHERS", uid: "others" },
 ];
@@ -56,7 +56,7 @@ const INITIAL_VISIBLE_COLUMNS = [
   "status",
   "others",
   "createdAt",
-  "payment_status",
+  "is_paid",
   "id",
 ];
 
@@ -191,8 +191,8 @@ export const TableOrders: React.FC<TableOrdersProps> = ({ arrays }) => {
         return <p>#{cellValue as string}</p>;
       }
 
-      case "payment_status": {
-        if (cellValue == false) {
+      case "is_paid": {
+        if (cellValue === false) {
           return (
             <Chip color="danger" startContent={<XIcon />} variant="bordered">
               Not paid
@@ -210,6 +210,7 @@ export const TableOrders: React.FC<TableOrdersProps> = ({ arrays }) => {
           </Chip>
         );
       }
+
       case "order":
         return (
           <h1 className="max-w-[400px] truncate">

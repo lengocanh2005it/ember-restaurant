@@ -23,7 +23,7 @@ import { Request } from "@/utils";
 const columns = [
   { name: "DATE", uid: "date" },
   { name: "CUSTOMER", uid: "user" },
-  { name: "REQUEST", uid: "original_request" },
+  { name: "ORIGINAL REQUEST", uid: "original_request" },
   { name: "STATUS", uid: "status" },
   { name: "OPTIONS", uid: "options" },
 ];
@@ -73,7 +73,7 @@ const TableRequestsOfCustomers: React.FC<TableRequestsOfCustomersProps> = ({
 
       switch (columnKey) {
         case "date": {
-          return <p>{format(request.createdAt, "dd/MM/yyyy")}</p>;
+          return <p>{format(request.createdAt, "dd/MM/yyyy HH:mm:ss")}</p>;
         }
 
         case "user": {
@@ -135,7 +135,8 @@ const TableRequestsOfCustomers: React.FC<TableRequestsOfCustomersProps> = ({
 
               <Tooltip content="Delete" className="dark:text-white text-black">
                 <TrashIcon
-                  className="cursor-pointer"
+                  className="cursor-pointer opacity-60 hover:opacity-100 duration-250 ease-in-out
+              transition-opacity"
                   onClick={() => {
                     const { id, user } = request;
                     handleClick(id, user.id);

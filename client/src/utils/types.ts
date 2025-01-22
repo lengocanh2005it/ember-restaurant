@@ -13,6 +13,10 @@ export type User = {
   roles: string[];
   support_tickets?: Request[];
   image: string;
+  google_id?: string;
+  facebook_id?: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type Payment = {

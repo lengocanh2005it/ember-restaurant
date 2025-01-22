@@ -28,6 +28,7 @@ const ModalViewCustomer: React.FC<ModalViewCustomerProps> = ({ user }) => {
       icon: (
         <BriefcaseIcon className="dark:text-white/60 text-black/60 lg:block hidden" />
       ),
+      title: "Job",
       value: user.job ? user.job : "Job: Null",
     },
     {
@@ -35,6 +36,7 @@ const ModalViewCustomer: React.FC<ModalViewCustomerProps> = ({ user }) => {
       icon: (
         <MailIcon className="dark:text-white/60 text-black/60 lg:block hidden" />
       ),
+      title: "Email",
       value: user.email ? user.email : "Email: Null",
     },
     {
@@ -42,6 +44,7 @@ const ModalViewCustomer: React.FC<ModalViewCustomerProps> = ({ user }) => {
       icon: (
         <PhoneIcon className="dark:text-white/60 text-black/60 lg:block hidden" />
       ),
+      title: "Phone number",
       value: user.phone ? user.phone : "Phone number: Null",
     },
     {
@@ -49,6 +52,7 @@ const ModalViewCustomer: React.FC<ModalViewCustomerProps> = ({ user }) => {
       icon: (
         <MapPinIcon className="dark:text-white/60 text-black/60 lg:block hidden" />
       ),
+      title: "Address",
       value: user.address ? user.address : "Address: Null",
     },
   ];
@@ -111,7 +115,7 @@ const ModalViewCustomer: React.FC<ModalViewCustomerProps> = ({ user }) => {
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1 text-center">
                 Customer&apos;s Profile
               </ModalHeader>
 
@@ -142,9 +146,18 @@ const ModalViewCustomer: React.FC<ModalViewCustomerProps> = ({ user }) => {
                       className="flex flex-col items-center 
                     justify-center"
                     >
-                      <h1 className="lg:text-xl text-center text-base font-medium">
-                        {user.name ? user.name : user.username}
-                      </h1>
+                      <Tooltip
+                        color="primary"
+                        className="dark:text-black dark:bg-white text-white"
+                        content={
+                          "Username: " +
+                          (user?.username ? user.username : "Null")
+                        }
+                      >
+                        <h1 className="lg:text-xl text-center text-base font-medium">
+                          {user.name ? user.name : user.username}
+                        </h1>
+                      </Tooltip>
 
                       <p
                         className="lg:text-base text-[14px] dark:text-white/70
@@ -167,9 +180,15 @@ const ModalViewCustomer: React.FC<ModalViewCustomerProps> = ({ user }) => {
                      hover:bg-default-200 p-2 rounded-md"
                         >
                           {profile.icon}
-                          <p className="lg:text-left text-center">
-                            {profile.value}
-                          </p>
+
+                          <Tooltip
+                            content={profile.title}
+                            className="dark:text-white text-black"
+                          >
+                            <p className="lg:text-left text-center">
+                              {profile.value}
+                            </p>
+                          </Tooltip>
                         </div>
 
                         <Separator className="mx-2" />
@@ -199,7 +218,7 @@ const ModalViewCustomer: React.FC<ModalViewCustomerProps> = ({ user }) => {
                 </div>
               </ModalBody>
 
-              <ModalFooter className="flex lg:justify-end lg:items-end justify-center items-center">
+              <ModalFooter className="flex justify-center items-center">
                 <Button
                   color="primary"
                   className="dark:bg-white dark:text-black"

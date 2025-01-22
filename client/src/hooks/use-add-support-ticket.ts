@@ -8,6 +8,7 @@ export const useAddSupportTicket = () => {
   return useMutation({
     mutationFn: handleCreateSupportTicket,
     onSuccess: (data: any) => {
+      console.log(data);
       query.setQueryData(["profile"], data);
       showSuccessToast(
         "Thank you for your request. We will get back to you as soon as possible!",

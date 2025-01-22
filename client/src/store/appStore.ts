@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface AppState {
   isClose: boolean;
@@ -19,21 +20,38 @@ interface AppState {
   setTheme: (theme: string) => void;
 }
 
-export const useAppStore = create<AppState>((set) => ({
-  isAdmin: false,
-  isClose: true,
-  category: "all",
-  theme: "dark",
-  accessToken: "",
-  isDarkMode: true,
-  otp: "",
-  isExistedEmail: false,
-  setAccessToken: (accessToken) => set({ accessToken }),
-  setCategory: (category) => set({ category }),
-  setIsClose: (isClose) => set({ isClose }),
-  setIsDarkMode: (isDarkMode) => set({ isDarkMode }),
-  setIsAdmin: (isAdmin) => set({ isAdmin }),
-  setOTP: (otp) => set({ otp }),
-  setIsExistedEmail: (isExistedEmail) => set({ isExistedEmail }),
-  setTheme: (theme) => set({ theme }),
-}));
+export const useAppStore = create<AppState>()(
+  persist(
+    (set) => ({
+      isAdmin: false,
+      isClose: true,
+      category: "all",
+      theme: "dark",
+      accessToken: "",
+      isDarkMode: true,
+      otp: "",
+      isExistedEmail: false,
+      setAccessToken: (accessToken) => set({ accessToken }),
+      setCategory: (category) => set({ category }),
+      setIsClose: (isClose) => set({ isClose }),
+      setIsDarkMode: (isDarkMode) => set({ isDarkMode }),
+      setIsAdmin: (isAdmin) => set({ isAdmin }),
+      setOTP: (otp) => set({ otp }),
+      setIsExistedEmail: (isExistedEmail) => set({ isExistedEmail }),
+      setTheme: (theme) => set({ theme }),
+    }),
+    {
+      name: "app-storage",
+      partialize: (state) => ({
+        isAdmin: state.isAdmin,
+        isClose: state.isClose,
+        category: state.category,
+        theme: state.theme,
+        accessToken: state.accessToken,
+        isDarkMode: state.isDarkMode,
+        otp: state.otp,
+        isExistedEmail: state.isExistedEmail,
+      }),
+    }
+  )
+);
