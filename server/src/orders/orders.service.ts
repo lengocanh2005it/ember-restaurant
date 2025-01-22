@@ -186,7 +186,7 @@ export class OrdersService {
   }
 
   async updateOne(id: string, updateOrderDto: UpdateOrderDto): Promise<any> {
-    const { products, payment_method, discountId, userId, ...res } =
+    const { order_details, payment_method, discountId, userId, ...res } =
       updateOrderDto;
 
     const order = await this.findOne(id);
@@ -198,17 +198,14 @@ export class OrdersService {
       payment_method,
     );
 
-    if (!products || (products && !products.length))
+    if (!order_details || (order_details && !order_details.length))
       throw new BadRequestException(
-        'Products must be contain at least one product.',
+        'Order details must be contain at least one product.',
       );
-
-    const transformProducts =
-      await this.productsService.transformProducts(products);
 
     const newPrice = await this.orderProductService.updateOrderDetails(
       order,
-      transformProducts,
+      order_details,
     );
 
     let discountedAmount = newPrice > 0 ? newPrice : 0;

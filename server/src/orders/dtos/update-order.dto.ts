@@ -1,7 +1,6 @@
-import { Type } from 'class-transformer';
 import {
+  ArrayNotEmpty,
   IsArray,
-  IsBoolean,
   IsIn,
   IsNotEmpty,
   IsNumber,
@@ -9,24 +8,7 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
-
-export class Product {
-  @IsBoolean()
-  @IsNotEmpty()
-  readonly is_available!: boolean;
-
-  @IsString()
-  @IsNotEmpty()
-  readonly name!: string;
-
-  @IsNumber()
-  @IsPositive()
-  readonly quantity!: number;
-
-  @IsNumber()
-  @IsPositive()
-  readonly price!: number;
-}
+import { OrderProduct } from 'src/order-product/entities/order-product.entity';
 
 export class UpdateOrderDto {
   @IsNumber()
@@ -47,9 +29,9 @@ export class UpdateOrderDto {
   @IsOptional()
   readonly note?: string;
 
-  @Type(() => Product)
   @IsArray()
-  readonly products!: Product[];
+  @ArrayNotEmpty()
+  readonly order_details!: OrderProduct[];
 
   @IsOptional()
   readonly discountId?: string;

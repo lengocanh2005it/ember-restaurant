@@ -40,7 +40,7 @@ export class OrderProductService {
 
   public updateOrderDetails = async (
     order: Order,
-    items: Array<{ product: Product; quantity: number }>,
+    orderDetails: OrderProduct[],
   ): Promise<number> => {
     let total_price = 0;
 
@@ -53,7 +53,9 @@ export class OrderProductService {
       throw new NotFoundException('Order Not Found.');
     }
 
-    const itemMap = new Map(items.map((item) => [item.product.id, item]));
+    const itemMap = new Map(
+      orderDetails.map((detail) => [detail.product.id, detail]),
+    );
 
     const productsToDelete = [];
     const updates = [];
@@ -132,7 +134,7 @@ export class OrderProductService {
       total_price += update.total_price;
     }
 
-    for (const item of items) {
+    for (const item of orderDetails) {
       const isExisting = orderProducts.some(
         (op) => op.product.id === item.product.id,
       );

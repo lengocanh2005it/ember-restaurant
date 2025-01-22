@@ -39,8 +39,9 @@ export class AreasController {
   }
 
   @Post()
-  async createOne(@Body() createAreaDto: CreateAreaDto): Promise<Area> {
-    return await this.areasService.createOne(createAreaDto);
+  async createOne(@Body() createAreaDto: CreateAreaDto): Promise<Area[]> {
+    await this.areasService.createOne(createAreaDto);
+    return await this.findAll();
   }
 
   @Patch(':id')
