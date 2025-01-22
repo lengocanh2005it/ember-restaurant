@@ -70,14 +70,6 @@ const SettingsPage: React.FC = () => {
     },
   ];
 
-  const messages = [
-    {
-      key: 1,
-      title: "Send a message to the customers.",
-      path: "/home/admin/chat",
-    },
-  ];
-
   const reviews = [
     {
       key: 1,
@@ -269,44 +261,6 @@ const SettingsPage: React.FC = () => {
                   className="dark:bg-white dark:text-black w-fit"
                   onPress={() => {
                     router.push(notification.path);
-                  }}
-                >
-                  Click
-                </Button>
-              </div>
-            ))}
-          </div>
-        </AccordionItem>
-
-        {/* Messages */}
-        <AccordionItem
-          key="4"
-          startContent={<MessageSquareText />}
-          aria-label="messages"
-          title="MESSAGES"
-          subtitle="All messages from customers. Click to expand."
-        >
-          <div className="flex flex-col gap-2">
-            {messages.map((message) => (
-              <div
-                key={message.key}
-                className="flex 
-            lg:flex-row flex-col 
-            lg:items-center lg:justify-between gap-2"
-              >
-                <Chip
-                  variant="dot"
-                  color="success"
-                  className="border-none lg:text-base text-[14px]"
-                >
-                  {message.title}
-                </Chip>
-
-                <Button
-                  color="primary"
-                  className="dark:bg-white dark:text-black w-fit"
-                  onPress={() => {
-                    router.push(message.path);
                   }}
                 >
                   Click
