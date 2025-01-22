@@ -10,6 +10,8 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp.set('trust proxy', 1);
   const configService = app.get(ConfigService);
   const databaseService = app.get(DatabaseService);
   const PORT = configService.get<number>('PORT') || 3001;
