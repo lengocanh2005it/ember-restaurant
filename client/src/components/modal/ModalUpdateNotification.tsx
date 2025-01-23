@@ -13,7 +13,7 @@ import {
   useDisclosure,
   Tooltip,
   Textarea,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import {
   Form,
   FormControl,

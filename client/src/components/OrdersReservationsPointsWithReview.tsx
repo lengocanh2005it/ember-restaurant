@@ -12,7 +12,7 @@ import { ReviewEnum } from "@/config/enums/enums";
 import { useAddReview } from "@/hooks/use-add-review";
 import { useAppStore, useUserStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Select, SelectItem, Textarea } from "@nextui-org/react";
+import { Button, Select, SelectItem, Textarea } from "@heroui/react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

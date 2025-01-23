@@ -5,7 +5,7 @@ import { usePromotions } from "@/hooks/use-promotions";
 import { useRedeemPoint } from "@/hooks/use-redeem-point";
 import { useAppStore, useUserStore } from "@/store";
 import { Promotion } from "@/utils";
-import { Button, Pagination } from "@nextui-org/react";
+import { Button, Pagination } from "@heroui/react";
 import { GiftIcon, ShoppingCartIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";

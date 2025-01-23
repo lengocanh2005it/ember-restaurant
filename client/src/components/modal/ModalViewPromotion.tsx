@@ -8,7 +8,7 @@ import {
   Button,
   useDisclosure,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { EyeIcon } from "lucide-react";
 import { Promotion } from "@/utils";
 

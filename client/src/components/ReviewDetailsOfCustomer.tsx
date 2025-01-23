@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { TrashIcon } from "lucide-react";

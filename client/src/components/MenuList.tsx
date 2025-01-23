@@ -5,7 +5,7 @@ import MenuItems from "@/components/MenuItems";
 import { useProducts } from "@/hooks/use-products";
 import { useAppStore } from "@/store";
 import { Product } from "@/utils";
-import { Button, Input, Pagination } from "@nextui-org/react";
+import { Button, Input, Pagination } from "@heroui/react";
 import { SearchIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";

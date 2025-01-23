@@ -8,7 +8,7 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { TrashIcon } from "lucide-react";
 import { useDeleteProduct } from "@/hooks/use-delete-product";
 

@@ -7,7 +7,7 @@ import {
   ModalHeader,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { SquarePenIcon } from "lucide-react";
 import React from "react";
 

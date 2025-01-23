@@ -10,7 +10,7 @@ import {
   Textarea,
   Tooltip,
   Chip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { SendIcon, XIcon, HelpCircleIcon, HistoryIcon } from "lucide-react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

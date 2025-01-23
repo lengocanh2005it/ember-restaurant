@@ -7,7 +7,7 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { VerticalDotsIcon } from "@/components/icons/VerticalDotsIcon";
 import { EyeIcon } from "lucide-react";
 

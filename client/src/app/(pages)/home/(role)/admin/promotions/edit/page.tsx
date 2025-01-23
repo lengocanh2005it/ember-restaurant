@@ -12,7 +12,7 @@ import { useUpdatePromotion } from "@/hooks/use-update-promotion";
 import { dateToCalendarDate, calendarDateToDate } from "@/utils";
 import { Promotion } from "@/utils/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, DatePicker, Input, Textarea } from "@nextui-org/react";
+import { Button, DatePicker, Input, Textarea } from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";

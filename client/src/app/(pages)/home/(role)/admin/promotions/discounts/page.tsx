@@ -1,6 +1,6 @@
 "use client";
 import TableOfDiscounts from "@/components/table/TableOfDiscounts";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 

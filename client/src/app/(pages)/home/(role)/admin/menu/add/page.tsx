@@ -11,7 +11,7 @@ import {
 import { categories } from "@/config/constants";
 import { useAddProduct } from "@/hooks/use-add-product";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
+import { Button, Input, Select, SelectItem, Textarea } from "@heroui/react";
 import React, { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

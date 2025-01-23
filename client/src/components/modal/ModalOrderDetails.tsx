@@ -16,7 +16,7 @@ import {
   ModalHeader,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { TrashIcon } from "lucide-react";
 import React from "react";
 

@@ -16,7 +16,7 @@ import { useUpdateOrder } from "@/hooks/use-update-order";
 import { methodMap, deliveryMap, statusMap } from "@/utils/maps";
 import { Order } from "@/utils/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Chip, Select, SelectItem, Textarea } from "@nextui-org/react";
+import { Button, Chip, Select, SelectItem, Textarea } from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";

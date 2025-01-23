@@ -7,7 +7,7 @@ import {
   ModalBody,
   useDisclosure,
   Chip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { BanknoteIcon } from "lucide-react";
 
 const ModalBank: React.FC = () => {

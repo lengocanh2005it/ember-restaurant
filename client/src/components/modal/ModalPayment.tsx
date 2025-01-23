@@ -11,7 +11,7 @@ import {
   ModalHeader,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { XIcon } from "lucide-react";
 import React from "react";

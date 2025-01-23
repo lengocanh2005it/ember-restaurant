@@ -7,7 +7,7 @@ import {
   ModalBody,
   useDisclosure,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { SquarePenIcon } from "lucide-react";
 import UpdateDiscountForm from "@/components/form/UpdateDiscountForm";
 import { Discount } from "@/utils";

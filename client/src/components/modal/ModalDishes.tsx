@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { XIcon } from "lucide-react";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { useAppStore, useProductStore } from "@/store";
 
 const ModalDishes = () => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Chip, ChipProps } from "@nextui-org/react";
+import { Chip, ChipProps } from "@heroui/react";
 import Image from "next/image";
 import { User } from "@/utils";
 

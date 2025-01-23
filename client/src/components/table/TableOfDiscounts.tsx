@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { TrashIcon } from "lucide-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 

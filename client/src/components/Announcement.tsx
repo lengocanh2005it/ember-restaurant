@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Badge } from "@nextui-org/react";
+import { Badge } from "@heroui/react";
 import { BellIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useNotificationStore } from "@/store";

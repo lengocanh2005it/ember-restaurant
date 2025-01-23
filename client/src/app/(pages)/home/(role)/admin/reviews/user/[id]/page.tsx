@@ -3,7 +3,7 @@ import LoadingPage from "@/components/LoadingPage";
 import ReviewDetailsOfCustomer from "@/components/ReviewDetailsOfCustomer";
 import { useReviewsByUserId } from "@/hooks/use-reviews-of-user";
 import { Review } from "@/utils";
-import { Pagination } from "@nextui-org/react";
+import { Pagination } from "@heroui/react";
 import React, { useEffect, useMemo, useState, use } from "react";
 
 const ReviewDetails: React.FC = (props: any) => {

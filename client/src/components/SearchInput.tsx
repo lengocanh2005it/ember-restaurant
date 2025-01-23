@@ -1,5 +1,5 @@
 "use client";
-import { Input } from "@nextui-org/react";
+import { Input } from "@heroui/react";
 import { SearchIcon } from "lucide-react";
 
 export default function SearchInput() {

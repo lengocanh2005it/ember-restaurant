@@ -1,13 +1,15 @@
 "use client";
 import Banner from "@/components/Banner";
 import FeatureDishes from "@/components/FeatureDishes";
+import LoadingPage from "@/components/LoadingPage";
 import OrdersReservationsPoints from "@/components/OrdersAndReservations";
 import OrdersReservationsPointsWithReview from "@/components/OrdersReservationsPointsWithReview";
 import Promotions from "@/components/Promotions";
 import CustomerReviews from "@/components/Reviews";
 import UpcomingEvents from "@/components/UpcomingEvents";
-import { useAppStore } from "@/store";
-import { JwtPayload } from "@/utils/types";
+import { useProfile } from "@/hooks/use-profile";
+import { useAppStore, useUserStore } from "@/store";
+import { JwtPayload, User } from "@/utils/types";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import React, { useEffect } from "react";
@@ -15,6 +17,9 @@ import React, { useEffect } from "react";
 const HomePage: React.FC = () => {
   const { setIsDarkMode, setAccessToken, setIsAdmin, isAdmin, setTheme } =
     useAppStore();
+  const { setUser } = useUserStore();
+
+  const { data, isLoading, isError } = useProfile();
 
   const sections = [
     ...(!isAdmin
@@ -64,6 +69,22 @@ const HomePage: React.FC = () => {
       }
     }
   }, [setTheme, setIsDarkMode]);
+
+  useEffect(() => {
+    if (data) {
+      setUser(data as User);
+      setIsDarkMode((data as User).theme === "light" ? false : true);
+      setIsAdmin((data as User).roles.some((role) => role === "admin"));
+    }
+  }, [data, setUser, setIsAdmin, setIsDarkMode]);
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
+  if (isError) {
+    return <div>Error...</div>;
+  }
 
   return (
     <React.Fragment>

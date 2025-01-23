@@ -10,7 +10,7 @@ import {
   Button,
   useDisclosure,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
 
 interface ModalDeleteCustomerProps {

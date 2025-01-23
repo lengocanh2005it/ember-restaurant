@@ -1,6 +1,6 @@
 "use client";
 import BannerNotFound from "@/components/BannerNotFound";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
 import { HomeIcon } from "lucide-react";
 import Image from "next/image";

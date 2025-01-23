@@ -12,7 +12,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 

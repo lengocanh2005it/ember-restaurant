@@ -7,7 +7,7 @@ import { useDiscount } from "@/hooks/use-discounts-of-user";
 import { useRedeemPoint } from "@/hooks/use-redeem-point";
 import { useAppStore, useUserStore } from "@/store";
 import { DiscountWithQuantity } from "@/utils/types";
-import { Button, Chip, Pagination, Tooltip } from "@nextui-org/react";
+import { Button, Chip, Pagination, Tooltip } from "@heroui/react";
 import {
   AwardIcon,
   CrownIcon,

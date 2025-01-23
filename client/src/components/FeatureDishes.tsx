@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { InputNumber } from "antd";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { CircleDollarSignIcon, ShoppingCartIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {

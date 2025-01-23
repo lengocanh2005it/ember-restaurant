@@ -11,7 +11,7 @@ import {
   ModalHeader,
   Pagination,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import React, { useMemo, useState } from "react";
 
 interface DetailsReservationPriceProps {

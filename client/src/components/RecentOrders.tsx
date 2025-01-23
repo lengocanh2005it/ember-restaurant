@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
   getKeyValue,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 

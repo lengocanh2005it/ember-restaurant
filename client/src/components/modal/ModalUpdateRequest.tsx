@@ -21,7 +21,7 @@ import {
   ModalHeader,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { SendIcon, SquarePenIcon } from "lucide-react";
 import React from "react";
 import { useForm, useWatch } from "react-hook-form";

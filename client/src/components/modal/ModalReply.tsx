@@ -23,7 +23,7 @@ import {
   SelectItem,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { ReplyIcon } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";

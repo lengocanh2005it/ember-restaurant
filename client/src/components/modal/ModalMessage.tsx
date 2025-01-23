@@ -9,7 +9,7 @@ import {
   Button,
   useDisclosure,
   Divider,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { MessageSquareTextIcon } from "lucide-react";
 
 interface ModalMessageProps {

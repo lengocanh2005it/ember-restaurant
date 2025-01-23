@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import TableEvents from "@/components/TableEvents";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { usePathname, useRouter } from "next/navigation";
 
 const EventsPage: React.FC = () => {

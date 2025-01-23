@@ -1,6 +1,6 @@
 "use client";
 import { Label } from "@/components/ui/label";
-import { Button, Input, Textarea } from "@nextui-org/react";
+import { Button, Input, Textarea } from "@heroui/react";
 import { motion } from "framer-motion";
 import React from "react";
 

@@ -4,7 +4,7 @@ import Header from "@/components/layouts/Header";
 import PhotosWelcome from "@/components/Photos/PhotosWelcome";
 import { Separator } from "@/components/ui/separator";
 import { showErrorToast } from "@/utils";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
 import { UtensilsCrossedIcon } from "lucide-react";
 import React from "react";

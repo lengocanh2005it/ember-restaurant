@@ -7,7 +7,7 @@ import {
   Select,
   SelectItem,
   Textarea,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { motion } from "framer-motion";
 
 const ratings = [

@@ -22,7 +22,7 @@ import {
   SharedSelection,
   Textarea,
   TimeInput,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { ClockIcon } from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";

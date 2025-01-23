@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import ViewNotifications from "@/components/ViewNotifications";
-import { Button, Pagination } from "@nextui-org/react";
+import { Button, Pagination } from "@heroui/react";
 import { useNotifications } from "@/hooks/use-notifications";
 import LoadingComponent from "@/components/LoadingComponent";
 import { usePathname, useRouter } from "next/navigation";

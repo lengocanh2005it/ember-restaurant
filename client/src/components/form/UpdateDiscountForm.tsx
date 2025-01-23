@@ -18,7 +18,7 @@ import {
   Select,
   SelectItem,
   Textarea,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useUpdateDiscount } from "@/hooks/use-update-discount";
 import { UpdateDiscountDto } from "@/api/discounts/utils/types";
 import { dateToCalendarDate, calendarDateToDate } from "@/utils";

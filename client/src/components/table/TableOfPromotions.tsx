@@ -9,7 +9,7 @@ import {
   TableCell,
   Pagination,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { SquarePenIcon } from "lucide-react";
 import { usePromotions } from "@/hooks/use-promotions";
 import LoadingPage from "@/components/LoadingPage";

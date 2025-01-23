@@ -3,7 +3,7 @@ import LoadingPage from "@/components/LoadingPage";
 import TableOfAreas from "@/components/TableOfAreas";
 import { useAreas } from "@/hooks/use-areas";
 import { Area } from "@/utils/types";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 

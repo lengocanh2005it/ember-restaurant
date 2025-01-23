@@ -4,7 +4,7 @@ import { SunIcon } from "@/components/icons/SunIcon";
 import { useProfile } from "@/hooks/use-profile";
 import { handleSwitchTheme } from "@/lib/theme";
 import { useAppStore } from "@/store";
-import { Switch } from "@nextui-org/react";
+import { Switch } from "@heroui/react";
 import { useEffect } from "react";
 
 export default function ButtonSwitch() {

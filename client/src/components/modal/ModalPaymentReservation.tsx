@@ -12,7 +12,7 @@ import {
   ModalFooter,
   ModalHeader,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { format } from "date-fns";
 import { XIcon } from "lucide-react";
 import React from "react";

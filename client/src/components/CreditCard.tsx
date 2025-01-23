@@ -3,7 +3,7 @@ import InputCreditCard from "@/components/InputCreditCard";
 import ApplePay from "@/components/ui/apple-pay";
 import PayPal from "@/components/ui/paypal";
 import Visa from "@/components/ui/visa";
-import { Card, CardBody, RadioGroup, Radio } from "@nextui-org/react";
+import { Card, CardBody, RadioGroup, Radio } from "@heroui/react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 

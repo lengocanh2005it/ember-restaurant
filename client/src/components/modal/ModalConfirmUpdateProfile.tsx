@@ -7,7 +7,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useUpdateProfileCustomer } from "@/hooks/use-update-profile-user";
 import { UpdateProfileOfUserDto } from "@/api/users/utils/types";
 

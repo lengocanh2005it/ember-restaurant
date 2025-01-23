@@ -9,7 +9,7 @@ import {
   Button,
   useDisclosure,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { MessageSquareQuote } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import RequestDetails from "@/components/RequestDetails";

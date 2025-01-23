@@ -18,7 +18,7 @@ import {
 } from "@/store";
 import { CachedOrderData, CachedReservationData } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input } from "@heroui/react";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";

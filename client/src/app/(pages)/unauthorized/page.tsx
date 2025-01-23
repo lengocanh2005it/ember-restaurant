@@ -1,6 +1,6 @@
 "use client";
 import BannerNotFound from "@/components/BannerNotFound";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";

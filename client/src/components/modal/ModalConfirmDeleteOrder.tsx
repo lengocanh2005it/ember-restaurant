@@ -9,7 +9,7 @@ import {
   Button,
   useDisclosure,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
 import { useDeleteOrder } from "@/hooks/use-delete-order";
 import { DeleteOrderOptionsDto } from "@/api/orders/utils/types";

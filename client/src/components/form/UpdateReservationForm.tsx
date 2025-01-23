@@ -30,7 +30,7 @@ import {
   SelectItem,
   Textarea,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { RotateCwIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";

@@ -29,7 +29,7 @@ import {
   TableHeader,
   TableRow,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { format } from "date-fns";
 import { TrashIcon, XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";

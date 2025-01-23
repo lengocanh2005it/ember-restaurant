@@ -3,7 +3,7 @@ import CreateOrder from "@/components/CreateOrder";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useCartStore } from "@/store";
-import { Card, CardBody } from "@nextui-org/react";
+import { Card, CardBody } from "@heroui/react";
 import React, { Dispatch, SetStateAction, useEffect } from "react";
 
 interface OrderProps {

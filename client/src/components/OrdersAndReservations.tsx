@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { Tabs, Tab, Card, CardBody, Chip } from "@nextui-org/react";
+import { Tabs, Tab, Card, CardBody, Chip } from "@heroui/react";
 import { useAppStore, useUserStore } from "@/store";
 
 const OrdersReservationsPoints: React.FC = () => {

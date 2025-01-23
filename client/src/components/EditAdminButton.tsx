@@ -1,5 +1,5 @@
 "use client";
-import { Tooltip } from "@nextui-org/react";
+import { Tooltip } from "@heroui/react";
 import { SquarePenIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";

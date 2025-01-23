@@ -11,7 +11,7 @@ import {
   TableRow,
   TableCell,
   Pagination,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import React, { useMemo, useState } from "react";
 import { Table as TableType } from "@/utils/types";
 import { CheckIcon, SquarePenIcon, TrashIcon, XIcon } from "lucide-react";

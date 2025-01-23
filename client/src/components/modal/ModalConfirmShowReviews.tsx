@@ -9,7 +9,7 @@ import {
   ModalFooter,
   ModalHeader,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import React, { useState } from "react";
 
 interface ModalConfirmShowReviewsProps {
