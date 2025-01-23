@@ -32,7 +32,7 @@ import {
   Select,
   SelectItem,
   Textarea,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";

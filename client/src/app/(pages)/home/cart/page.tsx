@@ -7,7 +7,7 @@ import { useCart } from "@/hooks/use-carts-of-user";
 import { useDeleteCart } from "@/hooks/use-delete-cart";
 import { useCartStore, useUserStore } from "@/store";
 import { Cart } from "@/utils";
-import { Checkbox, Pagination, Tooltip } from "@nextui-org/react";
+import { Checkbox, Pagination, Tooltip } from "@heroui/react";
 import { TrashIcon } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";

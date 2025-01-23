@@ -5,7 +5,7 @@ import ModalViewItemMenu from "@/components/modal/ModalViewItemMenu";
 import { Separator } from "@/components/ui/separator";
 import { useAppStore } from "@/store";
 import { Product } from "@/utils/types";
-import { Chip, Tooltip } from "@nextui-org/react";
+import { Chip, Tooltip } from "@heroui/react";
 import { CircleAlertIcon, TagIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";

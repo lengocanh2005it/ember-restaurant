@@ -1,5 +1,5 @@
 "use client";
-import { Button, Accordion, AccordionItem, Chip } from "@nextui-org/react";
+import { Button, Accordion, AccordionItem, Chip } from "@heroui/react";
 import {
   BellRingIcon,
   CaptionsIcon,

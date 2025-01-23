@@ -2,7 +2,7 @@
 import ModalDeleteCustomer from "@/components/modal/ModalDeleteCustomer";
 import ModalUpdateProfile from "@/components/modal/ModalUpdateProfile";
 import ModalViewCustomer from "@/components/modal/ModalViewCustomer";
-import { createUUID, User } from "@/utils";
+import { User } from "@/utils";
 import {
   Chip,
   ChipProps,
@@ -13,7 +13,7 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import Image from "next/image";
 import React from "react";
 

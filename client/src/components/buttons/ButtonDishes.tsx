@@ -1,6 +1,6 @@
 import React from "react";
 import { FullscreenIcon, HandPlatterIcon } from "lucide-react";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 
 const icons = [
   { title: "View Full Menu", icon: <FullscreenIcon />, id: "menu" },

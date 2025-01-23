@@ -9,7 +9,7 @@ import {
   TableCell,
   Tooltip,
   Pagination,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import Image from "next/image";
 import { EyeIcon } from "@/components/icons/EyeIcon";
 import { useCustomers } from "@/hooks/use-users";

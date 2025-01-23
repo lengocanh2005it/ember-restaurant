@@ -11,7 +11,7 @@ import {
 import { useUpdateTable } from "@/hooks/use-update-table";
 import { Table } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
+import { Button, Input, Select, SelectItem, Textarea } from "@heroui/react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

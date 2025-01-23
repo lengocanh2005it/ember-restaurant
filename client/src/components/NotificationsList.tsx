@@ -3,7 +3,7 @@ import LoadingPage from "@/components/LoadingPage";
 import { useNotifications } from "@/hooks/use-notifications";
 import { useAppStore, useNotificationStore } from "@/store";
 import { Notification } from "@/utils";
-import { Button, Tooltip } from "@nextui-org/react";
+import { Button, Tooltip } from "@heroui/react";
 import { format } from "date-fns";
 import { ArrowDownIcon, ArrowUpIcon, ClockIcon } from "lucide-react";
 import Image from "next/image";

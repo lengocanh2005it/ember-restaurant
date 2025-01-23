@@ -9,7 +9,7 @@ import {
   Button,
   useDisclosure,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import Image from "next/image";
 import { Product } from "@/utils";
 

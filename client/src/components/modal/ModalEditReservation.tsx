@@ -11,7 +11,7 @@ import {
   Divider,
   Tooltip,
   Badge,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { BellIcon } from "lucide-react";
 
 interface ModalEditReservationProps {

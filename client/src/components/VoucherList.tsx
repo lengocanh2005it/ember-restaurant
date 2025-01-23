@@ -20,7 +20,7 @@ import {
   ModalFooter,
   ModalHeader,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import Autoplay from "embla-carousel-autoplay";
 import { Calendar, PencilLineIcon } from "lucide-react";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";

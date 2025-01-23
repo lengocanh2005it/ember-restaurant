@@ -8,7 +8,7 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useUpdateProduct } from "@/hooks/use-update-product";
 import { UpdateProductDto } from "@/api/products/utils/types";
 

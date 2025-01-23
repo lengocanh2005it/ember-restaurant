@@ -12,7 +12,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { useLogin } from "@/hooks/use-login";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Checkbox, Input } from "@nextui-org/react";
+import { Button, Checkbox, Input } from "@heroui/react";
 import { motion } from "framer-motion";
 import { EyeIcon, EyeOffIcon, LockIcon, UserIcon } from "lucide-react";
 import Link from "next/link";

@@ -7,7 +7,7 @@ import {
   ModalBody,
   useDisclosure,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { SquarePenIcon } from "lucide-react";
 import UpdateReservationForm from "@/components/form/UpdateReservationForm";
 import { useQueryClient } from "@tanstack/react-query";

@@ -5,7 +5,7 @@ import { useEvents } from "@/hooks/use-events";
 import { useAppStore } from "@/store";
 import { showSuccessToast } from "@/utils";
 import { Event } from "@/utils/types";
-import { Button, Pagination } from "@nextui-org/react";
+import { Button, Pagination } from "@heroui/react";
 import { BellIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";

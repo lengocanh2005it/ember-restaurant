@@ -25,8 +25,6 @@ export const handleCreateSupportTicket = async (
 
     if (!response.data) throw new Error("Internal Server Error!");
 
-    console.log(response.data.data);
-
     return response.data.data;
   } catch (err) {
     console.error(err);

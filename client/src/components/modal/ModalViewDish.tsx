@@ -11,7 +11,7 @@ import {
   CardBody,
   Card,
   Chip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { EyeIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { Product } from "@/utils";

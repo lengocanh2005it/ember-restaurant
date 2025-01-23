@@ -3,7 +3,7 @@ import React from "react";
 import IconsWelcome from "@/components/icons/IconsWelcome";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 
 const SpecialPromotion: React.FC = () => {
   return (

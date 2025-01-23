@@ -20,7 +20,7 @@ import {
   Select,
   SelectItem,
   Textarea,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

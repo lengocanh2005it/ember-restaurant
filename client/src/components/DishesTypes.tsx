@@ -3,7 +3,7 @@ import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import ButtonDetails from "@/components/buttons/ButtonDetails";
 import { motion } from "framer-motion";
-import { Pagination } from "@nextui-org/react";
+import { Pagination } from "@heroui/react";
 
 interface DishesTypesProps {
   dishes: Record<string, string | number>[];

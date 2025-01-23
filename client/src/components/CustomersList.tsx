@@ -14,7 +14,7 @@ import {
   Chip,
   Tooltip,
   Pagination,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { MessageSquareIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { User } from "@/utils";

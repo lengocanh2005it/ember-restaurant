@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Button, Select, SelectItem, Textarea } from "@nextui-org/react";
+import { Button, Select, SelectItem, Textarea } from "@heroui/react";
 import {
   Form,
   FormControl,

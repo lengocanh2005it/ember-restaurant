@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import DishesList from "@/components/DishesList";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { usePathname, useRouter } from "next/navigation";
 
 const MenuPage: React.FC = () => {

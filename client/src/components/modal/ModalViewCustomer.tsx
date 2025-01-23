@@ -10,7 +10,7 @@ import {
   ModalHeader,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { BriefcaseIcon, MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 import Image from "next/image";
 import React from "react";

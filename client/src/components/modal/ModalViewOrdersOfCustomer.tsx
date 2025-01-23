@@ -10,7 +10,7 @@ import {
   ModalHeader,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { format } from "date-fns";
 import React from "react";
 

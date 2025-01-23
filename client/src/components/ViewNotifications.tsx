@@ -7,7 +7,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import ModalConfirmDeleteNotification from "@/components/modal/ModalConfirmDeleteNotification";
 import ModalViewNotification from "@/components/modal/ModalViewNotification";
 import ModalUpdateNotification from "@/components/modal/ModalUpdateNotification";

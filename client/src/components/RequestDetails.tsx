@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import React from "react";
-import { Tooltip } from "@nextui-org/react";
+import { Tooltip } from "@heroui/react";
 import Image from "next/image";
 import { Request } from "@/utils";
 

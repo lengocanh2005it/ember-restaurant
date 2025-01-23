@@ -10,7 +10,7 @@ import {
   useDisclosure,
   Chip,
   Pagination,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Separator } from "@/components/ui/separator";
 import { User } from "@/utils";

@@ -9,7 +9,7 @@ import {
   Button,
   useDisclosure,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { TrashIcon } from "lucide-react";
 import { useDeletePromotion } from "@/hooks/use-delete-promotion";
 

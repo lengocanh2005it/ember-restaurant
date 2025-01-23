@@ -13,7 +13,7 @@ import {
   TableCell,
   Tooltip,
   Pagination,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { User } from "@/utils";

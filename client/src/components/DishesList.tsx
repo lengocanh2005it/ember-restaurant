@@ -5,7 +5,7 @@ import ModalUpdateDish from "@/components/modal/ModalUpdateDish";
 import ModalViewDish from "@/components/modal/ModalViewDish";
 import { useProducts } from "@/hooks/use-products";
 import { Product } from "@/utils";
-import { Button, Pagination } from "@nextui-org/react";
+import { Button, Pagination } from "@heroui/react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";

@@ -1,25 +1,25 @@
 "use client";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { DeleteSupportTicketDto } from "@/api/support-ticket/utils/types";
+import ModalUpdateRequest from "@/components/modal/ModalUpdateRequest";
+import ModalViewResponse from "@/components/modal/ModalViewResponse";
+import { useDeleteSupportTicket } from "@/hooks/use-delete-support-ticket";
+import { useUserStore } from "@/store";
+import { Request } from "@/utils";
 import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
   Chip,
   ChipProps,
   Pagination,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
   Tooltip,
-} from "@nextui-org/react";
-import { TrashIcon } from "lucide-react";
-import ModalUpdateRequest from "@/components/modal/ModalUpdateRequest";
-import { useDeleteSupportTicket } from "@/hooks/use-delete-support-ticket";
-import ModalViewResponse from "@/components/modal/ModalViewResponse";
-import { DeleteSupportTicketDto } from "@/api/support-ticket/utils/types";
+} from "@heroui/react";
 import { format } from "date-fns";
-import { Request } from "@/utils";
-import { useUserStore } from "@/store";
+import { TrashIcon } from "lucide-react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 const columns = [
   { name: "DATE TIME", uid: "createdAt" },
@@ -44,20 +44,20 @@ const TableOfRequests: React.FC = () => {
 
   useEffect(() => {
     if (user && user.support_tickets) {
-      console.log(user);
       setRequests(user.support_tickets as Request[]);
     }
   }, [user]);
 
   const handleClick = useCallback(
-    (requestId: string) => {
+    (requestId: string, userId: string) => {
       const data: DeleteSupportTicketDto = {
-        userId: user?.id!,
+        userId,
         requestId,
       };
+
       mutateDeleteSupportTicket(data);
     },
-    [mutateDeleteSupportTicket, user]
+    [mutateDeleteSupportTicket]
   );
 
   const totalPages = useMemo(() => {
@@ -97,7 +97,7 @@ const TableOfRequests: React.FC = () => {
               <Tooltip content="Delete" className="dark:bg-white text-black">
                 <TrashIcon
                   className="cursor-pointer"
-                  onClick={() => handleClick(request.id)}
+                  onClick={() => handleClick(request.id, user?.id!)}
                 />
               </Tooltip>
 
@@ -128,7 +128,7 @@ const TableOfRequests: React.FC = () => {
           return <p>{cellValue as string}</p>;
       }
     },
-    [handleClick]
+    [handleClick, user]
   );
 
   return (

@@ -13,7 +13,7 @@ import {
   ModalFooter,
   ModalHeader,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { format } from "date-fns";
 import {
   BarChartIcon,

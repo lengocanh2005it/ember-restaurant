@@ -22,7 +22,7 @@ import {
   ModalContent,
   ModalHeader,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { CircleCheckIcon, PencilIcon, XIcon } from "lucide-react";
 import Image from "next/image";
@@ -185,8 +185,8 @@ const UpdateProfile: React.FC = () => {
   }
 
   return (
-    <>
-      <div
+    <div className="flex flex-col gap-2">
+      {/* <div
         className="p-4 w-fit lg:mx-0 mx-auto border rounded-xl shadow-custom dark:border-white/20"
         onClick={() => setIsOpen(true)}
       >
@@ -196,7 +196,10 @@ const UpdateProfile: React.FC = () => {
         >
           <PencilIcon className="cursor-pointer" />
         </Tooltip>
-      </div>
+        
+      </div> */}
+
+      <PencilIcon className="cursor-pointer" onClick={() => setIsOpen(true)} />
 
       <Modal
         backdrop="opaque"
@@ -433,7 +436,7 @@ const UpdateProfile: React.FC = () => {
           key={"otp"}
         />
       )}
-    </>
+    </div>
   );
 };
 

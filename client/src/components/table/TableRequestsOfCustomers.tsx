@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -11,7 +11,7 @@ import {
   Pagination,
   Chip,
   ChipProps,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import Image from "next/image";
 import { TrashIcon } from "lucide-react";
 import ModalViewRequest from "@/components/modal/ModalViewRequest";
@@ -19,9 +19,10 @@ import ModalReply from "@/components/modal/ModalReply";
 import { useDeleteSupportTicket } from "@/hooks/use-delete-support-ticket";
 import { format } from "date-fns";
 import { Request } from "@/utils";
+import { useUserStore } from "@/store";
 
 const columns = [
-  { name: "DATE", uid: "date" },
+  { name: "DATE TIME", uid: "date" },
   { name: "CUSTOMER", uid: "user" },
   { name: "ORIGINAL REQUEST", uid: "original_request" },
   { name: "STATUS", uid: "status" },
@@ -43,6 +44,7 @@ const TableRequestsOfCustomers: React.FC<TableRequestsOfCustomersProps> = ({
 }) => {
   const [page, setPage] = useState<number>(1);
   const initialPages = 3;
+  const { user } = useUserStore();
 
   const { mutate: mutateDeleteRequestAdmin } = useDeleteSupportTicket();
 
@@ -107,7 +109,7 @@ const TableRequestsOfCustomers: React.FC<TableRequestsOfCustomersProps> = ({
 
         case "original_request": {
           return (
-            <p className="lg:max-w-[500px] max-w-[350px] truncate">
+            <p className="lg:max-w-[400px] max-w-full break-words truncate">
               {cellValue as string}
             </p>
           );
@@ -138,8 +140,8 @@ const TableRequestsOfCustomers: React.FC<TableRequestsOfCustomersProps> = ({
                   className="cursor-pointer opacity-60 hover:opacity-100 duration-250 ease-in-out
               transition-opacity"
                   onClick={() => {
-                    const { id, user } = request;
-                    handleClick(id, user.id);
+                    const { id } = request;
+                    handleClick(id, user?.id!);
                   }}
                 />
               </Tooltip>
@@ -151,12 +153,15 @@ const TableRequestsOfCustomers: React.FC<TableRequestsOfCustomersProps> = ({
           return <p>{cellValue as string}</p>;
       }
     },
-    [handleClick]
+    [handleClick, user]
   );
 
   return (
     <>
-      <Table aria-label="Table of all requests" isHeaderSticky isStriped>
+      <Table
+        aria-label="Table of all requests"
+        className="relative lg:w-[85%] w-full mx-auto"
+      >
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn
@@ -179,7 +184,7 @@ const TableRequestsOfCustomers: React.FC<TableRequestsOfCustomersProps> = ({
       </Table>
 
       {requests.length !== 0 && (
-        <div className="relative flex lg:items-start lg:justify-start items-center justify-center">
+        <div className="relative flex items-center justify-center">
           <Pagination
             initialPage={page}
             total={totalPages}

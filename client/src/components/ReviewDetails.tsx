@@ -1,5 +1,5 @@
 import ButtonSlides from "@/components/buttons/ButtonSlides";
-import { Chip } from "@nextui-org/react";
+import { Chip } from "@heroui/react";
 import { StarIcon } from "lucide-react";
 import Image from "next/image";
 import React from "react";

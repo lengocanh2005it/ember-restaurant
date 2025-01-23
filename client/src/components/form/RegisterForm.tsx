@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useRegister } from "@/hooks/use-register";
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input } from "@heroui/react";
 import { EyeIcon, EyeOffIcon, LockIcon, UserIcon } from "lucide-react";
 import { CreateUserDto } from "@/api/register/utils/types";
 

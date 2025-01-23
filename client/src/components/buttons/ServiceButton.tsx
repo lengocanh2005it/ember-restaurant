@@ -1,7 +1,7 @@
 import React from "react";
 import { UtensilsIcon, CornerRightDown } from "lucide-react";
 import { toast } from "react-toastify";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 
 const buttons = [
   { icon: <UtensilsIcon />, title: "Choose a service" },

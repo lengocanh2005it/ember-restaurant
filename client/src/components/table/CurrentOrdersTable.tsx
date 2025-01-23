@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 import { useOrderStore, useUserStore } from "@/store";
 import { Order } from "@/utils/types";
-import { Chip, ChipProps } from "@nextui-org/react";
+import { Chip, ChipProps } from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import React from "react";

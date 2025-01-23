@@ -26,7 +26,7 @@ import {
   Textarea,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { MessageCircleIcon } from "lucide-react";
 import React, { Dispatch, SetStateAction, useState } from "react";

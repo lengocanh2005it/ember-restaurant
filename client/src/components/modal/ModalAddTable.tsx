@@ -8,7 +8,7 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import CreateTableForm from "@/components/form/CreateTableForm";
 
 const ModalAddTable: React.FC = () => {

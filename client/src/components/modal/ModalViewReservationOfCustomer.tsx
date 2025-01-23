@@ -14,7 +14,7 @@ import {
   Accordion,
   AccordionItem,
   Chip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { format } from "date-fns";
 import { EyeIcon } from "lucide-react";
 import React from "react";

@@ -9,7 +9,7 @@ import {
   useDisclosure,
   Tooltip,
   Chip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { EyeIcon } from "lucide-react";
 import { Area } from "@/utils/types";
 import { usePathname, useRouter } from "next/navigation";

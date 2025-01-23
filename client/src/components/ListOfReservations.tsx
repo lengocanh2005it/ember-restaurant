@@ -12,7 +12,7 @@ import {
   TableCell,
   Tooltip,
   Pagination,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { EyeIcon } from "@/components/icons/EyeIcon";
 import { useQueryClient } from "@tanstack/react-query";

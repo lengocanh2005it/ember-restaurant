@@ -15,7 +15,7 @@ import {
   Textarea,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { SquarePenIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 

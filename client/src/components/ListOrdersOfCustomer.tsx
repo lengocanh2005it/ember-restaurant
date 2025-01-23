@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { XIcon } from "lucide-react";
 import Image from "next/image";

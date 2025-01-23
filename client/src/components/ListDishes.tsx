@@ -5,7 +5,7 @@ import SwiperCore from "swiper/core";
 import { Autoplay } from "swiper/modules";
 import Image from "next/image";
 import { EyeIcon } from "lucide-react";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { Separator } from "@/components/ui/separator";
 
 const dishes = [

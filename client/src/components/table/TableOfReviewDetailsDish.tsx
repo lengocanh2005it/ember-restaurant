@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { format } from "date-fns";
 import { TrashIcon } from "lucide-react";
 import Image from "next/image";

@@ -8,7 +8,7 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useUpdateNotification } from "@/hooks/use-update-notification";
 import { UpdateNotificationDto } from "@/api/notifications/utils/types";
 

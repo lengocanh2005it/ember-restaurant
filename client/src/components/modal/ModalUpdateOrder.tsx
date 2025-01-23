@@ -28,7 +28,7 @@ import {
   Textarea,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { RotateCcwIcon, SquarePenIcon, XIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";

@@ -1,5 +1,5 @@
 import { Notification } from "@/utils";
-import { Button, Tooltip } from "@nextui-org/react";
+import { Button, Tooltip } from "@heroui/react";
 import { format } from "date-fns";
 import { ClockIcon, EyeIcon } from "lucide-react";
 import Image from "next/image";

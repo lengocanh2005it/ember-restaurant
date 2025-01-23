@@ -9,7 +9,7 @@ import {
   useDisclosure,
   Chip,
   Pagination,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Review } from "@/utils";
 import { format } from "date-fns";
 

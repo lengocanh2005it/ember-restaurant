@@ -11,7 +11,7 @@ import {
   Tooltip,
   Card,
   CardBody,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { EyeIcon } from "lucide-react";
 import { Discount } from "@/utils";
 

@@ -10,7 +10,7 @@ import {
   Pagination,
   Chip,
   ChipProps,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useEvents } from "@/hooks/use-events";
 import LoadingPage from "@/components/LoadingPage";
 import ModalViewEvent from "@/components/modal/ModalViewEvent";

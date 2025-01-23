@@ -1,7 +1,7 @@
 "use client";
 import CurrentOrdersTable from "@/components/table/CurrentOrdersTable";
 import { Order } from "@/utils/types";
-import { Pagination } from "@nextui-org/react";
+import { Pagination } from "@heroui/react";
 import React, { useState } from "react";
 
 interface CurrentOrdersProps {

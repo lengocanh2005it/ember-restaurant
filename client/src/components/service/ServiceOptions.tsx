@@ -41,7 +41,7 @@ const services = [
   },
 ];
 
-import { Button, Pagination } from "@nextui-org/react";
+import { Button, Pagination } from "@heroui/react";
 import { motion } from "framer-motion";
 
 const ServiceOptions: React.FC = () => {

@@ -11,7 +11,7 @@ import {
   ModalHeader,
   Textarea,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { InputNumber } from "antd";
 import { ShoppingCartIcon } from "lucide-react";
 import Image from "next/image";

@@ -8,7 +8,7 @@ import SocialIcons from "@/components/icons/SocialIcons";
 import Header from "@/components/layouts/Header";
 import AwardLists from "@/components/AwardLists";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 

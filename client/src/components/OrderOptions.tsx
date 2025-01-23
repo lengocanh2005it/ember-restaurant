@@ -5,7 +5,7 @@ import {
   DropdownMenu,
   DropdownItem,
   Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { VerticalDotsIcon } from "@/components/icons/VerticalDotsIcon";
 
 const OrderOptions = () => {

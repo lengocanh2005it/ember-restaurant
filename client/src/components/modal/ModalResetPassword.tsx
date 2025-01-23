@@ -8,7 +8,7 @@ import {
   Button,
   Input,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import {
   Form,
   FormControl,

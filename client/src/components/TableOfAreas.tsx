@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { SquarePenIcon, TrashIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useCallback, useMemo, useState } from "react";

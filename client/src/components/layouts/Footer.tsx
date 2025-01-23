@@ -4,7 +4,7 @@ import AddressFooter from "@/components/AddressFooter";
 import SocialIcons from "@/components/icons/SocialIcons";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input } from "@heroui/react";
 
 const links = [
   { title: "Home", path: "/home" },

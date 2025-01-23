@@ -12,7 +12,7 @@ import { useAddArea } from "@/hooks/use-add-area";
 import { stringToTime, timeToString } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Time } from "@internationalized/date";
-import { Button, Input, Textarea, TimeInput } from "@nextui-org/react";
+import { Button, Input, Textarea, TimeInput } from "@heroui/react";
 import { ClockIcon } from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useState } from "react";

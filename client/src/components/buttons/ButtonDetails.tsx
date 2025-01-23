@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { ShoppingCartIcon, EyeIcon } from "lucide-react";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { useAppStore } from "@/store";
 
 const buttons = [
