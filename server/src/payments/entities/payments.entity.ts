@@ -3,11 +3,13 @@ import { Reservation } from 'src/reservations/entities/reservations.entity';
 import { User } from 'src/users/entities/users.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity({ name: 'payment' })
@@ -40,6 +42,9 @@ export class Payment {
   })
   readonly status?: string;
 
+  @Column({ nullable: true })
+  readonly description?: string;
+
   @ManyToOne(() => User, (user) => user.payments, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
@@ -60,4 +65,10 @@ export class Payment {
     onUpdate: 'CASCADE',
   })
   readonly reservation?: Reservation;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  readonly createdAt!: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  readonly updatedAt!: Date;
 }

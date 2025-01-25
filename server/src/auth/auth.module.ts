@@ -17,7 +17,6 @@ import { OrdersModule } from 'src/orders/orders.module';
 import { OrdersService } from 'src/orders/orders.service';
 import { Payment } from 'src/payments/entities/payments.entity';
 import { PaymentsService } from 'src/payments/payments.service';
-import { StripeStrategy } from 'src/payments/strategies/stripe.strategy';
 import { PermissionsModule } from 'src/permissions/permissions.module';
 import { ProductsModule } from 'src/products/products.module';
 import { Promotion } from 'src/promotions/entities/promotions.entity';
@@ -37,6 +36,8 @@ import { UsersModule } from 'src/users/users.module';
 import { UsersService } from 'src/users/users.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { StripeService } from 'src/payments/services/stripe.service';
+import { PaymentsModule } from 'src/payments/payments.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { AuthService } from './auth.service';
     OrderProductModule,
     PromotionsModule,
     TablesModule,
+    PaymentsModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -91,7 +93,7 @@ import { AuthService } from './auth.service';
     FacebookStrategy,
     SessionSerializer,
     PaymentsService,
-    StripeStrategy,
+    StripeService,
   ],
 })
 export class AuthModule {}

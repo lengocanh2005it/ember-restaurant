@@ -3,15 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { DiscountContext } from 'src/discounts/discount.context';
 import { DiscountsService } from 'src/discounts/discounts.service';
 import { CreateOrderProductDto } from 'src/order-product/dtos/create-order-product.dto';
 import { OrderProductService } from 'src/order-product/order-product.service';
 import { UpdateOrderDto } from 'src/orders/dtos/update-order.dto';
 import { Order } from 'src/orders/entities/orders.entity';
-import { Payment } from 'src/payments/entities/payments.entity';
 import { PaymentsService } from 'src/payments/payments.service';
-import { DiscountStrategyFactory } from 'src/payments/strategies/discounts.strategy';
 import { ProductsService } from 'src/products/products.service';
 import { PromotionsService } from 'src/promotions/promotions.service';
 import { UserDiscountService } from 'src/user-discount/user-discount.service';
@@ -20,18 +19,17 @@ import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
 export class OrdersService {
-  private paymentThresholds = [50, 100, 200];
-
   constructor(
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
+    @InjectDataSource() private readonly dataSource: DataSource,
+    private readonly discountContext: DiscountContext,
     private readonly orderProductService: OrderProductService,
     private readonly productsService: ProductsService,
     private readonly paymentsService: PaymentsService,
     private readonly discountsService: DiscountsService,
     private readonly userDiscountService: UserDiscountService,
     private readonly promotionsService: PromotionsService,
-    private readonly dataSource: DataSource,
   ) {}
 
   async findAll(): Promise<Order[]> {
@@ -104,8 +102,7 @@ export class OrdersService {
       throw new BadRequestException('UserID Not Found.');
     }
 
-    const { discountId, userId, total_price, payment_method, promotionCode } =
-      createOrderProductDto.order;
+    const { discountId, userId, promotionCode } = createOrderProductDto.order;
 
     if (discountId) {
       const discount =
@@ -151,14 +148,6 @@ export class OrdersService {
       );
     }
 
-    const newPayment = (await this.paymentsService.createPayment({
-      amount: total_price,
-      payment_method,
-      type: 'order',
-      userId: queries.userId,
-      orderId: order.id,
-    })) as Payment;
-
     const products =
       await this.productsService.transformProductAndQuantityToProducts(
         createOrderProductDto.products,
@@ -172,15 +161,6 @@ export class OrdersService {
       order,
       'user',
       queries.userId,
-      'set',
-    );
-
-    await setRelation(
-      this.orderRepository,
-      Order,
-      order,
-      'payment',
-      newPayment.id,
       'set',
     );
   }
@@ -215,10 +195,9 @@ export class OrdersService {
         await this.discountsService.checkValidOfDiscount(discountId);
 
       if (discount) {
-        const discountStrategy =
-          DiscountStrategyFactory.createDiscountStrategy(discount);
+        this.discountContext.setStrategy('percentage', discount.value);
 
-        discountedAmount = discountStrategy.applyDiscount(res.total_price);
+        discountedAmount = this.discountContext.calculate(res.total_price);
 
         await this.userDiscountService.decreaseUserDiscountQuantity(
           userId,

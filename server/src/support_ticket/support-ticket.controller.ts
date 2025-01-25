@@ -52,8 +52,6 @@ export class SupportTicketController {
     const { password, createdAt, updatedAt, ...res } =
       await this.usersService.findOne(createSupportTicketDto.userId);
 
-    console.log(res);
-
     return res;
   }
 

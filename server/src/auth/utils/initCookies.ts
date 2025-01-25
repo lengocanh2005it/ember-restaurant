@@ -12,18 +12,24 @@ export const initCookies = (
     httpOnly: configService.get<string>('NODE_ENV') === 'production',
     secure: configService.get<string>('NODE_ENV') === 'production',
     maxAge: 1000 * 60 * 30,
+    sameSite:
+      configService.get<string>('NODE_ENV') === 'production' ? 'none' : 'lax',
   });
 
   response.cookie('isLoggedIn', 'true', {
     httpOnly: configService.get<string>('NODE_ENV') === 'production',
     secure: configService.get<string>('NODE_ENV') === 'production',
     maxAge: 1000 * 60 * 30,
+    sameSite:
+      configService.get<string>('NODE_ENV') === 'production' ? 'none' : 'lax',
   });
 
   response.cookie('theme', user.theme, {
     httpOnly: configService.get<string>('NODE_ENV') === 'production',
     secure: configService.get<string>('NODE_ENV') === 'production',
     maxAge: 1000 * 60 * 30,
+    sameSite:
+      configService.get<string>('NODE_ENV') === 'production' ? 'none' : 'lax',
   });
 
   response.cookie(
@@ -33,6 +39,8 @@ export const initCookies = (
       httpOnly: configService.get<string>('NODE_ENV') === 'production',
       secure: configService.get<string>('NODE_ENV') === 'production',
       maxAge: 1000 * 60 * 30,
+      sameSite:
+        configService.get<string>('NODE_ENV') === 'production' ? 'none' : 'lax',
     },
   );
 
@@ -41,6 +49,8 @@ export const initCookies = (
       httpOnly: configService.get<string>('NODE_ENV') === 'production',
       secure: configService.get<string>('NODE_ENV') === 'production',
       maxAge: 1000 * 60 * 2,
+      sameSite:
+        configService.get<string>('NODE_ENV') === 'production' ? 'none' : 'lax',
     });
   }
 };

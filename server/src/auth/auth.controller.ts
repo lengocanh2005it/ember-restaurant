@@ -209,12 +209,12 @@ export class AuthController {
       initCookies(res, user, 'user', 'google', this.configService);
 
       return res.redirect(
-        getEnvValue('REDIRECT_URL_HOMEPAGE_PROD', 'REDIRECT_URL_HOMEPAGE_PROD'),
+        getEnvValue('REDIRECT_URL_HOMEPAGE_PROD', 'REDIRECT_URL_HOMEPAGE_DEV'),
       );
     }
 
     return res.redirect(
-      getEnvValue('REDIRECT_URL_LOGINPAGE_PROD', 'REDIRECT_URL_LOGINPAGE_PROD'),
+      getEnvValue('REDIRECT_URL_LOGINPAGE_PROD', 'REDIRECT_URL_LOGINPAGE_DEV'),
     );
   }
 
@@ -235,7 +235,7 @@ export class AuthController {
       initCookies(res, user, 'user', 'facebook', this.configService);
 
       return res.redirect(
-        this.configService.get<string>('REDIRECT_URL_HOMEPAGE'),
+        getEnvValue('REDIRECT_URL_HOMEPAGE_PROD', 'REDIRECT_URL_HOMEPAGE_PROD'),
       );
     }
     return res.redirect(

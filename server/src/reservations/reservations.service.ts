@@ -48,17 +48,10 @@ export class ReservationsService {
   }
 
   async createOne(createReservationDto: CreateReservationDto): Promise<any> {
-    const { userId, tableIds, areaId, discountId, payment_method, ...res } =
+    const { userId, tableIds, areaId, discountId, ...res } =
       createReservationDto;
 
     const total_price = await this.tablesService.calculateTotalPrice(tableIds);
-
-    const newPayment = await this.paymentsService.createPayment({
-      amount: total_price,
-      type: 'reservation',
-      payment_method,
-      userId,
-    });
 
     const reservation = this.reservationRepository.create({
       ...res,
@@ -66,12 +59,6 @@ export class ReservationsService {
     });
 
     await this.reservationRepository.save(reservation);
-
-    await this.dataSource
-      .createQueryBuilder()
-      .relation(Reservation, 'payment')
-      .of(reservation.id)
-      .set(newPayment.id);
 
     await this.tablesService.addTablesToReservation(
       tableIds,
@@ -228,5 +215,20 @@ export class ReservationsService {
     query.orderBy('reservation.date_time', 'ASC');
 
     return await query.getMany();
+  };
+
+  public updatePaymentOfReservation = async (reservationId: string) => {
+    const reservation = await this.reservationRepository.findOneBy({
+      id: reservationId,
+    });
+
+    if (!reservation) throw new NotFoundException('Reservation Not Found.');
+
+    await this.reservationRepository.update(
+      { id: reservationId },
+      {
+        is_paid: true,
+      },
+    );
   };
 }
