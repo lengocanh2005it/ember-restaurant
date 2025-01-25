@@ -3,7 +3,6 @@ import CreateOrder from "@/components/CreateOrder";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useCartStore } from "@/store";
-import { Card, CardBody } from "@heroui/react";
 import React, { Dispatch, SetStateAction, useEffect } from "react";
 
 interface OrderProps {
@@ -31,19 +30,30 @@ const Order: React.FC<OrderProps> = ({ setCheckedItems }) => {
   }, [selectedCarts]);
 
   return (
-    <Card
-      className="lg:w-[400px] sm:w-[500px] w-full mx-auto flex flex-col gap-4 p-4 rounded-lg
-     border dark:border-white/20 shadow-custom"
+    <div
+      className="lg:w-[450px] sm:w-[500px] w-full mx-auto flex flex-col gap-4 p-4 rounded-lg
+     border dark:border-white/30 shadow-custom"
     >
-      <CardBody className="flex flex-col gap-2">
-        <h1 className="md:text-2xl text-xl font-medium text-center">
-          New Order
-        </h1>
+      <div className="flex flex-col">
+        <div className="relative flex flex-col lg:gap-2 gap-1 text-center justify-center items-center">
+          <h1 className="md:text-2xl text-xl font-medium text-center">
+            New Order
+          </h1>
+
+          <p className="md:text-base text-[14px] dark:text-white/70 text-black/70">
+            Review and confirm your selected items before placing your order.
+          </p>
+        </div>
 
         <ScrollArea className="h-[250px] rounded-md p-4 flex flex-col gap-2">
           {selectedCarts.map((item) => (
             <>
-              <div className="text-base" key={item.id}>
+              <div
+                className="text-base"
+                key={
+                  item.id + (new Date().getTime() + item.quantity).toString()
+                }
+              >
                 <h1 className="lg:text-xl text-base font-medium italic">
                   {item.product.name}
                 </h1>
@@ -67,6 +77,7 @@ const Order: React.FC<OrderProps> = ({ setCheckedItems }) => {
                   >
                     Total price:{" "}
                   </p>
+
                   <p className="font-medium">
                     {parseFloat(
                       (
@@ -85,7 +96,9 @@ const Order: React.FC<OrderProps> = ({ setCheckedItems }) => {
         </ScrollArea>
 
         <div className="flex items-center justify-between">
-          <p className="lg:text-xl text-base">Total Price:</p>
+          <p className="lg:text-xl text-base dark:text-white/70 text-black/70">
+            Total Price:
+          </p>
           <p className="lg:text-2xl text-xl font-medium">{totalPrice}$</p>
         </div>
 
@@ -95,8 +108,8 @@ const Order: React.FC<OrderProps> = ({ setCheckedItems }) => {
           total_price={totalPrice}
           setCheckedItems={setCheckedItems}
         />
-      </CardBody>
-    </Card>
+      </div>
+    </div>
   );
 };
 

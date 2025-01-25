@@ -18,7 +18,7 @@ const CreditCard: React.FC<CreditCardProps> = ({ onClose }) => {
 
   return (
     <Card className="w-full relative">
-      <CardBody className="gap-2 w-full relative">
+      <CardBody className="w-full relative">
         <RadioGroup
           label="Select your bank"
           className="dark:text-white/80 text-black/80"
@@ -27,12 +27,8 @@ const CreditCard: React.FC<CreditCardProps> = ({ onClose }) => {
         >
           <div
             className="flex md:flex-row flex-col w-full md:items-center 
-        md:justify-between gap-3 relative overflow-hidden dark:text-white/80 text-black/80"
+        md:justify-between lg:gap-3 gap-1 relative overflow-hidden dark:text-white/80 text-black/80"
           >
-            <Radio value="apple-pay" color="success" isDisabled>
-              <ApplePay />
-            </Radio>
-
             <Radio value="pay-pal" color="success" isDisabled>
               <PayPal />
             </Radio>

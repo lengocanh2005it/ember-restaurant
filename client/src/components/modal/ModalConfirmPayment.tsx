@@ -1,8 +1,12 @@
 "use client";
 import ModalShowPayments from "@/components/modal/ModalShowPayments";
-import { StatusEnum } from "@/config/enums/enums";
 import { useAddOrder } from "@/hooks/use-add-order";
-import { useCartStore, useDiscountStore, useUserStore } from "@/store";
+import {
+  useCartStore,
+  useDiscountStore,
+  useOrderStore,
+  useUserStore,
+} from "@/store";
 import { CachedOrderData } from "@/utils";
 import {
   Button,
@@ -32,29 +36,24 @@ const ModalConfirmPayment: React.FC<ModalConfirmPaymentProps> = ({
   const { user } = useUserStore();
   const { setSelectedCarts } = useCartStore();
   const { setDiscount } = useDiscountStore();
+  const { orderData } = useOrderStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const cachedOrderData = query.getQueryData([
-    "orderData",
-    user?.id,
-  ]) as CachedOrderData;
 
   const { mutate: mutateAddOrder } = useAddOrder(user?.id!);
 
   const handlePayment = () => {
     setIsLoading(true);
     setTimeout(() => {
-      if (cachedOrderData) {
+      if (orderData) {
         const {
           phone_number,
           delivery_method,
           delivery_address,
           payment_method,
           total_price,
-          products,
           discountId,
           promotionCode,
-        } = cachedOrderData;
+        } = orderData.order;
 
         mutateAddOrder({
           order: {
@@ -63,13 +62,12 @@ const ModalConfirmPayment: React.FC<ModalConfirmPaymentProps> = ({
             delivery_method,
             payment_method,
             total_price,
-            status: StatusEnum.PENDING,
             delivery_address,
             discountId,
             promotionCode,
           },
           userId: user?.id!,
-          products,
+          products: orderData.products,
         });
       }
       setIsOpen(false);

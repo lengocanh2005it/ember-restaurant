@@ -170,7 +170,8 @@ export type Promotion = {
 
 export type Request = {
   id: string;
-  createdAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   user: User;
   original_request: string;
   status: string;

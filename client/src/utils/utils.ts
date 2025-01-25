@@ -72,7 +72,6 @@ export const handleCreateOrder = (
     delivery_address,
     delivery_method,
     payment_method,
-    status: StatusEnum.PENDING,
     total_price,
     discountId,
   };

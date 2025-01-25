@@ -1,8 +1,10 @@
 "use client";
 import { DeleteSupportTicketDto } from "@/api/support-ticket/utils/types";
+import LoadingPage from "@/components/LoadingPage";
 import ModalUpdateRequest from "@/components/modal/ModalUpdateRequest";
 import ModalViewResponse from "@/components/modal/ModalViewResponse";
 import { useDeleteSupportTicket } from "@/hooks/use-delete-support-ticket";
+import { useRequestsOfUser } from "@/hooks/use-requests-of-user";
 import { useUserStore } from "@/store";
 import { Request } from "@/utils";
 import {
@@ -42,11 +44,13 @@ const TableOfRequests: React.FC = () => {
 
   const { mutate: mutateDeleteSupportTicket } = useDeleteSupportTicket();
 
+  const { data, isLoading, isError } = useRequestsOfUser(user?.id!);
+
   useEffect(() => {
-    if (user && user.support_tickets) {
-      setRequests(user.support_tickets as Request[]);
+    if (data) {
+      setRequests(data as Request[]);
     }
-  }, [user]);
+  }, [data]);
 
   const handleClick = useCallback(
     (requestId: string, userId: string) => {
@@ -130,6 +134,14 @@ const TableOfRequests: React.FC = () => {
     },
     [handleClick, user]
   );
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
+  if (isError) {
+    return <div>Error...</div>;
+  }
 
   return (
     <>

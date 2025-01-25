@@ -1,5 +1,4 @@
 "use client";
-import { CreatePaymentDetailsDto } from "@/api/payments/utils/types";
 import {
   Form,
   FormControl,
@@ -8,19 +7,18 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { usePayment } from "@/hooks/use-payment";
+import { useAddOrder } from "@/hooks/use-add-order";
 import {
+  useAppStore,
   useCartStore,
   useDiscountStore,
   useOrderStore,
   useReservationStore,
   useUserStore,
 } from "@/store";
-import { CachedOrderData, CachedReservationData } from "@/utils";
+import { Button, Input, Textarea } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@heroui/react";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -32,6 +30,7 @@ const formSchema = z.object({
     }
     return val;
   }, z.number({ message: "Invalid Amount." }).positive({ message: "Amount must be positive." })),
+  description: z.string().optional(),
 });
 
 interface InputCreditCardProps {
@@ -39,7 +38,6 @@ interface InputCreditCardProps {
 }
 
 const InputCreditCard: React.FC<InputCreditCardProps> = ({ onClose }) => {
-  const query = useQueryClient();
   const stripe = useStripe();
   const elements = useElements();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -47,6 +45,7 @@ const InputCreditCard: React.FC<InputCreditCardProps> = ({ onClose }) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       amount: 0,
+      description: "",
     },
   });
 
@@ -63,31 +62,25 @@ const InputCreditCard: React.FC<InputCreditCardProps> = ({ onClose }) => {
 
   const { user } = useUserStore();
   const { setDiscount } = useDiscountStore();
-  const { orderPayment, setOrderPayment } = useOrderStore();
+  const { orderData } = useOrderStore();
   const { setReservationPayment, reservationPayment } = useReservationStore();
   const { setSelectedCarts } = useCartStore();
+  const { type } = useAppStore();
 
-  const { mutate: mutatePayment } = usePayment(user?.id!);
-
-  const cachedOrderData = query.getQueryData([
-    "orderData",
-    user?.id!,
-  ]) as CachedOrderData;
-
-  const cachedReservationData = query.getQueryData([
-    "reservationData",
-    user?.id!,
-  ]) as CachedReservationData;
+  const { mutate } = useAddOrder(user?.id!);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { amount } = values;
+    const { amount, description } = values;
+
     if (!stripe || !elements) return;
 
     const cardElement = elements.getElement(CardElement);
 
+    if (!cardElement) return;
+
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
-      card: cardElement!,
+      card: cardElement,
     });
 
     if (error) {
@@ -98,110 +91,16 @@ const InputCreditCard: React.FC<InputCreditCardProps> = ({ onClose }) => {
     setIsLoading(true);
 
     setTimeout(() => {
-      onClose();
-
+      if (type === "order" && orderData) {
+        mutate({
+          ...orderData,
+          payment_method_id: paymentMethod.id,
+          payment_description: description,
+        });
+      } else if (type === "reservation") {
+        //  paymentDto = {};
+      }
       setIsLoading(false);
-
-      let data = null;
-
-      if (
-        orderPayment &&
-        orderPayment.orderId !== "" &&
-        orderPayment.totalPrice !== 0
-      ) {
-        query.removeQueries({
-          queryKey: ["orderData", user?.id!],
-          exact: true,
-        });
-        query.removeQueries({
-          queryKey: ["reservationData", user?.id!],
-          exact: true,
-        });
-        setReservationPayment({
-          reservationId: "",
-          totalPrice: 0,
-        });
-      }
-
-      if (
-        reservationPayment &&
-        reservationPayment.reservationId !== "" &&
-        reservationPayment.totalPrice !== 0
-      ) {
-        query.removeQueries({
-          queryKey: ["orderData", user?.id!],
-          exact: true,
-        });
-        query.removeQueries({
-          queryKey: ["reservationData", user?.id!],
-          exact: true,
-        });
-        setOrderPayment({
-          orderId: "",
-          totalPrice: 0,
-        });
-      }
-
-      if (cachedOrderData) {
-        query.removeQueries({
-          queryKey: ["reservationData", user?.id!],
-          exact: true,
-        });
-        data = {
-          payments: {
-            amount,
-            source: paymentMethod?.id!,
-            payment_method: "card",
-            type: "order",
-            userId: user?.id!,
-          },
-          order: cachedOrderData,
-        };
-      } else if (
-        orderPayment &&
-        orderPayment.orderId !== "" &&
-        orderPayment.totalPrice !== 0
-      ) {
-        data = {
-          payments: {
-            amount,
-            source: paymentMethod?.id!,
-            payment_method: "card",
-            type: "order",
-            userId: user?.id!,
-            orderId: orderPayment.orderId,
-          },
-        };
-      } else if (cachedReservationData) {
-        data = {
-          payments: {
-            amount,
-            source: paymentMethod?.id,
-            payment_method: "card",
-            type: "reservation",
-            userId: user?.id!,
-          },
-          reservation: cachedReservationData,
-        };
-      } else if (
-        reservationPayment &&
-        reservationPayment.reservationId !== "" &&
-        reservationPayment.totalPrice !== 0
-      ) {
-        data = {
-          payments: {
-            amount,
-            source: paymentMethod?.id!,
-            payment_method: "card",
-            type: "reservation",
-            userId: user?.id!,
-            reservationId: reservationPayment.reservationId,
-          },
-        };
-      }
-
-      mutatePayment(data as CreatePaymentDetailsDto);
-
       setDiscount(null);
       setSelectedCarts([]);
       onClose();
@@ -254,6 +153,28 @@ const InputCreditCard: React.FC<InputCreditCardProps> = ({ onClose }) => {
                   />
                 </FormControl>
                 <FormMessage className="dark:text-red-400 text-red-500" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="dark:text-white text-black">
+                  Description (Optional)
+                </FormLabel>
+                <FormControl>
+                  <Textarea
+                    aria-labelledby="description"
+                    aria-label="description"
+                    placeholder="Your description..."
+                    variant="bordered"
+                    {...field}
+                    value={String(field.value)}
+                  />
+                </FormControl>
               </FormItem>
             )}
           />

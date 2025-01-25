@@ -11,6 +11,7 @@ import {
   Tooltip,
   useDisclosure,
 } from "@heroui/react";
+import { format } from "date-fns";
 import { EyeIcon } from "lucide-react";
 import React from "react";
 
@@ -41,7 +42,14 @@ const ModalDetailsHistoryOrder: React.FC<ModalDetailsHistoryOrderProps> = ({
         .map((detail) => detail.product.name + " (" + detail.quantity + ")")
         .join(", "),
     },
-    { key: 3, name: "Date", value: order?.createdAt as any },
+    {
+      key: 3,
+      name: "Date Time",
+      value: format(
+        order?.createdAt ? order.createdAt : new Date(),
+        "dd/MM/yyyy HH:mm:yy"
+      ),
+    },
     {
       key: 4,
       name: "Status",
@@ -116,26 +124,28 @@ const ModalDetailsHistoryOrder: React.FC<ModalDetailsHistoryOrderProps> = ({
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
                 Order Details
               </ModalHeader>
 
               <ModalBody>
                 {array.map((order) => (
-                  <Card key={order.key}>
-                    <CardBody
-                      className={`flex ${
-                        order.key === 2
-                          ? "flex-col gap-1"
-                          : "flex-row items-center justify-between gap-2"
-                      }`}
-                    >
-                      <p className="lg:text-[14px] text-[12px]">{order.name}</p>
-                      <h1 className="lg:text-base text-[14px] font-medium">
-                        {order.value}
-                      </h1>
-                    </CardBody>
-                  </Card>
+                  <div
+                    className={`flex p-2 rounded-lg border dark:border-white/30 border-black/20 ${
+                      order.key === 2
+                        ? "flex-col gap-1"
+                        : "flex-row items-center justify-between gap-2"
+                    }`}
+                    key={order.key}
+                  >
+                    <p className="lg:text-[16px] text-[14px] dark:text-white/80 text-black/70">
+                      {order.name}
+                    </p>
+
+                    <h1 className="lg:text-base text-[15px] font-normal">
+                      {order.value}
+                    </h1>
+                  </div>
                 ))}
               </ModalBody>
 

@@ -111,18 +111,14 @@ const ModalOrderDetails: React.FC<ModalOrderProps> = ({ order }) => {
 
   return (
     <>
-      <Tooltip
-        content="Options"
-        showArrow
-        className="dark:text-white text-black"
-      >
-        <VerticalDotsIcon onClick={onOpen} />
-      </Tooltip>
+      <VerticalDotsIcon onClick={onOpen} />
 
       <Modal
         backdrop="opaque"
         isOpen={isOpen}
         placement="center"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         motionProps={{
           variants: {
@@ -148,23 +144,27 @@ const ModalOrderDetails: React.FC<ModalOrderProps> = ({ order }) => {
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Options</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
+                Options For Order
+              </ModalHeader>
 
               <ModalBody>
-                <h1>Details Your Order</h1>
+                <h1 className="font-bold dark:text-white/80 text-black/80 lg:text-left text-center">
+                  More Information About Order
+                </h1>
 
                 {dataArray.map((item) => (
-                  <Card key={item.id}>
-                    <CardBody
-                      className="flex lg:flex-row flex-col 
-                    lg:items-center justify-between gap-1"
-                    >
-                      <h1 className="text-base dark:text-gray-400 text-gray-500">
-                        {item.title}
-                      </h1>
-                      <span className="text-base font-bold">{item.value}</span>
-                    </CardBody>
-                  </Card>
+                  <div
+                    className="flex lg:flex-row flex-col 
+                lg:items-center justify-between gap-1 p-2 rounded-lg border dark:border-white/20 border-black/20"
+                    key={item.id}
+                  >
+                    <h1 className="text-base dark:text-white/80 text-black/80">
+                      {item.title}
+                    </h1>
+
+                    <span className="text-base font-medium">{item.value}</span>
+                  </div>
                 ))}
               </ModalBody>
 
@@ -192,7 +192,7 @@ const ModalOrderDetails: React.FC<ModalOrderProps> = ({ order }) => {
                       />
                     </Tooltip>
 
-                    {order.status === "pending" && (
+                    {order.status === "pending" && !order.is_paid && (
                       <ModalUpdateOrder onCloseFC={onClose} />
                     )}
                   </div>

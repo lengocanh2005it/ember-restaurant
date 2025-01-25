@@ -1,14 +1,13 @@
-import { CreatePaymentDto } from "@/api/payments/utils/types";
 import axios from "@/lib/axios";
 import { getValidAccessToken } from "@/lib/token";
 
-export const handleCreatePayment = async (
-  createPaymentDto: CreatePaymentDto
+export const handleFetchRequestsOfUser = async (
+  userId: string
 ): Promise<any> => {
   try {
     const accessToken = await getValidAccessToken();
 
-    const response = await axios.post("/payments", createPaymentDto, {
+    const response = await axios.get(`/users/${userId}/?support_tickets=true`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

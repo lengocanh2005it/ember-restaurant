@@ -18,6 +18,8 @@ interface AppState {
   setIsExistedEmail: (isExistedEmail: boolean) => void;
   theme: string;
   setTheme: (theme: string) => void;
+  type: string;
+  setType: (type: string) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -31,6 +33,7 @@ export const useAppStore = create<AppState>()(
       isDarkMode: true,
       otp: "",
       isExistedEmail: false,
+      type: "",
       setAccessToken: (accessToken) => set({ accessToken }),
       setCategory: (category) => set({ category }),
       setIsClose: (isClose) => set({ isClose }),
@@ -39,6 +42,7 @@ export const useAppStore = create<AppState>()(
       setOTP: (otp) => set({ otp }),
       setIsExistedEmail: (isExistedEmail) => set({ isExistedEmail }),
       setTheme: (theme) => set({ theme }),
+      setType: (type) => set({ type }),
     }),
     {
       name: "app-storage",

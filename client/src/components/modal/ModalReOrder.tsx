@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
   Chip,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -26,11 +27,12 @@ import {
 } from "@heroui/react";
 import { HistoryIcon } from "lucide-react";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
 const formSchema = z.object({
   note: z.string().optional(),
+  promotionCode: z.string().optional(),
 });
 
 interface ModalReOrderProps {
@@ -45,6 +47,7 @@ const ModalReOrder: React.FC<ModalReOrderProps> = ({ order }) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       note: "",
+      promotionCode: "",
     },
   });
 
@@ -52,6 +55,11 @@ const ModalReOrder: React.FC<ModalReOrderProps> = ({ order }) => {
   const { discount, setDiscount } = useDiscountStore();
 
   const { mutate: mutateReOrder } = useReOrder(user?.id!);
+
+  const promotionCode = useWatch({
+    control: form.control,
+    name: "promotionCode",
+  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const { note } = values;
@@ -70,7 +78,6 @@ const ModalReOrder: React.FC<ModalReOrderProps> = ({ order }) => {
         payment_method: payment.payment_method,
         note,
         total_price,
-        status: StatusEnum.PENDING,
       },
       products: order.order_details.map((detail) => ({
         productId: detail.product.id,
@@ -123,6 +130,8 @@ const ModalReOrder: React.FC<ModalReOrderProps> = ({ order }) => {
         isOpen={isOpen}
         placement="center"
         size="lg"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         motionProps={{
           variants: {
@@ -148,12 +157,13 @@ const ModalReOrder: React.FC<ModalReOrderProps> = ({ order }) => {
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                <h1 className="lg:text-base text-[15px] font-bold">
-                  More Information
-                </h1>
+              <ModalHeader
+                className="flex flex-col gap-1 lg:text-left text-center md:items-start
+               md:justify-start items-center justify-center"
+              >
+                <h1 className="flex flex-col">More Information</h1>
 
-                <p className="lg:text-[15px] text-[14px] dark:text-white/60 text-black/70 font-normal">
+                <p className="lg:text-[15px] text-[14px] dark:text-white/70 text-black/80 font-normal">
                   Please provide more information to complete re ordering.
                 </p>
               </ModalHeader>
@@ -162,15 +172,41 @@ const ModalReOrder: React.FC<ModalReOrderProps> = ({ order }) => {
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="flex flex-col gap-3"
+                    className="flex flex-col lg:gap-3 gap-2"
                   >
+                    {!discount && (
+                      <FormField
+                        control={form.control}
+                        name="promotionCode"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel
+                              htmlFor="promotionCode"
+                              className="dark:text-white text-black"
+                            >
+                              Promotion Code (Optional)
+                            </FormLabel>
+
+                            <FormControl>
+                              <Input
+                                id="promotionCode"
+                                placeholder="Enter promotion code if you have..."
+                                aria-label="PromotionCode"
+                                {...field}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    )}
+
                     <FormField
                       control={form.control}
                       name="note"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="dark:text-white text-black">
-                            Note
+                            Note (Optional)
                           </FormLabel>
                           <FormControl>
                             <Textarea
@@ -183,19 +219,19 @@ const ModalReOrder: React.FC<ModalReOrderProps> = ({ order }) => {
                       )}
                     />
 
-                    <div className="flex items-center gap-2">
-                      <p>Voucher: </p>
+                    {promotionCode === "" && order.discounts?.length === 0 && (
+                      <div className="flex items-center gap-2">
+                        <p>Voucher: </p>
 
-                      {discount ? (
-                        <> {renderVouchers(discount)}</>
-                      ) : (
-                        <>
+                        {discount ? (
+                          <>{renderVouchers(discount)}</>
+                        ) : (
                           <VoucherList content="badge" />
-                        </>
-                      )}
-                    </div>
+                        )}
+                      </div>
+                    )}
 
-                    <div className="flex items-center justify-end gap-3">
+                    <div className="flex md:items-center md:justify-end lg:gap-3 gap-2 justify-center">
                       <Button
                         type="button"
                         color="primary"

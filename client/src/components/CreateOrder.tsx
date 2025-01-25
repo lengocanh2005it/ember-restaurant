@@ -1,4 +1,5 @@
 "use client";
+import { CreateOrderDetailsDto } from "@/api/orders/utils/types";
 import ModalConfirmPayment from "@/components/modal/ModalConfirmPayment";
 import {
   Form,
@@ -10,9 +11,14 @@ import {
 } from "@/components/ui/form";
 import VoucherList from "@/components/VoucherList";
 import { useAddOrder } from "@/hooks/use-add-order";
-import { useCartStore, useDiscountStore, useUserStore } from "@/store";
-import { CachedOrderData, DiscountWithQuantity } from "@/utils/types";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  useAppStore,
+  useCartStore,
+  useDiscountStore,
+  useOrderStore,
+  useUserStore,
+} from "@/store";
+import { DiscountWithQuantity } from "@/utils/types";
 import {
   Button,
   Chip,
@@ -27,7 +33,7 @@ import {
   Tooltip,
   useDisclosure,
 } from "@heroui/react";
-import { useQueryClient } from "@tanstack/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { MessageCircleIcon } from "lucide-react";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -82,13 +88,13 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
   setCheckedItems,
 }) => {
   const [isShow, setIsShow] = useState<boolean>(false);
-  const query = useQueryClient();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const { user } = useUserStore();
   const { selectedCarts, setSelectedCarts } = useCartStore();
   const { discount, setDiscount } = useDiscountStore();
+  const { setType } = useAppStore();
+  const { setOrderData } = useOrderStore();
 
   const { mutate: mutateAddOrder } = useAddOrder(user?.id!);
 
@@ -142,28 +148,33 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
       note,
       promotionCode,
     } = values;
-    setIsLoading(true);
 
-    const data: CachedOrderData = {
-      total_price,
-      delivery_method,
-      delivery_address,
-      payment_method,
-      phone_number,
+    setOrderData({
+      order: {
+        userId: user?.id!,
+        phone_number,
+        delivery_method,
+        payment_method,
+        total_price,
+        delivery_address,
+        note,
+        ...(discount
+          ? {
+              discountId: discount.discount.id,
+            }
+          : []),
+        promotionCode,
+      },
+      userId: user?.id!,
       products: selectedCarts.map((item) => ({
         productId: item.product.id,
         quantity: item.quantity,
       })),
-      note,
-      ...(discount
-        ? {
-            discountId: discount.discount.id,
-          }
-        : []),
-      promotionCode,
-    };
+    });
 
-    query.setQueryData(["orderData", user?.id], data);
+    setIsLoading(true);
+
+    setType("order");
 
     setTimeout(() => {
       setIsLoading(false);
@@ -178,8 +189,8 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
             delivery_method,
             payment_method,
             total_price,
-            status: "pending",
             delivery_address,
+            note,
             ...(discount
               ? {
                   discountId: discount.discount.id,
@@ -193,6 +204,8 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
             quantity: item.quantity,
           })),
         });
+        setOrderData(null);
+        setType("");
         setSelectedCarts([]);
         setCheckedItems({});
         window.scrollTo({
@@ -200,7 +213,7 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
           behavior: "smooth",
         });
       }
-    }, 1700);
+    }, 2000);
   }
 
   const renderVoucher = (discount: DiscountWithQuantity) => {
@@ -234,6 +247,8 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
         isOpen={isOpen}
         placement="center"
         size="2xl"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         motionProps={{
           variants: {
@@ -259,7 +274,9 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="">Confirm Order</ModalHeader>
+              <ModalHeader className="flex flex-col lg:text-left text-center">
+                Confirm Order
+              </ModalHeader>
 
               <p className="text-center lg:text-[15px] text-[14px]">
                 The total value of your order is:{" "}
@@ -502,7 +519,7 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
                       </p>
                     )}
 
-                    <div className="flex justify-end items-end gap-3">
+                    <div className="flex lg:justify-end lg:items-end justify-center items-center gap-3">
                       <Button
                         color="primary"
                         className="dark:bg-white dark:text-black

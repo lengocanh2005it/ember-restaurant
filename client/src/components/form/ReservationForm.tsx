@@ -252,10 +252,7 @@ const ReservationForm: React.FC = () => {
         setIsShow(false);
       }
 
-      setOrderPayment({
-        orderId: "",
-        totalPrice: 0,
-      });
+      setOrderPayment(null);
 
       setDiscount(null);
 

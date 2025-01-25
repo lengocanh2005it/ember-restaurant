@@ -33,10 +33,10 @@ import {
 import { format } from "date-fns";
 import { TrashIcon, XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
-// le ngoc
+
 const columns = [
   { name: "ID", uid: "id" },
-  { name: "DATE", uid: "createdAt", sortable: true },
+  { name: "DATE TIME", uid: "createdAt", sortable: true },
   { name: "ORDER DETAILS", uid: "order" },
   { name: "TOTAL PRICE", uid: "total_price", sortable: true },
   { name: "PAYMENT STATUS", uid: "is_paid" },
@@ -165,7 +165,11 @@ export const TableOrders: React.FC<TableOrdersProps> = ({ arrays }) => {
 
     switch (columnKey) {
       case "createdAt": {
-        return <p>{format(order.createdAt.toLocaleString(), "dd/MM/yyyy")}</p>;
+        return (
+          <p>
+            {format(order.createdAt.toLocaleString(), "dd/MM/yyyy HH:mm:yy")}
+          </p>
+        );
       }
 
       case "total_price": {
