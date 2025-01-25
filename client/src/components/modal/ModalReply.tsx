@@ -53,7 +53,7 @@ const ModalReply: React.FC<ModalReplyProps> = ({ request }) => {
 
   const { user } = useUserStore();
 
-  const { mutate: mutateUpdateResponse } = useUpdateRequest();
+  const { mutate: mutateUpdateResponse } = useUpdateRequest(request?.user?.id);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

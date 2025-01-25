@@ -24,8 +24,7 @@ const CartPage: React.FC = () => {
       setSelectedCarts([]);
       setCheckedItems({});
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setSelectedCarts]);
 
   const handleCheckboxChange = (item: Cart) => {
     setCheckedItems((prevCheckedItems) => {

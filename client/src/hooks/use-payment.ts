@@ -1,5 +1,5 @@
 import { handleCreatePayment } from "@/api/payments/create-payment";
-import { showSuccessToast, showErrorToast } from "@/utils";
+import { showSuccessToast, showErrorToast, Order } from "@/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const usePayment = (userId: string) => {
@@ -7,7 +7,7 @@ export const usePayment = (userId: string) => {
 
   return useMutation({
     mutationFn: handleCreatePayment,
-    onSuccess: (data: any) => {
+    onSuccess: async (data: any) => {
       query.setQueryData(["orders", userId], data.orders);
       query.setQueryData(["reservations", userId], data.reservations);
       query.setQueryData(["profile"], data.profile);

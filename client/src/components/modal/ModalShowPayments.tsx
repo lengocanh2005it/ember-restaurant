@@ -50,7 +50,9 @@ const ModalShowPayments: React.FC = () => {
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Payment</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
+                Make A Payment
+              </ModalHeader>
 
               <ModalBody>
                 <CreditCard onClose={onClose} />

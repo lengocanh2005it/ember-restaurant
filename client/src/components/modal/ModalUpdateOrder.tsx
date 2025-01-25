@@ -33,6 +33,7 @@ import { RotateCcwIcon, SquarePenIcon, XIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const deliveries = [
   { key: "home_delivery", label: "Home Delivery" },
@@ -54,6 +55,7 @@ const formSchema = z
     delivery_method: z.enum(["home_delivery", "pick_up"], {
       message: "Please choose this field.",
     }),
+    promotionCode: z.string().optional(),
   })
   .refine(
     (data) => {
@@ -95,6 +97,7 @@ const ModalUpdateOrder: React.FC<ModalUpdateOrderProps> = ({ onCloseFC }) => {
       delivery_method: orderUpdate?.delivery_method as
         | "home_delivery"
         | "pick_up",
+      promotionCode: "",
     },
   });
 
@@ -111,6 +114,11 @@ const ModalUpdateOrder: React.FC<ModalUpdateOrderProps> = ({ onCloseFC }) => {
     setOrderDetails(newProducts);
   };
 
+  const promotionCode = useWatch({
+    control: form.control,
+    name: "promotionCode",
+  });
+
   const handleUndoItem = () => {
     const lastItem = historyOrderDetails[historyOrderDetails.length - 1];
 
@@ -126,7 +134,13 @@ const ModalUpdateOrder: React.FC<ModalUpdateOrderProps> = ({ onCloseFC }) => {
 
     setIsLoading(true);
 
-    const { delivery_address, delivery_method, payment_method, note } = values;
+    const {
+      delivery_address,
+      delivery_method,
+      payment_method,
+      note,
+      promotionCode,
+    } = values;
 
     const { createdAt, status, id, total_price } = orderUpdate as Order;
 
@@ -142,6 +156,7 @@ const ModalUpdateOrder: React.FC<ModalUpdateOrderProps> = ({ onCloseFC }) => {
       total_price,
       ...(discount ? { discountId: discount.discount.id } : {}),
       ...(delivery_address !== "" ? { delivery_address } : {}),
+      promotionCode,
     };
 
     setTimeout(() => {
@@ -194,6 +209,8 @@ const ModalUpdateOrder: React.FC<ModalUpdateOrderProps> = ({ onCloseFC }) => {
         backdrop="opaque"
         isOpen={isOpen}
         placement="center"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         motionProps={{
           variants: {
@@ -224,73 +241,68 @@ const ModalUpdateOrder: React.FC<ModalUpdateOrderProps> = ({ onCloseFC }) => {
         >
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
                 Update Order
               </ModalHeader>
 
               <ModalBody className="flex flex-col gap-6">
-                <Card className="relative flex flex-col gap-2">
-                  <CardBody className="flex flex-row gap-2 items-center w-full h-full">
-                    <>
-                      {orderDetails.length === 0 ? (
-                        <div className="flex items-center justify-between w-full">
-                          <div
-                            className="flex items-center gap-1 lg:text-[14px] 
-                          text-[12px] dark:text-red-300 text-red-400"
-                          >
-                            <p>Empty Products</p>
-                            <XIcon />
-                          </div>
-
-                          <Tooltip
-                            content="Restore"
-                            showArrow
-                            className="dark:text-white text-black"
-                          >
-                            <RotateCcwIcon
-                              onClick={handleUndoItem}
-                              className="opacity-50 hover:opacity-100 duration-250
-                             ease-in-out transition-opacity cursor-pointer"
-                            />
-                          </Tooltip>
+                <div className="flex flex-col flex-wrap gap-2 rounded-md flex-1">
+                  <>
+                    {orderDetails.length === 0 ? (
+                      <div className="flex items-center justify-center w-full flex-1 flex-wrap">
+                        <div
+                          className="flex items-center gap-1 lg:text-[14px] 
+                          text-[12px] dark:text-red-400 text-red-500 text-center justify-center"
+                        >
+                          <p>Empty Products</p>
+                          <XIcon />
                         </div>
-                      ) : (
-                        <div className="flex items-center justify-between w-full">
-                          <div className="flex items-center gap-2">
-                            {orderDetails.map((detail, index) => (
-                              <Chip
-                                key={index}
-                                onClose={() => {
-                                  handleRemoveOrderDetail(detail);
-                                }}
-                              >
-                                {detail.product.name +
-                                  " (" +
-                                  detail.quantity +
-                                  ")"}
-                              </Chip>
-                            ))}
-                          </div>
-
-                          {historyOrderDetails.length !== 0 && (
-                            <RotateCcwIcon
-                              onClick={handleUndoItem}
-                              className="opacity-50 hover:opacity-100 duration-250
-                             ease-in-out transition-opacity cursor-pointer"
-                            />
-                          )}
+                      </div>
+                    ) : (
+                      <ScrollArea className="flex flex-col flex-wrap md:h-[100px] h-[60px] rounded-md w-full">
+                        <div className="flex flex-col gap-2">
+                          {orderDetails.map((detail, index) => (
+                            <Chip
+                              key={index}
+                              color="primary"
+                              className="dark:bg-white dark:text-black text-white"
+                              onClose={() => {
+                                handleRemoveOrderDetail(detail);
+                              }}
+                            >
+                              {detail.product.name +
+                                " (" +
+                                detail.quantity +
+                                ")"}
+                            </Chip>
+                          ))}
                         </div>
-                      )}
-                    </>
-                  </CardBody>
-                </Card>
+                      </ScrollArea>
+                    )}
+
+                    {historyOrderDetails.length !== 0 && (
+                      <div className="relative flex items-end justify-end">
+                        <Tooltip
+                          content="Undo"
+                          className="dark:text-white text-black"
+                        >
+                          <RotateCcwIcon
+                            onClick={handleUndoItem}
+                            className="opacity-50 hover:opacity-100 duration-250
+                             ease-in-out transition-opacity cursor-pointer"
+                          />
+                        </Tooltip>
+                      </div>
+                    )}
+                  </>
+                </div>
 
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="flex flex-col gap-4"
+                    className="flex flex-col lg:gap-4 gap-2"
                   >
-                    <div className="grid lg:grid-cols-2 grid-cols-1 gap-4">
+                    <div className="grid lg:grid-cols-2 grid-cols-1 lg:gap-4 gap-2">
                       {/* Payment method */}
                       <FormField
                         control={form.control}
@@ -392,6 +404,33 @@ const ModalUpdateOrder: React.FC<ModalUpdateOrderProps> = ({ onCloseFC }) => {
                       />
                     )}
 
+                    {(!discount || !orderUpdate?.discounts) && (
+                      <FormField
+                        control={form.control}
+                        name="promotionCode"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel
+                              htmlFor="promotionCode"
+                              className="dark:text-white text-black"
+                            >
+                              Promotion Code (Optional)
+                            </FormLabel>
+
+                            <FormControl>
+                              <Input
+                                id="promotionCode"
+                                placeholder="Enter promotion code if you have..."
+                                aria-label="PromotionCode"
+                                aria-labelledby="PromotionCode"
+                                {...field}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    )}
+
                     {/* Note */}
                     <FormField
                       control={form.control}
@@ -412,7 +451,8 @@ const ModalUpdateOrder: React.FC<ModalUpdateOrderProps> = ({ onCloseFC }) => {
                     />
 
                     {orderUpdate?.discounts &&
-                      orderUpdate?.discounts.length === 0 && (
+                      orderUpdate?.discounts.length === 0 &&
+                      promotionCode === "" && (
                         <div className="flex items-center gap-2">
                           <p>Voucher: </p>
 
@@ -426,11 +466,13 @@ const ModalUpdateOrder: React.FC<ModalUpdateOrderProps> = ({ onCloseFC }) => {
                         </div>
                       )}
 
-                    <div className="flex items-end justify-end gap-2 w-full relative">
+                    <div
+                      className="flex md:items-end md:justify-end gap-2 w-full relative 
+                    justify-center items-center"
+                    >
                       <Button
                         color="primary"
                         className="dark:bg-white dark:text-black text-white"
-                        type="button"
                         onPress={() => {
                           onClose();
                           setDiscount(null);

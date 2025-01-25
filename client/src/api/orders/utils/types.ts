@@ -1,4 +1,4 @@
-import { OrderDetails, Product } from "@/utils/types";
+import { OrderDetails } from "@/utils/types";
 
 export type CreateOrderDto = {
   userId: string;
@@ -9,7 +9,6 @@ export type CreateOrderDto = {
   delivery_address?: string;
   discountId?: string;
   total_price: number;
-  status: string;
   promotionCode?: string;
 };
 
@@ -22,6 +21,8 @@ export type CreateOrderDetailsDto = {
   order: CreateOrderDto;
   products: CreateProductOfOrderDto[];
   userId: string;
+  payment_method_id?: string;
+  payment_description?: string;
 };
 
 export type DeleteOrderOptionsDto = {

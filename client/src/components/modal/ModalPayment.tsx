@@ -40,7 +40,7 @@ const ModalPayment: React.FC<ModalPaymentProps> = ({ data }) => {
   };
 
   const rows = [
-    { key: 1, title: "Order ID", value: data.orderId },
+    { key: 1, title: "Order ID", value: "#" + data.orderId },
     { key: 2, title: "Order Details", value: data.products },
     { key: 3, title: "Total Price", value: data.totalPrice + " $" },
     { key: 4, title: "Payment Method", value: data.paymentMethod },
@@ -71,6 +71,8 @@ const ModalPayment: React.FC<ModalPaymentProps> = ({ data }) => {
         backdrop="opaque"
         isOpen={isOpen}
         placement="center"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         motionProps={{
           variants: {

@@ -1,17 +1,11 @@
-import { CachedOrderData, CachedReservationData } from "@/utils/types";
-
 export type CreatePaymentDto = {
   amount: number;
-  source?: string;
-  payment_method: string;
-  type: string;
+  payment_method: "cash" | "card" | "paypal" | "apple-pay";
+  currency: "usd" | "euro";
+  type: "order" | "reservation";
   userId: string;
   orderId?: string;
   reservationId?: string;
-};
-
-export type CreatePaymentDetailsDto = {
-  payments: CreatePaymentDto;
-  order?: CachedOrderData;
-  reservation?: CachedReservationData;
+  payment_method_id?: string;
+  description?: string;
 };

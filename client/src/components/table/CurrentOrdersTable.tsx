@@ -5,29 +5,31 @@ import ModalOrderDetails from "@/components/modal/ModalOrderDetails";
 import ModalPayment from "@/components/modal/ModalPayment";
 import {
   Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
   TableHeader,
+  TableColumn,
+  TableBody,
   TableRow,
-} from "@/components/ui/table";
+  TableCell,
+  User,
+  Tooltip,
+  Chip,
+  ChipProps,
+} from "@heroui/react";
 import { useOrderStore, useUserStore } from "@/store";
 import { Order } from "@/utils/types";
-import { Chip, ChipProps } from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import React from "react";
 
-const headers = [
-  { id: 1, name: "ID" },
-  { id: 2, name: "DATE" },
-  { id: 3, name: "ORDER DETAILS" },
-  { id: 9, name: "PAYMENT METHOD" },
-  { id: 10, name: "PAYMENT STATUS" },
-  { id: 11, name: "STATUS" },
-  { id: 12, name: "TOTAL PRICE" },
-  { id: 13, name: "OTHERS" },
+const columns = [
+  { name: "ID", uid: "id" },
+  { name: "DATE TIME", uid: "createdAt" },
+  { name: "ORDER DETAILS", uid: "order_details" },
+  { name: "PAYMENT METHOD", uid: "payment?.payment_method" },
+  { name: "PAYMENT STATUS", uid: "is_paid" },
+  { name: "STATUS", uid: "status" },
+  { name: "TOTAL PRICE", uid: "total_price" },
+  { name: "OPTIONS", uid: "options" },
 ];
 
 interface CurrentOrdersTableProps {
@@ -50,107 +52,98 @@ const CurrentOrdersTable: React.FC<CurrentOrdersTableProps> = ({ orders }) => {
   const { user } = useUserStore();
   const query = useQueryClient();
 
-  return (
-    <Table aria-labelledby="table" aria-label="table">
-      <TableCaption>
-        {orders.length !== 0
-          ? "A list of your current orders."
-          : "Empty Orders."}
-      </TableCaption>
-      <TableHeader className="cursor-pointer">
-        <TableRow>
-          {headers.map((header) => (
-            <TableHead key={header.id}>{header.name}</TableHead>
-          ))}
-        </TableRow>
-      </TableHeader>
+  const renderCell = React.useCallback(
+    (order: Order, columnKey: React.Key) => {
+      const cellValue = order[columnKey as keyof typeof order];
 
-      <TableBody>
-        {orders.map((order) => (
-          <TableRow key={order.id} className="cursor-pointer">
-            <TableCell>
-              {order.createdAt
-                ? format(order.createdAt.toLocaleString(), "dd/MM/yyyy")
-                : "Null"}
-            </TableCell>
-
-            <TableCell>#{order.id ? order.id : "Null"}</TableCell>
-
-            <TableCell className="max-w-[400px] break-words">
+      switch (columnKey) {
+        case "createdAt": {
+          return (
+            <p>
+              {format(
+                order?.createdAt ? order.createdAt : new Date(),
+                "dd/MM/yyyy HH:mm:yy"
+              )}
+            </p>
+          );
+        }
+        case "id": {
+          return <p>#{cellValue as string}</p>;
+        }
+        case "order_details": {
+          return (
+            <p className="max-w-full truncate break-words">
               {order.order_details
                 .map(
                   (detail) => detail.product.name + " (" + detail.quantity + ")"
                 )
                 .join(", ")}
-            </TableCell>
-
-            <TableCell>
+            </p>
+          );
+        }
+        case "payment?.payment_method": {
+          return (
+            <p>
               {
                 methodMap[
                   order?.payment?.payment_method as keyof typeof methodMap
                 ]
               }
-            </TableCell>
-
-            <TableCell
+            </p>
+          );
+        }
+        case "is_paid": {
+          return order.is_paid ? (
+            <Chip
+              color="success"
+              variant="faded"
+              startContent={<CheckIcon size={18} />}
+              isDisabled
+            >
+              Paid
+            </Chip>
+          ) : (
+            <div
               onClick={() => {
-                setOrderPayment({
-                  orderId: order.id,
-                  totalPrice: order.total_price,
+                query.removeQueries({
+                  queryKey: ["reservationData", user?.id!],
                 });
               }}
             >
-              {order.is_paid ? (
-                <Chip
-                  color="success"
-                  variant="faded"
-                  startContent={<CheckIcon size={18} />}
-                  isDisabled
-                >
-                  Paid
-                </Chip>
-              ) : (
-                <div
-                  onClick={() => {
-                    query.removeQueries({
-                      queryKey: ["reservationData", user?.id!],
-                    });
-                  }}
-                >
-                  <ModalPayment
-                    data={{
-                      orderId: order.id,
-                      paymentMethod:
-                        methodMap[
-                          order?.payment
-                            ?.payment_method as keyof typeof methodMap
-                        ],
-                      totalPrice: order.total_price,
-                      products: order.order_details
-                        .map(
-                          (detail) =>
-                            detail.product.name + " (" + detail.quantity + ")"
-                        )
-                        .join(", "),
-                    }}
-                  />
-                </div>
-              )}
-            </TableCell>
-
-            <TableCell>
-              <Chip
-                color={statusColorMap[order.status]}
-                size="sm"
-                variant="dot"
-                className="text-default-600 border-none gap-1"
-              >
-                {order.status.charAt(0).toUpperCase() +
-                  order.status.substring(1)}
-              </Chip>
-            </TableCell>
-
-            <TableCell className="max-w-[200px]">
+              <ModalPayment
+                data={{
+                  orderId: order.id,
+                  paymentMethod:
+                    methodMap[
+                      order?.payment?.payment_method as keyof typeof methodMap
+                    ],
+                  totalPrice: order.total_price,
+                  products: order.order_details
+                    .map(
+                      (detail) =>
+                        detail.product.name + " (" + detail.quantity + ")"
+                    )
+                    .join(", "),
+                }}
+              />
+            </div>
+          );
+        }
+        case "status": {
+          return (
+            <Chip
+              color={statusColorMap[order.status]}
+              size="sm"
+              variant="dot"
+              className="text-default-600 border-none gap-1"
+            >
+              {order.status.charAt(0).toUpperCase() + order.status.substring(1)}
+            </Chip>
+          );
+        }
+        case "total_price": {
+          return (
+            <p>
               {order.discounts && order.discounts.length !== 0
                 ? Number(
                     order.total_price -
@@ -164,9 +157,12 @@ const CurrentOrdersTable: React.FC<CurrentOrdersTableProps> = ({ orders }) => {
                   ).toFixed(2)
                 : order.total_price}
               $
-            </TableCell>
-
-            <TableCell className="flex items-center gap-2">
+            </p>
+          );
+        }
+        case "options": {
+          return (
+            <div className="flex items-center">
               <span
                 onClick={(e) => {
                   setOrderUpdate({
@@ -195,9 +191,29 @@ const CurrentOrdersTable: React.FC<CurrentOrdersTableProps> = ({ orders }) => {
                   <ModalMessageOrder message={order.admin_message} />
                 </>
               )}
-            </TableCell>
+            </div>
+          );
+        }
+        default:
+          return cellValue as string | number;
+      }
+    },
+    [query, setOrderUpdate, user]
+  );
+
+  return (
+    <Table aria-label="Current Orders Table">
+      <TableHeader columns={columns}>
+        {(column) => <TableColumn key={column.uid}>{column.name}</TableColumn>}
+      </TableHeader>
+      <TableBody items={orders} emptyContent="Empty Orders.">
+        {(item) => (
+          <TableRow key={item.id}>
+            {(columnKey) => (
+              <TableCell>{renderCell(item, columnKey)}</TableCell>
+            )}
           </TableRow>
-        ))}
+        )}
       </TableBody>
     </Table>
   );
