@@ -6,11 +6,16 @@ import * as session from 'express-session';
 import helmet from 'helmet';
 import * as passport from 'passport';
 import { DatabaseService } from 'src/database/database.service';
-import { AppModule } from './app.module';
 import { getEnvValue } from 'src/utils';
+import { AppModule } from './app.module';
+import * as express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(
+    '/payments/webhook/stripe',
+    express.raw({ type: 'application/json' }),
+  );
   const expressApp = app.getHttpAdapter().getInstance();
   expressApp.set('trust proxy', 1);
   const configService = app.get(ConfigService);

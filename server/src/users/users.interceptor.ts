@@ -18,12 +18,12 @@ export class UsersInterceptor implements NestInterceptor {
         if (data && Array.isArray(data)) {
           return data.map((user: User) => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { password, createdAt, updatedAt, ...res } = user;
+            const { password, ...res } = user;
             return res;
           });
         } else if (data) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { password, createdAt, updatedAt, ...res } = data as User;
+          const { password, ...res } = data as User;
           return res;
         }
       }),

@@ -1,10 +1,10 @@
+import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcrypt';
+import { config } from 'dotenv';
 import { CreateDiscountDto } from 'src/discounts/dtos/create-discount.dto';
 import { CreateProductDto } from 'src/products/dtos/create-product.dto';
+import { ApiResponseType } from 'src/utils';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
-import { ApiResponse } from 'src/interfaces/api-response.interface';
-import { config } from 'dotenv';
-import { ConfigService } from '@nestjs/config';
 
 config();
 
@@ -153,7 +153,7 @@ export const formatApiResponse = <T>(
   message: string,
   data?: T,
   error?: string,
-): ApiResponse => {
+): ApiResponseType => {
   return {
     statusCode,
     message,

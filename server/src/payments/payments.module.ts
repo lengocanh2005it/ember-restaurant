@@ -11,7 +11,12 @@ import { OrderProductService } from 'src/order-product/order-product.service';
 import { Order } from 'src/orders/entities/orders.entity';
 import { OrdersModule } from 'src/orders/orders.module';
 import { Payment } from 'src/payments/entities/payments.entity';
-import { StripeStrategy } from 'src/payments/strategies/stripe.strategy';
+import { PaymentContext } from 'src/payments/payment.context';
+import { PaymentStrategyFactory } from 'src/payments/payment.factory';
+import { ApplePayService } from 'src/payments/services/apple-pay.service';
+import { CodService } from 'src/payments/services/cod.service';
+import { PayPalService } from 'src/payments/services/paypal.service';
+import { StripeService } from 'src/payments/services/stripe.service';
 import { PermissionsModule } from 'src/permissions/permissions.module';
 import { Product } from 'src/products/entities/products.entity';
 import { ProductsModule } from 'src/products/products.module';
@@ -64,7 +69,6 @@ import { PaymentsService } from './payments.service';
   ],
   providers: [
     PaymentsService,
-    StripeStrategy,
     UsersService,
     ProductsService,
     OrderProductService,
@@ -72,8 +76,22 @@ import { PaymentsService } from './payments.service';
     UserDiscountService,
     PromotionsService,
     TablesService,
+    PaymentContext,
+    PaymentStrategyFactory,
+    ApplePayService,
+    CodService,
+    StripeService,
+    PayPalService,
   ],
   controllers: [PaymentsController],
-  exports: [PaymentsService],
+  exports: [
+    PaymentsService,
+    PaymentContext,
+    PaymentStrategyFactory,
+    ApplePayService,
+    CodService,
+    PayPalService,
+    StripeService,
+  ],
 })
 export class PaymentsModule {}

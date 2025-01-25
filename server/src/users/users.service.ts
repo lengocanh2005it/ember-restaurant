@@ -95,13 +95,7 @@ export class UsersService {
       where: {
         id,
       },
-      relations: [
-        'roles',
-        'support_tickets',
-        'support_tickets.ticket_messages',
-        'support_tickets.ticket_messages.sender',
-        'support_tickets.ticket_messages.support_ticket',
-      ],
+      relations: ['roles'],
     });
 
     if (!user) throw new NotFoundException('User Not Found.');
@@ -113,14 +107,6 @@ export class UsersService {
     return {
       ...user,
       roles: user.roles.map((role) => role.name),
-      support_tickets: user.support_tickets
-        .map((st) => ({
-          ...st,
-          ticket_messages: st.ticket_messages.sort(
-            (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
-          ),
-        }))
-        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()),
     } as any;
   }
 
@@ -238,6 +224,28 @@ export class UsersService {
       discount: userDiscount.discount,
       quantity: userDiscount.quantity,
     })) as any;
+  }
+
+  async handleFindRequestsOfUser(id: string): Promise<any> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: [
+        'support_tickets',
+        'support_tickets.user',
+        'support_tickets.ticket_messages',
+        'support_tickets.ticket_messages.sender',
+        'support_tickets.ticket_messages.support_ticket',
+      ],
+    });
+
+    return user.support_tickets
+      .map((st) => ({
+        ...st,
+        ticket_messages: st.ticket_messages.sort(
+          (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
+        ),
+      }))
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
   async handleFindReservationsOfUser(id: string): Promise<any> {
@@ -497,6 +505,7 @@ export class UsersService {
       carts: () => this.handleFindCartsOfUser(id),
       discounts: () => this.handleFindDiscountsOfUser(id),
       reviews: () => this.handleFindReviewOfUser(id),
+      support_tickets: () => this.handleFindRequestsOfUser(id),
     };
 
     for (const [key, value] of Object.entries(queries)) {

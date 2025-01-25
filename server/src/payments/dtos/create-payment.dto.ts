@@ -13,26 +13,37 @@ export class CreatePaymentDto {
   readonly amount!: number;
 
   @IsString()
-  readonly source?: string;
+  @IsIn(['usd', 'euro'])
+  readonly currency!: string;
 
   @IsNotEmpty()
-  @IsIn(['cash', 'card'])
+  @IsIn(['cash', 'card', 'paypal', 'apple-pay'])
   readonly payment_method!: string;
 
+  @IsString()
   @IsNotEmpty()
   @IsIn(['order', 'reservation'])
   readonly type!: string;
-
-  @IsOptional()
-  readonly discountId?: string;
 
   @IsString()
   @IsNotEmpty()
   readonly userId!: string;
 
   @IsOptional()
+  @IsString()
+  readonly payment_method_id?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly description?: string;
+
+  @IsOptional()
   readonly orderId?: string;
 
   @IsOptional()
   readonly reservationId?: string;
+}
+
+export class CreatePaymentData extends CreatePaymentDto {
+  readonly paymentId!: string;
 }

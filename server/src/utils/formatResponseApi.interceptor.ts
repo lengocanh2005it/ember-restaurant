@@ -7,7 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { map, Observable } from 'rxjs';
 import { RESPONSE_MESSAGE } from 'src/decorators/response-message.decorator';
-import { ApiResponse } from 'src/interfaces/api-response.interface';
+import { ApiResponseType } from 'src/utils/types';
 
 @Injectable()
 export class FormatResponseApiInterceptor<T> implements NestInterceptor<T> {
@@ -16,12 +16,14 @@ export class FormatResponseApiInterceptor<T> implements NestInterceptor<T> {
   intercept(
     context: ExecutionContext,
     next: CallHandler<any>,
-  ): Observable<ApiResponse> | Promise<Observable<ApiResponse>> {
+  ): Observable<ApiResponseType> | Promise<Observable<ApiResponseType>> {
     const customMessage: string = this.reflector.get<string>(
       RESPONSE_MESSAGE,
       context.getHandler(),
     );
+
     const defaultMessage: string = 'Success';
+
     const message: string = customMessage ?? defaultMessage;
 
     const statusCode: number = context.switchToHttp().getResponse().statusCode;

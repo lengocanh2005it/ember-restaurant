@@ -1,3 +1,5 @@
+import { User } from 'src/users/entities/users.entity';
+
 export type UserGoogleDetails = {
   email: string;
   displayName: string;
@@ -73,4 +75,35 @@ export type GoogleLoginData = {
 
 export type LoyaltyPointPayload = {
   point: number;
+};
+
+export type JwtUserPayload = {
+  id: string;
+  username: string;
+  googleId: string | null;
+  facebookId: string | null;
+  roles: string[];
+  iat: number;
+  exp: number;
+};
+
+export type ApiResponseType<T = any> = {
+  statusCode: number;
+  message: string;
+  data?: T;
+  error?: string;
+};
+
+export type CreateStripeIntent = {
+  amount: number;
+  currency: string;
+  payment_method: string;
+  metadata?: {
+    orderId?: string;
+    reservationId?: string;
+    type: string;
+    paymentId: string;
+  };
+  user: User;
+  description?: string;
 };

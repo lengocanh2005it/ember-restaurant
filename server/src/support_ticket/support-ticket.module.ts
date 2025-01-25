@@ -21,7 +21,6 @@ import { Table } from 'src/tables/entities/tables.entity';
 import { PaymentsService } from 'src/payments/payments.service';
 import { PaymentsModule } from 'src/payments/payments.module';
 import { Payment } from 'src/payments/entities/payments.entity';
-import { StripeStrategy } from 'src/payments/strategies/stripe.strategy';
 import { Order } from 'src/orders/entities/orders.entity';
 import { Product } from 'src/products/entities/products.entity';
 import { ProductsModule } from 'src/products/products.module';
@@ -69,7 +68,6 @@ import { TicketMessagesService } from 'src/ticket_messages/ticket_messages.servi
     UserDiscountService,
     ReservationsService,
     PaymentsService,
-    StripeStrategy,
     TicketMessagesService,
   ],
   controllers: [SupportTicketController],

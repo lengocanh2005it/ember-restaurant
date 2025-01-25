@@ -12,7 +12,6 @@ import { OrdersService } from 'src/orders/orders.service';
 import { Payment } from 'src/payments/entities/payments.entity';
 import { PaymentsModule } from 'src/payments/payments.module';
 import { PaymentsService } from 'src/payments/payments.service';
-import { StripeStrategy } from 'src/payments/strategies/stripe.strategy';
 import { Product } from 'src/products/entities/products.entity';
 import { ProductsModule } from 'src/products/products.module';
 import { ProductsService } from 'src/products/products.service';
@@ -70,7 +69,6 @@ import { UsersService } from 'src/users/users.service';
     PaymentsService,
     DiscountsService,
     UserDiscount,
-    StripeStrategy,
     ReservationsService,
     UsersService,
   ],

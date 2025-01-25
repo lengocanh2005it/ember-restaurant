@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DiscountContext } from 'src/discounts/discount.context';
 import { CreateDiscountDto } from 'src/discounts/dtos/create-discount.dto';
 import { UpdateDiscountDto } from 'src/discounts/dtos/update-discount.dto';
 import { Discount } from 'src/discounts/entities/discounts.entity';
@@ -11,6 +12,7 @@ export class DiscountsService implements OnModuleInit {
   constructor(
     @InjectRepository(Discount)
     private readonly discountRepository: Repository<Discount>,
+    private readonly discountContext: DiscountContext,
   ) {}
 
   async onModuleInit() {
@@ -177,4 +179,18 @@ export class DiscountsService implements OnModuleInit {
 
     return discount;
   };
+
+  public applyDiscount(
+    amount: number,
+    discountType: string,
+    value: number,
+  ): number {
+    this.discountContext.setStrategy(discountType, value);
+
+    const discount = this.discountContext.calculate(amount);
+
+    const finalAmount = amount - discount;
+
+    return finalAmount;
+  }
 }
