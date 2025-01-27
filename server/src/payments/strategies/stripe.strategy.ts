@@ -42,6 +42,7 @@ export class StripeStrategy implements PaymentStrategy {
           ...(reservationId && { reservationId }),
           type: orderId ? 'order' : 'reservation',
           paymentId,
+          userId,
         },
         description,
         user,

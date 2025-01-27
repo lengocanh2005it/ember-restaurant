@@ -78,11 +78,7 @@ export type LoyaltyPointPayload = {
 };
 
 export type JwtUserPayload = {
-  id: string;
-  username: string;
-  googleId: string | null;
-  facebookId: string | null;
-  roles: string[];
+  userId: string;
   iat: number;
   exp: number;
 };
@@ -103,6 +99,7 @@ export type CreateStripeIntent = {
     reservationId?: string;
     type: string;
     paymentId: string;
+    userId: string;
   };
   user: User;
   description?: string;

@@ -2,13 +2,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
+import * as express from 'express';
 import * as session from 'express-session';
 import helmet from 'helmet';
 import * as passport from 'passport';
 import { DatabaseService } from 'src/database/database.service';
 import { getEnvValue } from 'src/utils';
 import { AppModule } from './app.module';
-import * as express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

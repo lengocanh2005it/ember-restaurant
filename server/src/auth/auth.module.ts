@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -16,7 +16,10 @@ import { Order } from 'src/orders/entities/orders.entity';
 import { OrdersModule } from 'src/orders/orders.module';
 import { OrdersService } from 'src/orders/orders.service';
 import { Payment } from 'src/payments/entities/payments.entity';
+import { PaymentGateway } from 'src/payments/payment.gateway';
+import { PaymentsModule } from 'src/payments/payments.module';
 import { PaymentsService } from 'src/payments/payments.service';
+import { StripeService } from 'src/payments/services/stripe.service';
 import { PermissionsModule } from 'src/permissions/permissions.module';
 import { ProductsModule } from 'src/products/products.module';
 import { Promotion } from 'src/promotions/entities/promotions.entity';
@@ -36,9 +39,8 @@ import { UsersModule } from 'src/users/users.module';
 import { UsersService } from 'src/users/users.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { StripeService } from 'src/payments/services/stripe.service';
-import { PaymentsModule } from 'src/payments/payments.module';
 
+@Global()
 @Module({
   imports: [
     TypeOrmModule.forFeature([
@@ -94,6 +96,7 @@ import { PaymentsModule } from 'src/payments/payments.module';
     SessionSerializer,
     PaymentsService,
     StripeService,
+    PaymentGateway,
   ],
 })
 export class AuthModule {}

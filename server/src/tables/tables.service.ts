@@ -228,4 +228,17 @@ export class TablesService {
       );
     }
   };
+
+  async resetStatusOfTables(tables: Table[]): Promise<void> {
+    for (const table of tables) {
+      await this.tableRepository.update(
+        {
+          id: table.id,
+        },
+        {
+          is_reserved: false,
+        },
+      );
+    }
+  }
 }
