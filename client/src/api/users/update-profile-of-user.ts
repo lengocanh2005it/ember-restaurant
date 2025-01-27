@@ -18,10 +18,10 @@ export const handleUpdateProfileOfUser = async (
         file: image,
       });
 
-      if (imageUrlResponse && imageUrlResponse.data) {
+      if (imageUrlResponse) {
         data = {
           ...res,
-          image: imageUrlResponse.data.url,
+          image: imageUrlResponse.url,
         };
       }
     }

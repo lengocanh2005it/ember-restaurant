@@ -160,6 +160,8 @@ const ModalUpdateDish: React.FC<ModalUpdateDishProps> = ({ dish }) => {
         isOpen={isOpen}
         placement="center"
         size="xl"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         motionProps={{
           variants: {
