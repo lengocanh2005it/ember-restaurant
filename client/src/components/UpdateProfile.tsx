@@ -186,7 +186,7 @@ const UpdateProfile: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-2">
-      {/* <div
+      <div
         className="p-4 w-fit lg:mx-0 mx-auto border rounded-xl shadow-custom dark:border-white/20"
         onClick={() => setIsOpen(true)}
       >
@@ -196,14 +196,13 @@ const UpdateProfile: React.FC = () => {
         >
           <PencilIcon className="cursor-pointer" />
         </Tooltip>
-        
-      </div> */}
-
-      <PencilIcon className="cursor-pointer" onClick={() => setIsOpen(true)} />
+      </div>
 
       <Modal
         backdrop="opaque"
         isOpen={isOpen}
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         placement="center"
         size="lg"
         motionProps={{

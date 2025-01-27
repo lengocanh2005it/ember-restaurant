@@ -15,11 +15,11 @@ export const handleCreateEvent = async (
       file: image,
     });
 
-    if (imageUrlResponse && imageUrlResponse.data) {
+    if (imageUrlResponse) {
       const data = {
         ...res,
         status: res.start_date >= new Date() ? "ongoing" : "scheduled",
-        image: imageUrlResponse.data.url as string,
+        image: imageUrlResponse.url as string,
       };
 
       const response = await axios.post("/events", data, {

@@ -18,10 +18,10 @@ export const handleUpdateUser = async (
         file: image,
       });
 
-      if (imageResponseUrl && imageResponseUrl.data) {
+      if (imageResponseUrl) {
         data = {
           ...res,
-          image: imageResponseUrl?.data.url,
+          image: imageResponseUrl.url,
         };
       } else {
         throw new Error("Internal Server Error!");
