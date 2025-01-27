@@ -99,8 +99,17 @@ export class ReservationsService {
   }
 
   async deleteOne(id: string): Promise<void> {
-    const reservation = await this.reservationRepository.findOneBy({ id });
+    const reservation = await this.reservationRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ['tables'],
+    });
+
     if (!reservation) throw new NotFoundException('Reservation Not Found.');
+
+    await this.tablesService.resetStatusOfTables(reservation.tables);
+
     await this.reservationRepository.delete({ id });
   }
 
@@ -212,7 +221,8 @@ export class ReservationsService {
       });
     }
 
-    query.orderBy('reservation.date_time', 'ASC');
+    //query.orderBy('reservation.date_time', 'ASC');
+    query.orderBy('reservation.createdAt', 'DESC');
 
     return await query.getMany();
   };

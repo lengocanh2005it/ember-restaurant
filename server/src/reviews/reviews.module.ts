@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DiscountsModule } from 'src/discounts/discounts.module';
 import { DiscountsService } from 'src/discounts/discounts.service';
@@ -10,6 +11,7 @@ import { Order } from 'src/orders/entities/orders.entity';
 import { OrdersModule } from 'src/orders/orders.module';
 import { OrdersService } from 'src/orders/orders.service';
 import { Payment } from 'src/payments/entities/payments.entity';
+import { PaymentGateway } from 'src/payments/payment.gateway';
 import { PaymentsModule } from 'src/payments/payments.module';
 import { PaymentsService } from 'src/payments/payments.service';
 import { Product } from 'src/products/entities/products.entity';
@@ -71,6 +73,8 @@ import { UsersService } from 'src/users/users.service';
     UserDiscount,
     ReservationsService,
     UsersService,
+    PaymentGateway,
+    JwtService,
   ],
   controllers: [ReviewsController],
   exports: [ReviewsService],

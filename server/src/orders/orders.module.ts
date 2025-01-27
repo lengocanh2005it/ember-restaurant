@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DiscountContext } from 'src/discounts/discount.context';
 import { DiscountsModule } from 'src/discounts/discounts.module';
@@ -9,7 +10,13 @@ import { OrderProductModule } from 'src/order-product/order-product.module';
 import { OrderProductService } from 'src/order-product/order-product.service';
 import { Order } from 'src/orders/entities/orders.entity';
 import { Payment } from 'src/payments/entities/payments.entity';
+import { PaymentContext } from 'src/payments/payment.context';
+import { PaymentStrategyFactory } from 'src/payments/payment.factory';
+import { PaymentGateway } from 'src/payments/payment.gateway';
 import { PaymentsService } from 'src/payments/payments.service';
+import { ApplePayService } from 'src/payments/services/apple-pay.service';
+import { CodService } from 'src/payments/services/cod.service';
+import { PayPalService } from 'src/payments/services/paypal.service';
 import { StripeService } from 'src/payments/services/stripe.service';
 import { Product } from 'src/products/entities/products.entity';
 import { ProductsModule } from 'src/products/products.module';
@@ -30,11 +37,6 @@ import { User } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
-import { PaymentContext } from 'src/payments/payment.context';
-import { PaymentStrategyFactory } from 'src/payments/payment.factory';
-import { ApplePayService } from 'src/payments/services/apple-pay.service';
-import { CodService } from 'src/payments/services/cod.service';
-import { PayPalService } from 'src/payments/services/paypal.service';
 
 @Module({
   imports: [
@@ -78,6 +80,8 @@ import { PayPalService } from 'src/payments/services/paypal.service';
     PayPalService,
     CodService,
     ApplePayService,
+    PaymentGateway,
+    JwtService,
   ],
   controllers: [OrdersController],
   exports: [OrdersService],

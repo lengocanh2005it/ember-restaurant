@@ -9,8 +9,10 @@ import { Order } from 'src/orders/entities/orders.entity';
 import { CreatePaymentDto } from 'src/payments/dtos/create-payment.dto';
 import { Payment } from 'src/payments/entities/payments.entity';
 import { PaymentContext } from 'src/payments/payment.context';
+import { PaymentGateway } from 'src/payments/payment.gateway';
 import { StripeService } from 'src/payments/services/stripe.service';
 import { Reservation } from 'src/reservations/entities/reservations.entity';
+import { User } from 'src/users/entities/users.entity';
 import { getEnvValue } from 'src/utils';
 import Stripe from 'stripe';
 import { DataSource, Repository } from 'typeorm';
@@ -24,6 +26,7 @@ export class PaymentsService {
     private readonly discountsService: DiscountsService,
     private readonly paymentContext: PaymentContext,
     private readonly stripeService: StripeService,
+    private readonly paymentGateway: PaymentGateway,
   ) {}
 
   public createPayment = async (
@@ -125,6 +128,11 @@ export class PaymentsService {
         ) {
           const { orderId, paymentId } = metadata;
 
+          this.paymentGateway.sendPaymentStatusUpdate(
+            'payment_intent.created',
+            orderId,
+          );
+
           await this.dataSource
             .createQueryBuilder()
             .relation(Order, 'payment')
@@ -143,12 +151,30 @@ export class PaymentsService {
             .relation(Reservation, 'payment')
             .of(reservationId)
             .set(paymentId);
+
+          this.paymentGateway.sendPaymentStatusUpdate(
+            'payment_intent.created',
+            null,
+            reservationId,
+          );
         }
       }
       case 'payment_intent.succeeded':
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
         const { metadata } = paymentIntent;
+
+        const { userId } = metadata;
+
+        const user = await this.dataSource
+          .getRepository(User)
+          .findOneBy({ id: userId });
+
+        if (!user) throw new NotFoundException('User Not Found.');
+
+        const total_orders = user.total_orders;
+        const total_reservations = user.total_reservations;
+        const loyalty_points = user.loyalty_points;
 
         if (
           metadata &&
@@ -170,6 +196,19 @@ export class PaymentsService {
             {
               is_paid: true,
             },
+          );
+
+          await this.dataSource.getRepository(User).update(
+            { id: userId },
+            {
+              total_orders: total_orders + 1,
+              loyalty_points: loyalty_points + 10,
+            },
+          );
+
+          this.paymentGateway.sendPaymentStatusUpdate(
+            'payment_intent.succeeded',
+            orderId,
           );
         } else if (
           metadata &&
@@ -195,10 +234,28 @@ export class PaymentsService {
               is_paid: true,
             },
           );
+
+          await this.dataSource.getRepository(User).update(
+            { id: userId },
+            {
+              total_reservations: total_reservations + 1,
+              loyalty_points: loyalty_points + 15,
+            },
+          );
+
+          this.paymentGateway.sendPaymentStatusUpdate(
+            'payment_intent.succeeded',
+            null,
+            reservationId,
+          );
         }
         break;
       case 'payment_intent.payment_failed':
         const paymentFailedIntent = event.data.object as Stripe.PaymentIntent;
+
+        this.paymentGateway.sendPaymentStatusUpdate(
+          'payment_intent.payment_failed',
+        );
 
         throw new BadRequestException(
           `PaymentIntent failed: ${paymentFailedIntent}`,

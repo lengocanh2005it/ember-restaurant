@@ -18,12 +18,22 @@ export class PaymentsController {
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN, Role.USER)
   async createPayment(@Body() createPaymentDto: CreatePaymentDto) {
-    const { userId } = createPaymentDto;
+    const { userId, type } = createPaymentDto;
+
     await this.paymentsService.createPayment(createPaymentDto);
-    return {
-      orders: await this.usersService.handleFindOrdersOfUsers(userId),
-      discounts: await this.usersService.handleFindDiscountsOfUser(userId),
-    };
+
+    if (type === 'order') {
+      return {
+        orders: await this.usersService.handleFindOrdersOfUsers(userId),
+        discounts: await this.usersService.handleFindDiscountsOfUser(userId),
+      };
+    } else if (type === 'reservation') {
+      return {
+        reservations:
+          await this.usersService.handleFindReservationsOfUser(userId),
+        discounts: await this.usersService.handleFindDiscountsOfUser(userId),
+      };
+    }
   }
 
   @Post('webhook/stripe')

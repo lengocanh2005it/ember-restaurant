@@ -13,6 +13,7 @@ import { OrdersModule } from 'src/orders/orders.module';
 import { Payment } from 'src/payments/entities/payments.entity';
 import { PaymentContext } from 'src/payments/payment.context';
 import { PaymentStrategyFactory } from 'src/payments/payment.factory';
+import { PaymentGateway } from 'src/payments/payment.gateway';
 import { ApplePayService } from 'src/payments/services/apple-pay.service';
 import { CodService } from 'src/payments/services/cod.service';
 import { PayPalService } from 'src/payments/services/paypal.service';
@@ -37,6 +38,7 @@ import { User } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
 import { PaymentsController } from './payments.controller';
 import { PaymentsService } from './payments.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -82,6 +84,8 @@ import { PaymentsService } from './payments.service';
     CodService,
     StripeService,
     PayPalService,
+    PaymentGateway,
+    JwtService,
   ],
   controllers: [PaymentsController],
   exports: [
