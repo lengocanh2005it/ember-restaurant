@@ -51,7 +51,8 @@ const Order: React.FC<OrderProps> = ({ setCheckedItems }) => {
               <div
                 className="text-base"
                 key={
-                  item.id + (new Date().getTime() + item.quantity).toString()
+                  item.id +
+                  (new Date().getTime() + item.quantity + 1).toString()
                 }
               >
                 <h1 className="lg:text-xl text-base font-medium italic">

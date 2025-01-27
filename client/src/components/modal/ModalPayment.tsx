@@ -1,6 +1,7 @@
 "use client";
 import ModalBank from "@/components/modal/ModalBank";
-import { useUserStore } from "@/store";
+import { useAppStore, useOrderStore, useReservationStore } from "@/store";
+import { Order } from "@/utils";
 import {
   Button,
   Chip,
@@ -12,39 +13,52 @@ import {
   Tooltip,
   useDisclosure,
 } from "@heroui/react";
-import { useQueryClient } from "@tanstack/react-query";
-import { XIcon } from "lucide-react";
+import { XCircleIcon } from "lucide-react";
 import React from "react";
 
-type Data = {
-  orderId: string;
-  paymentMethod: string;
-  totalPrice: number;
-  products: string;
+const methodMap = {
+  cash: "Pay In Cash",
+  card: "Credit Card",
 };
 
 interface ModalPaymentProps {
-  data: Data;
+  order: Order;
 }
 
-const ModalPayment: React.FC<ModalPaymentProps> = ({ data }) => {
+const ModalPayment: React.FC<ModalPaymentProps> = ({ order }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const query = useQueryClient();
-  const { user } = useUserStore();
-
-  const handleClick = () => {
-    query.removeQueries({
-      queryKey: ["orderData", user?.id!],
-      exact: true,
-    });
-  };
+  const { setOrderPayment, setOrderData } = useOrderStore();
+  const { setType } = useAppStore();
+  const { setReservationData, setReservationPayment, setReservationUpdate } =
+    useReservationStore();
 
   const rows = [
-    { key: 1, title: "Order ID", value: "#" + data.orderId },
-    { key: 2, title: "Order Details", value: data.products },
-    { key: 3, title: "Total Price", value: data.totalPrice + " $" },
-    { key: 4, title: "Payment Method", value: data.paymentMethod },
+    { key: 1, title: "Order ID", value: "#" + order.id },
+    {
+      key: 2,
+      title: "Order Details",
+      value: order.order_details
+        .map((detail) => detail.product.name + " (" + detail.quantity + ")")
+        .join(", "),
+    },
+    { key: 3, title: "Total Price", value: order.total_price + " $" },
+    {
+      key: 4,
+      title: "Payment Method",
+      value:
+        methodMap[order?.payment?.payment_method as keyof typeof methodMap],
+    },
   ];
+
+  const handleClick = () => {
+    onOpen();
+    setOrderPayment(order);
+    setOrderData(null);
+    setType("order");
+    setReservationData(null);
+    setReservationPayment(null);
+    setReservationUpdate(null);
+  };
 
   return (
     <>
@@ -55,12 +69,9 @@ const ModalPayment: React.FC<ModalPaymentProps> = ({ data }) => {
       >
         <Chip
           color="danger"
-          variant="faded"
-          startContent={<XIcon size={18} />}
-          onClick={() => {
-            onOpen();
-            handleClick();
-          }}
+          variant="flat"
+          startContent={<XCircleIcon />}
+          onClick={handleClick}
           className="cursor-pointer"
         >
           Not paid
@@ -117,7 +128,7 @@ const ModalPayment: React.FC<ModalPaymentProps> = ({ data }) => {
                   </div>
                 ))}
 
-                {data.paymentMethod === "Credit Card" ? (
+                {order.payment.payment_method === "card" ? (
                   <div className="flex items-center justify-center">
                     <ModalBank />
                   </div>

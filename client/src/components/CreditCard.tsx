@@ -1,11 +1,10 @@
-import React from "react";
 import InputCreditCard from "@/components/InputCreditCard";
-import ApplePay from "@/components/ui/apple-pay";
 import PayPal from "@/components/ui/paypal";
 import Visa from "@/components/ui/visa";
-import { Card, CardBody, RadioGroup, Radio } from "@heroui/react";
-import { loadStripe } from "@stripe/stripe-js";
+import { Radio, RadioGroup } from "@heroui/react";
 import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import React from "react";
 
 interface CreditCardProps {
   onClose: () => void;
@@ -17,17 +16,17 @@ const CreditCard: React.FC<CreditCardProps> = ({ onClose }) => {
   const [selected, setSelected] = React.useState<string>("");
 
   return (
-    <Card className="w-full relative">
-      <CardBody className="w-full relative">
+    <>
+      <div className="w-full relative shadow-md border dark:border-white/20 rounded-lg p-3">
         <RadioGroup
           label="Select your bank"
-          className="dark:text-white/80 text-black/80"
+          className="dark:text-white/80 text-black/80 text-center"
           value={selected}
           onValueChange={setSelected}
         >
           <div
-            className="flex md:flex-row flex-col w-full md:items-center 
-        md:justify-between lg:gap-3 gap-1 relative overflow-hidden dark:text-white/80 text-black/80"
+            className="flex sm:flex-row flex-col w-full sm:items-center 
+        sm:justify-between lg:gap-3 gap-1 relative overflow-hidden dark:text-white/80 text-black/80"
           >
             <Radio value="pay-pal" color="success" isDisabled>
               <PayPal />
@@ -38,16 +37,14 @@ const CreditCard: React.FC<CreditCardProps> = ({ onClose }) => {
             </Radio>
           </div>
         </RadioGroup>
-      </CardBody>
+      </div>
 
       {selected !== "" && (
-        <CardBody>
-          <Elements stripe={stripePromise}>
-            <InputCreditCard onClose={onClose} />
-          </Elements>
-        </CardBody>
+        <Elements stripe={stripePromise}>
+          <InputCreditCard onClose={onClose} />
+        </Elements>
       )}
-    </Card>
+    </>
   );
 };
 

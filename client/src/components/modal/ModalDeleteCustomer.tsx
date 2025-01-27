@@ -49,6 +49,8 @@ const ModalDeleteCustomer: React.FC<ModalDeleteCustomerProps> = ({
         isOpen={isOpen}
         placement="center"
         size="lg"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         motionProps={{
           variants: {

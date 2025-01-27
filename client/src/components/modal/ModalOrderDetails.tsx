@@ -1,5 +1,6 @@
 "use client";
 import { DeleteOrderOptionsDto } from "@/api/orders/utils/types";
+import DetailsOfOrder from "@/components/DetailsOfOrder";
 import { VerticalDotsIcon } from "@/components/icons/VerticalDotsIcon";
 import ModalUpdateOrder from "@/components/modal/ModalUpdateOrder";
 import { useDeleteOrder } from "@/hooks/use-delete-order";
@@ -149,23 +150,31 @@ const ModalOrderDetails: React.FC<ModalOrderProps> = ({ order }) => {
               </ModalHeader>
 
               <ModalBody>
-                <h1 className="font-bold dark:text-white/80 text-black/80 lg:text-left text-center">
+                <h1 className="font-medium dark:text-white/80 text-black/80 lg:text-left text-center">
                   More Information About Order
                 </h1>
 
                 {dataArray.map((item) => (
                   <div
-                    className="flex lg:flex-row flex-col 
-                lg:items-center justify-between gap-1 p-2 rounded-lg border dark:border-white/20 border-black/20"
+                    className={`flex ${
+                      item.id === 7
+                        ? "lg:flex-col"
+                        : "lg:flex-row lg:items-center"
+                    } flex-col justify-between gap-1 p-2 rounded-lg border dark:border-white/20
+                 border-black/20`}
                     key={item.id}
                   >
                     <h1 className="text-base dark:text-white/80 text-black/80">
                       {item.title}
                     </h1>
 
-                    <span className="text-base font-medium">{item.value}</span>
+                    <span className="text-base font-normal">{item.value}</span>
                   </div>
                 ))}
+
+                <div className="relative flex lg:items-end lg:justify-end items-center justify-center">
+                  <DetailsOfOrder order={order} />
+                </div>
               </ModalBody>
 
               <ModalFooter className="flex items-center justify-between">

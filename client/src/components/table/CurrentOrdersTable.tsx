@@ -1,33 +1,31 @@
 "use client";
-import { CheckIcon } from "@/components/icons/CheckIcon";
 import ModalMessageOrder from "@/components/modal/ModalMessageOrder";
 import ModalOrderDetails from "@/components/modal/ModalOrderDetails";
 import ModalPayment from "@/components/modal/ModalPayment";
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  User,
-  Tooltip,
-  Chip,
-  ChipProps,
-} from "@heroui/react";
 import { useOrderStore, useUserStore } from "@/store";
 import { Order } from "@/utils/types";
+import {
+  Chip,
+  ChipProps,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+} from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
+import { CheckCircleIcon } from "lucide-react";
 import React from "react";
 
 const columns = [
-  { name: "ID", uid: "id" },
+  { name: "ORDER ID", uid: "id" },
   { name: "DATE TIME", uid: "createdAt" },
   { name: "ORDER DETAILS", uid: "order_details" },
   { name: "PAYMENT METHOD", uid: "payment?.payment_method" },
   { name: "PAYMENT STATUS", uid: "is_paid" },
-  { name: "STATUS", uid: "status" },
+  { name: "ORDER STATUS", uid: "status" },
   { name: "TOTAL PRICE", uid: "total_price" },
   { name: "OPTIONS", uid: "options" },
 ];
@@ -48,7 +46,7 @@ const methodMap = {
 };
 
 const CurrentOrdersTable: React.FC<CurrentOrdersTableProps> = ({ orders }) => {
-  const { setOrderPayment, setOrderUpdate } = useOrderStore();
+  const { setOrderUpdate } = useOrderStore();
   const { user } = useUserStore();
   const query = useQueryClient();
 
@@ -96,8 +94,8 @@ const CurrentOrdersTable: React.FC<CurrentOrdersTableProps> = ({ orders }) => {
           return order.is_paid ? (
             <Chip
               color="success"
-              variant="faded"
-              startContent={<CheckIcon size={18} />}
+              variant="flat"
+              startContent={<CheckCircleIcon />}
               isDisabled
             >
               Paid
@@ -110,22 +108,7 @@ const CurrentOrdersTable: React.FC<CurrentOrdersTableProps> = ({ orders }) => {
                 });
               }}
             >
-              <ModalPayment
-                data={{
-                  orderId: order.id,
-                  paymentMethod:
-                    methodMap[
-                      order?.payment?.payment_method as keyof typeof methodMap
-                    ],
-                  totalPrice: order.total_price,
-                  products: order.order_details
-                    .map(
-                      (detail) =>
-                        detail.product.name + " (" + detail.quantity + ")"
-                    )
-                    .join(", "),
-                }}
-              />
+              <ModalPayment order={order} />
             </div>
           );
         }

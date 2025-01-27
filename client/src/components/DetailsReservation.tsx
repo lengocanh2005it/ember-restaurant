@@ -1,12 +1,12 @@
 "use client";
-import { DeleteReservationDto } from "@/api/reservation/utils/types";
 import DetailsReservationPriceModal from "@/components/modal/DetailsReservationPriceModal";
-import { useDeleteReservation } from "@/hooks/use-delete-reservation";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUserStore } from "@/store";
-import { statusMap, methodMap } from "@/utils/maps";
+import { methodMap, statusMap } from "@/utils/maps";
 import { Reservation } from "@/utils/types";
 import {
   Button,
+  Chip,
   Modal,
   ModalBody,
   ModalContent,
@@ -28,6 +28,7 @@ import {
   UsersIcon,
 } from "lucide-react";
 import React, { ReactNode, useEffect, useState } from "react";
+import { v4 } from "uuid";
 
 type ArrayData = {
   name: string;
@@ -42,20 +43,16 @@ interface DetailsReservationProps {
 const DetailsReservation: React.FC<DetailsReservationProps> = ({
   reservation,
 }) => {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [arrayData, setArrayData] = useState<ArrayData[]>([]);
-
   const { user } = useUserStore();
-
-  const { mutate: mutateDeleteReservation } = useDeleteReservation(user?.id!);
 
   useEffect(() => {
     const dataToPush: ArrayData[] = [
       {
         value: format(
           (reservation.date_time as Date).toLocaleString(),
-          "dd/MM/yyyy HH:mm"
+          "EEEE, dd/MM/yyyy HH:mm"
         ),
         icon: <CalendarIcon />,
         name: "Date And Time",
@@ -88,51 +85,47 @@ const DetailsReservation: React.FC<DetailsReservationProps> = ({
         icon: <CreditCardIcon />,
         name: "Payment Status",
       },
-      {
-        value: reservation.discount
-          ? reservation.discount.value + " %"
-          : "Null",
-        icon: <GiftIcon />,
-        name: "Discount",
-      },
+      ...(reservation.discount
+        ? [
+            {
+              value: reservation.discount
+                ? reservation.discount.value + " %"
+                : "Null",
+              icon: <GiftIcon />,
+              name: "Discount",
+            },
+          ]
+        : []),
       {
         value: reservation.total_price + "$",
         icon: <DollarSignIcon />,
         name: "Total Price",
       },
-      {
-        value: reservation.note ? reservation.note : "Null",
-        icon: <NotebookIcon />,
-        name: "Note",
-      },
+      ...(reservation.note
+        ? [
+            {
+              value: reservation.note ? reservation.note : "Null",
+              icon: <NotebookIcon />,
+              name: "Note",
+            },
+          ]
+        : []),
     ];
 
     setArrayData(dataToPush);
   }, [reservation]);
 
-  const handleClick = (id: string) => {
-    setIsLoading(true);
-    const data: DeleteReservationDto = {
-      reservationId: id,
-      userId: user?.id!,
-    };
-    setTimeout(() => {
-      setIsLoading(false);
-      onClose();
-      mutateDeleteReservation(data);
-    }, 2500);
-  };
-
   return (
     <>
-      <Button
-        onPress={onOpen}
-        className="dark:bg-white/30 hover:dark:bg-white/60 bg-black/70 dark:text-black
-         text-white w-fit"
+      <Chip
+        onClick={onOpen}
+        color="primary"
+        className="dark:bg-white dark:text-black opacity-70 hover:opacity-100
+         text-white w-fit duration-300 ease-in-out transition-opacity cursor-pointer"
+        startContent={<EyeIcon />}
       >
-        <EyeIcon />
         See Details
-      </Button>
+      </Chip>
 
       <Modal
         backdrop="opaque"
@@ -168,60 +161,55 @@ const DetailsReservation: React.FC<DetailsReservationProps> = ({
               </ModalHeader>
 
               <ModalBody>
-                {arrayData.map((data) => (
-                  <div
-                    key={data.name}
-                    className={`flex
+                <ScrollArea className="h-[400px] w-full pr-3">
+                  <div className="flex flex-col gap-2">
+                    {arrayData.map((data) => (
+                      <div
+                        key={data.name + new Date().getTime().toString() + v4()}
+                        className={`flex
+                          p-2 border dark:border-white/20 border-black/20 rounded-lg
                       ${
-                        data.name === "Note"
+                        data.name === "Note" ||
+                        data.name === "Payment Method" ||
+                        data.name === "Date And Time"
                           ? "flex flex-col"
                           : "md:flex-row flex-col lg:items-center lg:justify-between"
                       } lg:gap-1`}
-                  >
-                    <div className="relative flex items-center gap-1">
-                      {data.icon}
-
-                      <span
-                        className="text-[14px] text-black/70 dark:text-white/70 
-                      font-medium"
                       >
-                        {data.name}:
-                      </span>
-                    </div>
+                        <div className="relative flex items-center gap-1">
+                          {data.icon}
 
-                    <span className="lg:text-base text-[15px] font-medium">
-                      {data.value}
-                    </span>
+                          <span className="text-[14px] text-black/70 dark:text-white/70 font-medium">
+                            {data.name}
+                          </span>
+                        </div>
+
+                        <span className="lg:text-base text-[15px] font-normal">
+                          {data.value}
+                        </span>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </ScrollArea>
 
-                <div className="flex flex-col items-center gap-3 lg:justify-end">
-                  <DetailsReservationPriceModal tables={reservation.tables} />
+                <div
+                  className="flex flex-col items-center md:items-end gap-3 md:justify-end 
+                justify-center"
+                >
+                  <DetailsReservationPriceModal
+                    tables={reservation.tables}
+                    key={
+                      reservation.id + new Date().getTime().toString() + v4()
+                    }
+                  />
                 </div>
               </ModalBody>
 
-              <ModalFooter className="flex items-center justify-center md:justify-between gap-2">
-                {isLoading ? (
-                  <>
-                    <Button isLoading color="danger" className="w-fit">
-                      Please wait...
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      color="danger"
-                      onPress={() => handleClick(reservation.id)}
-                    >
-                      Delete
-                    </Button>
-                  </>
-                )}
-
+              <ModalFooter className="flex md:justify-end md:items-end items-center justify-center">
                 <Button
                   color="primary"
                   onPress={onClose}
-                  className="dark:bg-white dark:text-black w-fit"
+                  className="dark:bg-white dark:text-black text-white"
                 >
                   Close
                 </Button>

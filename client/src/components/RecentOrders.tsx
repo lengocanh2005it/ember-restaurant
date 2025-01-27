@@ -132,8 +132,6 @@ const RecentOrders: React.FC = () => {
       {recentOrders.length !== 0 ? (
         <>
           <Table
-            isHeaderSticky
-            isStriped
             classNames={{
               wrapper: "min-h-[222px]",
             }}

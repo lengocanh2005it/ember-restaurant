@@ -2,7 +2,7 @@
 import { CreateReservationDto } from "@/api/reservation/utils/types";
 import ModalShowPayments from "@/components/modal/ModalShowPayments";
 import { useAddReservation } from "@/hooks/use-add-reservation";
-import { useUserStore } from "@/store";
+import { useReservationStore, useUserStore } from "@/store";
 import { CachedReservationData } from "@/utils";
 import {
   Button,
@@ -12,8 +12,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@heroui/react";
-import { useQueryClient } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 interface ModalConfirmPaymentReservationProps {
   isOpen: boolean;
@@ -24,52 +23,19 @@ const ModalConfirmPaymentReservation: React.FC<
   ModalConfirmPaymentReservationProps
 > = ({ isOpen, setIsOpen }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [reservationData, setReservationData] =
-    useState<CachedReservationData | null>(null);
-  const query = useQueryClient();
   const { user } = useUserStore();
+  const { reservationData } = useReservationStore();
 
   const { mutate: mutateAddReservation } = useAddReservation(user?.id!);
-
-  const cachedData = query.getQueryData([
-    "reservationData",
-    user?.id!,
-  ]) as CachedReservationData;
-
-  useEffect(() => {
-    if (cachedData) {
-      setReservationData(cachedData as CachedReservationData);
-    }
-  }, [cachedData]);
 
   const handleClickNoPayment = () => {
     setIsLoading(true);
 
-    const {
-      userId,
-      date_time,
-      guests_count,
-      discountId,
-      areaId,
-      tableIds,
-      payment_method,
-      promotionCode,
-    } = reservationData as CachedReservationData;
-
-    const reservationCreate: CreateReservationDto = {
-      userId,
-      date_time,
-      guests_count,
-      discountId,
-      areaId,
-      tableIds,
-      payment_method: payment_method as "cash" | "card",
-      promotionCode,
-    };
-
     setTimeout(() => {
       setIsLoading(false);
-      mutateAddReservation(reservationCreate);
+      if (reservationData) {
+        mutateAddReservation(reservationData);
+      }
       setIsOpen(false);
     }, 2200);
   };
@@ -77,10 +43,8 @@ const ModalConfirmPaymentReservation: React.FC<
   return (
     <Modal
       backdrop="opaque"
-      classNames={{
-        backdrop:
-          "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
-      }}
+      isDismissable={false}
+      isKeyboardDismissDisabled={false}
       placement="center"
       size="lg"
       motionProps={{

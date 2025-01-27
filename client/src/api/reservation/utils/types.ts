@@ -8,6 +8,8 @@ export type CreateReservationDto = {
   areaId: string;
   tableIds: string[];
   promotionCode?: string;
+  payment_method_id?: string;
+  payment_description?: string;
 };
 
 export type DeleteReservationDto = {

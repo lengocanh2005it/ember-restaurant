@@ -135,7 +135,7 @@ const TableOfDiscounts: React.FC = () => {
 
   return (
     <div className="flex flex-col lg:gap-4 gap-3 relative">
-      <Table aria-label="Table of discounts" isCompact isHeaderSticky isStriped>
+      <Table aria-label="Table of discounts">
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn key={column.uid}>{column.name}</TableColumn>

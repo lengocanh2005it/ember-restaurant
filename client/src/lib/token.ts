@@ -1,6 +1,7 @@
 import { handleLogout } from "@/api/logout/logout";
 import axios from "@/lib/axios";
 import { showErrorToast } from "@/utils";
+import { connectSocket, disconnectSocket } from "@/utils/socket";
 import Cookies from "js-cookie";
 
 const isTokenExpired = (): boolean => {
@@ -12,7 +13,10 @@ const isTokenExpired = (): boolean => {
     accessToken = localStorage.getItem("accessToken")!;
   }
 
-  if (!accessToken) throw new Error("Access token not found.");
+  if (!accessToken) {
+    console.error("Access token not found.");
+    return true;
+  }
 
   const payload = accessToken.split(".")[1];
 
@@ -58,8 +62,10 @@ export const getValidAccessToken = async (): Promise<string> => {
         } else {
           Cookies.set("accessToken", accessToken);
         }
+
+        connectSocket(accessToken);
       } else {
-        throw new Error("Unauthorized.");
+        console.error("Unauthorized.");
       }
     } catch (error: any) {
       if (
@@ -68,6 +74,7 @@ export const getValidAccessToken = async (): Promise<string> => {
           error.response?.data?.message.includes("Refresh token expired."))
       ) {
         await handleLogout();
+        disconnectSocket();
         localStorage.removeItem("accessToken");
         Cookies.remove("accessToken");
         window.location.href = "/login";
@@ -84,8 +91,6 @@ export const getValidAccessToken = async (): Promise<string> => {
       }
     }
   }
-
-  if (!accessToken) throw new Error("No token found.");
 
   return accessToken;
 };

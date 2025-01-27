@@ -94,6 +94,8 @@ const ModalReply: React.FC<ModalReplyProps> = ({ request }) => {
       <Modal
         backdrop="opaque"
         isOpen={isOpen}
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         placement="center"
         size="xl"

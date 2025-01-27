@@ -125,12 +125,7 @@ const TableOfPromotions: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      <Table
-        aria-label="Table of promotions"
-        isCompact
-        isHeaderSticky
-        isStriped
-      >
+      <Table aria-label="Table of promotions">
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn key={column.uid}>{column.name}</TableColumn>

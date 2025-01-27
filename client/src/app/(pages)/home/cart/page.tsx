@@ -19,13 +19,6 @@ const CartPage: React.FC = () => {
   const { user } = useUserStore();
   const { selectedCarts, carts, setCarts, setSelectedCarts } = useCartStore();
 
-  useEffect(() => {
-    return () => {
-      setSelectedCarts([]);
-      setCheckedItems({});
-    };
-  }, [setSelectedCarts]);
-
   const handleCheckboxChange = (item: Cart) => {
     setCheckedItems((prevCheckedItems) => {
       const updatedCheckedItems = {
@@ -45,6 +38,12 @@ const CartPage: React.FC = () => {
 
   const { data, isLoading, isError } = useCart(user?.id!);
 
+  useEffect(() => {
+    if (data) {
+      setCarts(data);
+    }
+  }, [data, setCarts]);
+
   const { mutate: mutateDeleteCart } = useDeleteCart(user?.id!);
 
   const array = React.useMemo(() => {
@@ -57,12 +56,6 @@ const CartPage: React.FC = () => {
   const totalPages = React.useMemo(() => {
     return Math.ceil(carts?.length / itemsPerPage) ?? 0;
   }, [carts]);
-
-  useEffect(() => {
-    if (data) {
-      setCarts(data);
-    }
-  }, [data, setCarts]);
 
   if (isLoading) {
     return <LoadingPage />;
@@ -247,7 +240,7 @@ const CartPage: React.FC = () => {
             ))}
 
             {array.length !== 0 && (
-              <div className="flex lg:justify-start justify-center">
+              <div className="flex flex-col lg:justify-start justify-center">
                 <Pagination
                   loop
                   showControls

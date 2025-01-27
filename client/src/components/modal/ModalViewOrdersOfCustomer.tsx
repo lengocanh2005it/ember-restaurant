@@ -36,8 +36,8 @@ const ModalViewOrdersOfCustomer: React.FC<ModalViewOrdersOfCustomerProps> = ({
   const details = [
     {
       key: 6,
-      name: "Date",
-      value: format(order.createdAt.toLocaleString(), "dd/MM/yyyy"),
+      name: "Date Time",
+      value: format(order.createdAt.toLocaleString(), "dd/MM/yyyy HH:mm:yy"),
     },
     {
       key: 2,
@@ -103,7 +103,7 @@ const ModalViewOrdersOfCustomer: React.FC<ModalViewOrdersOfCustomerProps> = ({
       </Tooltip>
 
       <Modal
-        backdrop="blur"
+        backdrop="opaque"
         placement="center"
         isOpen={isOpen}
         size="lg"

@@ -8,6 +8,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useAddOrder } from "@/hooks/use-add-order";
+import { useAddReservation } from "@/hooks/use-add-reservation";
+import { usePayment } from "@/hooks/use-payment";
 import {
   useAppStore,
   useCartStore,
@@ -40,6 +42,7 @@ interface InputCreditCardProps {
 const InputCreditCard: React.FC<InputCreditCardProps> = ({ onClose }) => {
   const stripe = useStripe();
   const elements = useElements();
+  const { type, theme } = useAppStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,7 +55,7 @@ const InputCreditCard: React.FC<InputCreditCardProps> = ({ onClose }) => {
   const options = {
     style: {
       base: {
-        color: "white",
+        color: theme === "dark" ? "white" : "black",
       },
       invalid: {
         color: "red",
@@ -62,12 +65,13 @@ const InputCreditCard: React.FC<InputCreditCardProps> = ({ onClose }) => {
 
   const { user } = useUserStore();
   const { setDiscount } = useDiscountStore();
-  const { orderData } = useOrderStore();
-  const { setReservationPayment, reservationPayment } = useReservationStore();
+  const { orderData, orderPayment } = useOrderStore();
+  const { reservationPayment, reservationData } = useReservationStore();
   const { setSelectedCarts } = useCartStore();
-  const { type } = useAppStore();
 
   const { mutate } = useAddOrder(user?.id!);
+  const { mutate: mutateAddReservation } = useAddReservation(user?.id!);
+  const { mutate: mutateAddPayment } = usePayment(user?.id!);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const { amount, description } = values;
@@ -91,15 +95,50 @@ const InputCreditCard: React.FC<InputCreditCardProps> = ({ onClose }) => {
     setIsLoading(true);
 
     setTimeout(() => {
-      if (type === "order" && orderData) {
-        mutate({
-          ...orderData,
-          payment_method_id: paymentMethod.id,
-          payment_description: description,
-        });
+      if (type === "order") {
+        if (orderData) {
+          mutate({
+            ...orderData,
+            payment_method_id: paymentMethod.id,
+            payment_description: description,
+          });
+        } else if (orderPayment) {
+          const { total_price, id } = orderPayment;
+
+          mutateAddPayment({
+            amount: Number(total_price),
+            payment_method: "card",
+            currency: "usd",
+            type: type as "order",
+            userId: user?.id!,
+            orderId: id,
+            description,
+            payment_method_id: paymentMethod.id,
+          });
+        }
       } else if (type === "reservation") {
-        //  paymentDto = {};
+        if (reservationData) {
+          mutateAddReservation({
+            ...reservationData,
+            payment_method_id: paymentMethod.id,
+            payment_description: description,
+          });
+        } else if (reservationPayment) {
+          const { total_price, id } = reservationPayment;
+
+          mutateAddPayment({
+            amount: Number(total_price),
+            payment_method: "card",
+            currency: "usd",
+            type: type as "order",
+            userId: user?.id!,
+            reservationId: id,
+            description,
+            payment_method_id: paymentMethod.id,
+          });
+        }
       }
+
       setIsLoading(false);
       setDiscount(null);
       setSelectedCarts([]);

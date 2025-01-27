@@ -1,12 +1,16 @@
 import { handleCreateOrder } from "@/api/orders/create-order";
 import { handleCreatePayment } from "@/api/payments/create-payment";
-import { useOrderStore } from "@/store";
-import { Order, showErrorToast, showSuccessToast } from "@/utils";
+import { handleFetchOrdersOfUsers } from "@/api/users/fetch-orders-of-user";
+import { handleFetchProfileOfUser } from "@/api/users/fetch-profile-of-user";
+import { useOrderStore, useUserStore } from "@/store";
+import { Order, showErrorToast, showSuccessToast, User } from "@/utils";
+import { subscribeToPaymentStatus } from "@/utils/socket";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useAddOrder = (userId: string) => {
   const query = useQueryClient();
   const { setOrder } = useOrderStore();
+  const { setUser } = useUserStore();
 
   return useMutation({
     mutationFn: handleCreateOrder,
@@ -44,6 +48,17 @@ export const useAddOrder = (userId: string) => {
           "top-right",
           { backgroundColor: "#28a745", color: "#fff" }
         );
+
+        subscribeToPaymentStatus(async (data) => {
+          if (data) {
+            const result = await handleFetchOrdersOfUsers(variables.userId);
+            const profile = await handleFetchProfileOfUser();
+
+            query.setQueryData(["profile"], profile);
+            setUser(profile as User);
+            query.setQueryData(["orders", userId], result);
+          }
+        });
       } catch (err: any) {
         console.error(err);
         showErrorToast(err.response.data.message, "bottom-right", {

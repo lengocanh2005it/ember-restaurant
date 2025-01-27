@@ -7,6 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDiscount } from "@/hooks/use-discounts-of-user";
 import { useDiscountStore, useUserStore } from "@/store";
 import { DiscountWithQuantity } from "@/utils";
@@ -174,7 +175,7 @@ const VoucherList: React.FC<VoucherListProps> = ({
                       orientation="vertical"
                       className="w-full"
                     >
-                      <CarouselContent className="-mt-2 lg:h-[170px] h-[180px] relative">
+                      <CarouselContent className="-mt-2 lg:h-[170px] h-[150px] relative">
                         {discounts.map((discount, index) => (
                           <CarouselItem key={index} className="h-full relative">
                             <div className="select-none h-full relative">
@@ -216,63 +217,67 @@ const VoucherList: React.FC<VoucherListProps> = ({
                                     />
                                   </div>
 
-                                  <div className="flex flex-col gap-3">
-                                    <div
-                                      className="flex lg:flex-row flex-col gap-3 lg:items-center
+                                  <ScrollArea className="lg:h-[300px] h-[250px] pr-4 w-full">
+                                    <div className="flex flex-col lg:gap-3 gap-2">
+                                      <div
+                                        className="flex lg:flex-row flex-col gap-3 lg:items-center
                                      lg:justify-between"
-                                    >
-                                      <p
-                                        className=" lg:text-base 
-                                        text-[14px] font-medium"
                                       >
-                                        Value:{" "}
-                                        <span className="font-semibold">
-                                          {discount.discount.value}%
-                                        </span>
-                                      </p>
-
-                                      <p
-                                        className="lg:text-base 
+                                        <p
+                                          className=" lg:text-base 
                                         text-[14px] font-medium"
-                                      >
-                                        Quantity: {discount.quantity}
-                                      </p>
-                                    </div>
+                                        >
+                                          Value:{" "}
+                                          <span className="font-semibold">
+                                            {discount.discount.value}%
+                                          </span>
+                                        </p>
 
-                                    <div className="flex items-center gap-2">
-                                      <Calendar />
-                                      <p
-                                        className="lg:text-base 
+                                        <p
+                                          className="lg:text-base 
+                                        text-[14px] font-medium"
+                                        >
+                                          Quantity: {discount.quantity}
+                                        </p>
+                                      </div>
+
+                                      <div className="flex flex-col gap-3">
+                                        <div className="flex items-center gap-2">
+                                          <Calendar />
+                                          <p
+                                            className="lg:text-base 
                                         text-[14px] font-medium "
-                                      >
-                                        Start Date:{" "}
-                                        <span className="font-semibold">
-                                          {
-                                            discount.discount.start_date.split(
-                                              "T"
-                                            )[0]
-                                          }
-                                        </span>
-                                      </p>
-                                    </div>
+                                          >
+                                            Start Date:{" "}
+                                            <span className="font-semibold">
+                                              {
+                                                discount.discount.start_date.split(
+                                                  "T"
+                                                )[0]
+                                              }
+                                            </span>
+                                          </p>
+                                        </div>
 
-                                    <div className="flex items-center gap-2">
-                                      <Calendar />
-                                      <p
-                                        className="lg:text-base 
+                                        <div className="flex items-center gap-2">
+                                          <Calendar />
+                                          <p
+                                            className="lg:text-base 
                                         text-[14px] font-medium"
-                                      >
-                                        End Date:{" "}
-                                        <span className="font-semibold">
-                                          {
-                                            discount.discount.end_date.split(
-                                              "T"
-                                            )[0]
-                                          }
-                                        </span>
-                                      </p>
+                                          >
+                                            End Date:{" "}
+                                            <span className="font-semibold">
+                                              {
+                                                discount.discount.end_date.split(
+                                                  "T"
+                                                )[0]
+                                              }
+                                            </span>
+                                          </p>
+                                        </div>
+                                      </div>
                                     </div>
-                                  </div>
+                                  </ScrollArea>
                                 </CardContent>
                               </Card>
                             </div>

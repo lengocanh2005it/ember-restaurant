@@ -1,5 +1,6 @@
 import { handleLogout } from "@/api/logout/logout";
 import { useAppStore } from "@/store";
+import { disconnectSocket } from "@/utils/socket";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
@@ -14,6 +15,10 @@ export const useLogout = () => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("app-storage");
       localStorage.removeItem("user-storage");
+
+      // disconnect to websocket
+      disconnectSocket();
+
       setTimeout(() => {
         setTheme("light");
         document.documentElement.classList.remove("dark");
