@@ -92,62 +92,71 @@ const DetailsReservationPriceModal: React.FC<DetailsReservationPriceProps> = ({
               <ModalBody className="flex flex-col lg:gap-4 gap-3 relative">
                 <div className="flex flex-col gap-2">
                   {items.map((table) => (
-                    <>
-                      <div key={table.id} className="flex flex-col gap-1">
-                        <h1 className="lg:text-xl text-base font-bold">
-                          {table.name}
-                        </h1>
-                        <div className="px-2">
-                          {Array.from({ length: 2 }, (_, index) => {
-                            if (index === 0) {
-                              return {
-                                name: "Type",
-                                value:
-                                  typeMap[table.type as keyof typeof typeMap],
-                              };
-                            } else if (index === 1) {
-                              return {
-                                name: "Price",
-                                value: table.price + "$",
-                              };
-                            } else {
-                              return {};
-                            }
-                          }).map((element, index) => (
-                            <div
-                              key={index}
-                              className="flex items-center justify-between 
-                              lg:text-[14px] text-[13px]"
-                            >
-                              <p>{element.name}</p>
-                              <p>{element.value}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                    <div
+                      key={table.id}
+                      className="flex flex-col gap-1 p-2 rounded-lg border dark:border-white/20
+                       border-black/20"
+                    >
+                      <h1 className="lg:text-xl text-base font-medium">
+                        {table.name}
+                      </h1>
 
-                      <Separator className="dark:bg-white/40 bg-black/60" />
-                    </>
+                      <div className="px-2">
+                        {Array.from({ length: 2 }, (_, index) => {
+                          if (index === 0) {
+                            return {
+                              name: "Type",
+                              value:
+                                typeMap[table.type as keyof typeof typeMap],
+                            };
+                          } else if (index === 1) {
+                            return {
+                              name: "Price",
+                              value: table.price + "$",
+                            };
+                          } else {
+                            return {};
+                          }
+                        }).map((element, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between 
+                         lg:text-[14px] text-[13px]"
+                          >
+                            <p>{element.name}</p>
+                            <p>{element.value}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   ))}
 
                   {tables.length !== 0 && (
-                    <Pagination
-                      page={page}
-                      total={totalPages}
-                      showControls
-                      showShadow
-                      isCompact
-                      classNames={{
-                        cursor: "dark:bg-white dark:text-black text-white",
-                      }}
-                      onChange={(page) => setPage(page)}
-                    />
+                    <div
+                      className="relative flex lg:items-start lg:justify-start items-center 
+                    justify-center"
+                    >
+                      <Pagination
+                        page={page}
+                        total={totalPages}
+                        showControls
+                        showShadow
+                        isCompact
+                        classNames={{
+                          cursor: "dark:bg-white dark:text-black text-white",
+                        }}
+                        onChange={(page) => setPage(page)}
+                      />
+                    </div>
                   )}
                 </div>
 
-                <div className="relative flex items-center justify-between lg:text-xl text-base">
-                  <p>Total Price</p>
-                  <p className="font-bold">
+                <div className="relative flex items-center justify-between">
+                  <p className="dark:text-white/80 text-black/80 lg:text-base text-[15px]">
+                    Total Price:
+                  </p>
+
+                  <p className="font-medium lg:text-xl text-base">
                     {Number(
                       tables.reduce(
                         (acc, curr) => acc + parseFloat(curr.price.toString()),

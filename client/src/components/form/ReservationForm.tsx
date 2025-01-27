@@ -14,15 +14,14 @@ import { useAddReservation } from "@/hooks/use-add-reservation";
 import { useAreas } from "@/hooks/use-areas";
 import { useFindTablesByTypes } from "@/hooks/use-find-tables-with-types";
 import { useTables } from "@/hooks/use-tables";
-import { useDiscountStore, useOrderStore, useUserStore } from "@/store";
 import {
-  Area,
-  CachedReservationData,
-  DiscountWithQuantity,
-  Table,
-} from "@/utils/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { getLocalTimeZone, now, ZonedDateTime } from "@internationalized/date";
+  useAppStore,
+  useDiscountStore,
+  useOrderStore,
+  useReservationStore,
+  useUserStore,
+} from "@/store";
+import { Area, DiscountWithQuantity, Table } from "@/utils/types";
 import {
   Button,
   Checkbox,
@@ -33,7 +32,8 @@ import {
   SelectItem,
   Textarea,
 } from "@heroui/react";
-import { useQueryClient } from "@tanstack/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { getLocalTimeZone, now, ZonedDateTime } from "@internationalized/date";
 import React, { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
@@ -118,7 +118,11 @@ const ReservationForm: React.FC = () => {
   const [isShow, setIsShow] = useState<boolean>(false);
   const { data: tablesData } = useTables("area");
   const { data } = useAreas();
-  const query = useQueryClient();
+  const { setReservationData } = useReservationStore();
+  const { setOrderData, setOrderPayment, setOrderUpdate } = useOrderStore();
+  const { user } = useUserStore();
+  const { discount, setDiscount } = useDiscountStore();
+  const { setType } = useAppStore();
 
   useEffect(() => {
     if (tablesData) {
@@ -151,10 +155,6 @@ const ReservationForm: React.FC = () => {
       });
     }
   };
-
-  const { user } = useUserStore();
-  const { discount, setDiscount } = useDiscountStore();
-  const { setOrderPayment } = useOrderStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -205,6 +205,7 @@ const ReservationForm: React.FC = () => {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const { guests, method, note, areaId, tableIds, date_time, promotionCode } =
       values;
+
     setIsLoading(true);
 
     const cleanedDate = date_time.toString().split("[")[0];
@@ -223,36 +224,18 @@ const ReservationForm: React.FC = () => {
         : []),
     };
 
+    setOrderPayment(null);
+    setOrderUpdate(null);
+    setOrderData(null);
+    setReservationData(data);
+    setType("reservation");
+
     setTimeout(() => {
-      const cachedData: CachedReservationData = {
-        payment_method: method,
-        note,
-        guests_count: guests,
-        areaId,
-        tableIds,
-        date_time: new Date(cleanedDate),
-        userId: user?.id!,
-        ...(discount && !promotionCode
-          ? [{ discountId: discount.discount.id }]
-          : []),
-        ...(!discount && promotionCode ? [{ promotionCode }] : []),
-      };
+      method === "card" ? setIsShow(true) : setIsShow(false);
 
-      if (method === "card") {
-        setIsShow(true);
-        query.setQueryData(
-          ["reservationData", user?.id!],
-          cachedData as CachedReservationData
-        );
-      } else {
-        query.removeQueries({
-          queryKey: ["reservationData", user?.id!],
-        });
+      if (method === "cash") {
         mutateAddReservation(data);
-        setIsShow(false);
       }
-
-      setOrderPayment(null);
 
       setDiscount(null);
 
@@ -289,6 +272,7 @@ const ReservationForm: React.FC = () => {
                   <FormControl>
                     <DatePicker
                       hideTimeZone
+                      inert={false}
                       showMonthAndYearPickers
                       aria-labelledby="date-and-time"
                       aria-label="date-and-time"

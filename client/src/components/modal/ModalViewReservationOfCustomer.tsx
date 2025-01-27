@@ -123,7 +123,7 @@ const ModalViewReservationOfCustomer: React.FC<
       </Tooltip>
 
       <Modal
-        backdrop="blur"
+        backdrop="opaque"
         isOpen={isOpen}
         placement="center"
         size="xl"

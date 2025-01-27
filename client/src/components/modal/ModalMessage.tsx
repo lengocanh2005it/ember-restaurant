@@ -30,6 +30,8 @@ const ModalMessage: React.FC<ModalMessageProps> = ({ content }) => {
       <Modal
         backdrop="opaque"
         isOpen={isOpen}
+        isKeyboardDismissDisabled={false}
+        isDismissable={false}
         placement="center"
         onOpenChange={onOpenChange}
         motionProps={{

@@ -31,17 +31,17 @@ import {
   Tooltip,
 } from "@heroui/react";
 import { format } from "date-fns";
-import { TrashIcon, XIcon } from "lucide-react";
+import { CheckCircleIcon, TrashIcon, XCircleIcon, XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 const columns = [
-  { name: "ID", uid: "id" },
+  { name: "ORDER ID", uid: "id" },
   { name: "DATE TIME", uid: "createdAt", sortable: true },
   { name: "ORDER DETAILS", uid: "order" },
   { name: "TOTAL PRICE", uid: "total_price", sortable: true },
   { name: "PAYMENT STATUS", uid: "is_paid" },
-  { name: "STATUS", uid: "status" },
-  { name: "OTHERS", uid: "others" },
+  { name: "ORDER STATUS", uid: "status" },
+  { name: "OPTIONS", uid: "others" },
 ];
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
@@ -198,7 +198,12 @@ export const TableOrders: React.FC<TableOrdersProps> = ({ arrays }) => {
       case "is_paid": {
         if (cellValue === false) {
           return (
-            <Chip color="danger" startContent={<XIcon />} variant="bordered">
+            <Chip
+              color="danger"
+              startContent={<XCircleIcon />}
+              isDisabled
+              variant="flat"
+            >
               Not paid
             </Chip>
           );
@@ -207,8 +212,8 @@ export const TableOrders: React.FC<TableOrdersProps> = ({ arrays }) => {
           <Chip
             isDisabled
             color="success"
-            startContent={<CheckIcon />}
-            variant="bordered"
+            startContent={<CheckCircleIcon />}
+            variant="flat"
           >
             Paid
           </Chip>

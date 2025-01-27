@@ -115,6 +115,8 @@ const ModalRatingDish: React.FC<ModalRatingDishProps> = ({ product }) => {
         placement="center"
         isOpen={isOpen}
         size="lg"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         motionProps={{
           variants: {

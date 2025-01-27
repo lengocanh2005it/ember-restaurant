@@ -33,6 +33,8 @@ const ModalEditTable: React.FC<ModalEditTableProps> = ({ table, areaId }) => {
         backdrop="opaque"
         isOpen={isOpen}
         placement="center"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         size="lg"
         motionProps={{
           variants: {

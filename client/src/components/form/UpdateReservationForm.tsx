@@ -36,6 +36,7 @@ import { RotateCwIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const typeMap = {
   normal: "Normal",
@@ -395,76 +396,55 @@ const UpdateReservationForm: React.FC<UpdateReservationFormProps> = ({
           <div className="flex flex-col gap-1">
             <p className="font-medium lg:text-[14px] text-[13px]">Tables</p>
 
-            <Card>
-              <CardBody>
-                <div className="flex items-center gap-1">
-                  {tables.length !== 0 ? (
-                    <div className="flex items-center justify-between flex-1">
-                      <div className="flex items-center gap-1">
-                        {tables.map((table) => (
-                          <Chip
-                            key={table.id}
-                            onClose={() => {
-                              handleRemoveTable(table);
-                            }}
-                          >
-                            {table.name +
-                              " (" +
-                              typeMap[table.type as keyof typeof typeMap] +
-                              ")"}
-                          </Chip>
-                        ))}
-                      </div>
-
-                      {areaId === reservationUpdate?.tables[0]?.area?.id &&
-                        historyTables.length !== 0 && (
-                          <>
-                            <Tooltip
-                              content="Reset Tables"
-                              className="dark:text-white text-black"
-                              showArrow
-                            >
-                              <RotateCwIcon
-                                className="cursor-pointer opacity-60 hover:opacity-100 duration-300 
-                            ease-in-out transition-opacity"
-                                onClick={handleResetTable}
-                              />
-                            </Tooltip>
-                          </>
-                        )}
-                    </div>
-                  ) : (
-                    <>
-                      <div className="flex items-center justify-between flex-1 text-center">
-                        <h1
-                          className="lg:text-base text-[14px] w-full dark:text-white/60 
+            <div className="flex flex-col flex-wrap">
+              {tables.length !== 0 ? (
+                <ScrollArea className="lg:h-[100px] h-[50px] w-full pr-3">
+                  <div className="flex flex-col flex-wrap lg:gap-2 gap-1">
+                    {tables.map((table) => (
+                      <Chip
+                        key={table.id}
+                        onClose={() => {
+                          handleRemoveTable(table);
+                        }}
+                      >
+                        {table.name +
+                          " (" +
+                          typeMap[table.type as keyof typeof typeMap] +
+                          ")"}
+                      </Chip>
+                    ))}
+                  </div>
+                </ScrollArea>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between flex-1 text-center h-fit">
+                    <h1
+                      className="lg:text-base text-[14px] w-full dark:text-white/60 
                         text-black/70"
-                        >
-                          Empty Tables.
-                        </h1>
+                    >
+                      Empty Tables.
+                    </h1>
+                  </div>
+                </>
+              )}
+            </div>
 
-                        {areaId === reservationUpdate?.tables[0]?.area?.id &&
-                          historyTables.length !== 0 && (
-                            <>
-                              <Tooltip
-                                content="Reset Tables"
-                                className="dark:text-white text-black"
-                                showArrow
-                              >
-                                <RotateCwIcon
-                                  className="cursor-pointer opacity-60 hover:opacity-100 duration-300 
+            {areaId === reservationUpdate?.tables[0]?.area?.id &&
+              historyTables.length !== 0 && (
+                <div className="flex items-end justify-end">
+                  <Tooltip
+                    content="Reset Tables"
+                    className="dark:text-white text-black"
+                    showArrow
+                  >
+                    <RotateCwIcon
+                      className="cursor-pointer opacity-60 hover:opacity-100 duration-300 
                             ease-in-out transition-opacity"
-                                  onClick={handleResetTable}
-                                />
-                              </Tooltip>
-                            </>
-                          )}
-                      </div>
-                    </>
-                  )}
+                      onClick={handleResetTable}
+                    />
+                  </Tooltip>
                 </div>
-              </CardBody>
-            </Card>
+              )}
           </div>
         )}
 

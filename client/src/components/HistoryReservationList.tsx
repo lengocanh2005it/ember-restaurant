@@ -21,13 +21,13 @@ import {
   Tooltip,
 } from "@heroui/react";
 import { format } from "date-fns";
-import { TrashIcon } from "lucide-react";
+import { CheckCircleIcon, TrashIcon } from "lucide-react";
 import React from "react";
 
 const columns = [
   {
     key: "id",
-    label: "ID",
+    label: "RESERVATION ID",
   },
   {
     key: "date_time",
@@ -39,7 +39,11 @@ const columns = [
   },
   {
     key: "status",
-    label: "STATUS",
+    label: "RESERVATION STATUS",
+  },
+  {
+    key: "payment_method",
+    label: "PAYMENT METHOD",
   },
   {
     key: "is_paid",
@@ -65,13 +69,18 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
   pending: "warning",
 };
 
+const methodMap = {
+  cash: "Pay In Cash",
+  card: "Credit Card",
+};
+
 interface ReservationListProps {
   reservations: Reservation[];
 }
 
 const ReservationList: React.FC<ReservationListProps> = ({ reservations }) => {
   const [page, setPage] = React.useState<number>(1);
-  const { setReservationUpdate, setReservationPayment } = useReservationStore();
+  const { setReservationUpdate } = useReservationStore();
   const { user } = useUserStore();
 
   const rowsPerPage = 3;
@@ -101,6 +110,18 @@ const ReservationList: React.FC<ReservationListProps> = ({ reservations }) => {
             return <p>0%</p>;
           }
         }
+      }
+
+      case "payment_method": {
+        return (
+          <p>
+            {reservation?.payment?.payment_method
+              ? methodMap[
+                  reservation.payment.payment_method as keyof typeof methodMap
+                ]
+              : ""}
+          </p>
+        );
       }
 
       case "status": {
@@ -142,23 +163,13 @@ const ReservationList: React.FC<ReservationListProps> = ({ reservations }) => {
           <Chip
             color="success"
             isDisabled
-            startContent={<CheckIcon />}
-            variant="faded"
+            startContent={<CheckCircleIcon />}
+            variant="flat"
           >
             Paid
           </Chip>
         ) : (
-          <div
-            onClick={() => {
-              setReservationUpdate(reservation);
-              setReservationPayment({
-                reservationId: reservation.id,
-                totalPrice: reservation.total_price,
-              });
-            }}
-          >
-            <ModalPaymentReservation />
-          </div>
+          <ModalPaymentReservation reservation={reservation} />
         );
       }
       case "details": {
@@ -177,9 +188,7 @@ const ReservationList: React.FC<ReservationListProps> = ({ reservations }) => {
               !reservation.is_paid &&
               "flex-row-reverse justify-center items-center"
             } items-start justify-center gap-2`}
-            onClick={() => {
-              setReservationUpdate(reservation);
-            }}
+            onClick={() => setReservationUpdate(reservation)}
           >
             <Tooltip
               content="Delete"
@@ -189,12 +198,12 @@ const ReservationList: React.FC<ReservationListProps> = ({ reservations }) => {
               <TrashIcon
                 className="opacity-50 hover:opacity-100 ease-in-out
            cursor-pointer duration-250 transition-opacity"
-                onClick={() => {
+                onClick={() =>
                   mutateDeleteReservation({
                     userId: user?.id!,
                     reservationId: reservation.id,
-                  });
-                }}
+                  })
+                }
               />
             </Tooltip>
 
@@ -202,7 +211,9 @@ const ReservationList: React.FC<ReservationListProps> = ({ reservations }) => {
               <ModalEditReservation message={reservation.admin_message} />
             )}
 
-            {!reservation.is_paid && <ModalUpdateReservation />}
+            {reservation.status === "pending" && !reservation.is_paid && (
+              <ModalUpdateReservation />
+            )}
           </div>
         );
       }
@@ -219,20 +230,13 @@ const ReservationList: React.FC<ReservationListProps> = ({ reservations }) => {
 
   return (
     <>
-      <Table
-        aria-label="History Reservation List"
-        isStriped
-        isCompact
-        isHeaderSticky
-      >
+      <Table aria-label="History Reservation List">
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn
               key={column.key}
               align={
-                column.key === "options" ||
-                column.key === "status" ||
-                column.key === "details"
+                column.key === "options" || column.key === "details"
                   ? "center"
                   : "start"
               }
@@ -259,18 +263,20 @@ const ReservationList: React.FC<ReservationListProps> = ({ reservations }) => {
       </Table>
 
       {items.length !== 0 && (
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="secondary"
-          classNames={{
-            cursor: "bg-foreground text-background",
-          }}
-          total={totalPages}
-          page={page}
-          onChange={(page) => setPage(page)}
-        />
+        <div className="relative flex lg:items-start lg:justify-start items-center justify-center">
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            color="secondary"
+            classNames={{
+              cursor: "bg-foreground text-background",
+            }}
+            total={totalPages}
+            page={page}
+            onChange={(page) => setPage(page)}
+          />
+        </div>
       )}
     </>
   );

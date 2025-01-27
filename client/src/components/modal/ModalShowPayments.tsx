@@ -1,4 +1,6 @@
 import CreditCard from "@/components/CreditCard";
+import { useAppStore } from "@/store";
+import { emitCreatingPaymentOfUser } from "@/utils/socket";
 import {
   Chip,
   Modal,
@@ -11,10 +13,17 @@ import React from "react";
 
 const ModalShowPayments: React.FC = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { type } = useAppStore();
+
+  const handleClick = () => {
+    onOpen();
+    emitCreatingPaymentOfUser(type as "order" | "reservation");
+  };
+
   return (
     <>
       <Chip
-        onClick={onOpen}
+        onClick={handleClick}
         color="primary"
         className="dark:bg-white dark:text-black bg-black text-white cursor-pointer"
       >
@@ -26,6 +35,8 @@ const ModalShowPayments: React.FC = () => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         placement="center"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         motionProps={{
           variants: {
             enter: {

@@ -70,6 +70,8 @@ const ModalResetPassword: React.FC = () => {
         backdrop="opaque"
         onOpenChange={onOpenChange}
         placement="center"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         className="bg-primary text-white"
         motionProps={{
           variants: {

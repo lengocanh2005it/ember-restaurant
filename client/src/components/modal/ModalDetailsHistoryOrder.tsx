@@ -1,3 +1,4 @@
+import DetailsOfOrder from "@/components/DetailsOfOrder";
 import { Order } from "@/utils";
 import {
   Button,
@@ -82,6 +83,7 @@ const ModalDetailsHistoryOrder: React.FC<ModalDetailsHistoryOrderProps> = ({
             ).toFixed(2) + "$"
           : order.total_price + "$",
     },
+    ...(order.note ? [{ key: 8, name: "Note", value: order.note }] : []),
   ];
 
   return (
@@ -132,7 +134,7 @@ const ModalDetailsHistoryOrder: React.FC<ModalDetailsHistoryOrderProps> = ({
                 {array.map((order) => (
                   <div
                     className={`flex p-2 rounded-lg border dark:border-white/30 border-black/20 ${
-                      order.key === 2
+                      order.key === 2 || order.key === 8
                         ? "flex-col gap-1"
                         : "flex-row items-center justify-between gap-2"
                     }`}
@@ -147,6 +149,10 @@ const ModalDetailsHistoryOrder: React.FC<ModalDetailsHistoryOrderProps> = ({
                     </h1>
                   </div>
                 ))}
+
+                <div className="relative flex md:items-end md:justify-end items-center justify-center">
+                  <DetailsOfOrder order={order} />
+                </div>
               </ModalBody>
 
               <ModalFooter className="flex items-center justify-center">

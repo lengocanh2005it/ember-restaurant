@@ -39,6 +39,8 @@ const ModalUpdateReservation: React.FC = () => {
         backdrop="opaque"
         isOpen={isOpen}
         placement="center"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         size="xl"
         onOpenChange={() => {
           onOpenChange();

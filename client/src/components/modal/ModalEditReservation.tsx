@@ -44,6 +44,8 @@ const ModalEditReservation: React.FC<ModalEditReservationProps> = ({
         backdrop="opaque"
         isOpen={isOpen}
         placement="center"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         motionProps={{
           variants: {

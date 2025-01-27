@@ -16,6 +16,7 @@ import {
   useCartStore,
   useDiscountStore,
   useOrderStore,
+  useReservationStore,
   useUserStore,
 } from "@/store";
 import { DiscountWithQuantity } from "@/utils/types";
@@ -95,6 +96,8 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
   const { discount, setDiscount } = useDiscountStore();
   const { setType } = useAppStore();
   const { setOrderData } = useOrderStore();
+  const { setReservationData, setReservationPayment, setReservationUpdate } =
+    useReservationStore();
 
   const { mutate: mutateAddOrder } = useAddOrder(user?.id!);
 
@@ -149,6 +152,9 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
       promotionCode,
     } = values;
 
+    setReservationData(null);
+    setReservationPayment(null);
+    setReservationUpdate(null);
     setOrderData({
       order: {
         userId: user?.id!,

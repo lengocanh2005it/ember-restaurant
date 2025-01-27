@@ -1,5 +1,4 @@
 "use client";
-import { CheckIcon } from "@/components/icons/CheckIcon";
 import { EditIcon } from "@/components/icons/EditIcon";
 import ModalConfirmDeleteOrder from "@/components/modal/ModalConfirmDeleteOrder";
 import ModalViewOrdersOfCustomer from "@/components/modal/ModalViewOrdersOfCustomer";
@@ -17,7 +16,8 @@ import {
   Tooltip,
 } from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { XIcon } from "lucide-react";
+import { format } from "date-fns";
+import { CheckCircleIcon, XCircleIcon } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -38,11 +38,11 @@ interface ListOrdersOfCustomerProps {
 }
 
 const columns = [
-  { name: "DATE", uid: "createdAt" },
-  { name: "ID", uid: "id" },
+  { name: "DATE TIME", uid: "createdAt" },
+  { name: "ORDER ID", uid: "id" },
   { name: "ORDER DETAILS", uid: "order" },
-  { name: "PRICE", uid: "total_price" },
-  { name: "STATUS", uid: "status" },
+  { name: "TOTAL PRICE", uid: "total_price" },
+  { name: "ORDER STATUS", uid: "status" },
   { name: "PAYMENT METHOD", uid: "method" },
   { name: "PAYMENT STATUS", uid: "is_paid" },
   { name: "OPTIONS", uid: "options" },
@@ -83,8 +83,19 @@ const ListOrdersOfCustomer: React.FC<ListOrdersOfCustomerProps> = ({
       const cellValue = order[columnKey as keyof Order];
 
       switch (columnKey) {
+        case "createdAt": {
+          return (
+            <p>
+              {format(
+                order?.createdAt ? order.createdAt : new Date(),
+                "dd/MM/yyyy HH:mm:yy"
+              )}
+            </p>
+          );
+        }
+
         case "total_price": {
-          return <p>{cellValue as string}$</p>;
+          return <p>{cellValue as string}$ (USD)</p>;
         }
 
         case "id": {
@@ -104,22 +115,24 @@ const ListOrdersOfCustomer: React.FC<ListOrdersOfCustomerProps> = ({
         }
         case "options": {
           return (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 justify-end">
               <ModalViewOrdersOfCustomer order={order} />
 
-              <Tooltip content="Edit" className="dark:text-white text-black">
-                <span
-                  className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                  onClick={() => {
-                    query.setQueryData(["orderId"], order.id);
-                    router.push(
-                      `/home/admin/orders/customer/${params.id}/edit`
-                    );
-                  }}
-                >
-                  <EditIcon />
-                </span>
-              </Tooltip>
+              {!order.is_paid && (
+                <Tooltip content="Edit" className="dark:text-white text-black">
+                  <span
+                    className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                    onClick={() => {
+                      query.setQueryData(["orderId"], order.id);
+                      router.push(
+                        `/home/admin/orders/customer/${params.id}/edit`
+                      );
+                    }}
+                  >
+                    <EditIcon />
+                  </span>
+                </Tooltip>
+              )}
 
               <ModalConfirmDeleteOrder orderId={order.id} />
             </div>
@@ -152,8 +165,10 @@ const ListOrdersOfCustomer: React.FC<ListOrdersOfCustomerProps> = ({
           return (
             <Chip
               color={order.is_paid === true ? "success" : "danger"}
-              variant="bordered"
-              startContent={order.is_paid === true ? <CheckIcon /> : <XIcon />}
+              variant="flat"
+              startContent={
+                order.is_paid === true ? <CheckCircleIcon /> : <XCircleIcon />
+              }
             >
               {order.is_paid === true ? "Paid" : "Not Paid"}
             </Chip>
@@ -200,7 +215,12 @@ const ListOrdersOfCustomer: React.FC<ListOrdersOfCustomerProps> = ({
       <Table aria-label="Table orders of customer">
         <TableHeader columns={columns}>
           {(column) => (
-            <TableColumn key={column.uid}>{column.name}</TableColumn>
+            <TableColumn
+              key={column.uid}
+              align={column.uid === "options" ? "center" : "start"}
+            >
+              {column.name}
+            </TableColumn>
           )}
         </TableHeader>
         <TableBody

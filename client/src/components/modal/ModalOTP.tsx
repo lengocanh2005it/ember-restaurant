@@ -101,6 +101,8 @@ const ModalOTP: React.FC<ModalOTPProps> = ({
         isOpen={isOpen}
         size="lg"
         placement="center"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         motionProps={{
           variants: {
             enter: {
