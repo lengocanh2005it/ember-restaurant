@@ -78,8 +78,8 @@ const handler = NextAuth({
               name: "user_session",
               value: signedSessionID,
               path: "/",
-              httpOnly: true,
-              secure: false,
+              httpOnly: process.env.NODE_ENV === "production" ? true : false,
+              secure: process.env.NODE_ENV === "production" ? true : false,
               maxAge: 86400,
             });
 
@@ -88,7 +88,7 @@ const handler = NextAuth({
               value: accessToken,
               path: "/",
               httpOnly: false,
-              secure: false,
+              secure: process.env.NODE_ENV === "production" ? true : false,
               maxAge: 86400,
             });
           }
