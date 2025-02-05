@@ -2,6 +2,7 @@
 import { CreateCartDto } from "@/api/carts/utils/types";
 import { useAddCart } from "@/hooks/use-add-cart";
 import { useUserStore } from "@/store";
+import { Product } from "@/utils";
 import {
   Button,
   Modal,
@@ -10,6 +11,7 @@ import {
   ModalFooter,
   ModalHeader,
   Textarea,
+  Tooltip,
   useDisclosure,
 } from "@heroui/react";
 import { InputNumber } from "antd";
@@ -18,20 +20,20 @@ import Image from "next/image";
 import React, { useState } from "react";
 
 interface ButtonOrderProps {
-  image: string;
-  name: string;
-  price: number;
-  id: string;
-  stock: number;
+  product: Product;
 }
 
-const ButtonOrder: React.FC<ButtonOrderProps> = ({
-  image,
-  name,
-  price,
-  id,
-  stock,
-}) => {
+const categoryMap: Record<string, string> = {
+  appetizer: "Appetizer",
+  dessert: "Dessert",
+  main_course: "Main Course",
+  snack: "Snack",
+  signature_dishes: "Signature Dishes",
+  beverage: "Beverage",
+  hotpot: "Hot Pot",
+};
+
+const ButtonOrder: React.FC<ButtonOrderProps> = ({ product }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [number, setNumber] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -43,7 +45,7 @@ const ButtonOrder: React.FC<ButtonOrderProps> = ({
 
   const handleAddCart = () => {
     const data: CreateCartDto = {
-      productId: id,
+      productId: product.id,
       userId: user?.id!,
       quantity: number,
       note,
@@ -71,6 +73,8 @@ const ButtonOrder: React.FC<ButtonOrderProps> = ({
       <Modal
         backdrop="opaque"
         isOpen={isOpen}
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={() => {
           onOpenChange();
           setNumber(1);
@@ -101,23 +105,27 @@ const ButtonOrder: React.FC<ButtonOrderProps> = ({
         <ModalContent className="text-black dark:text-white">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                New Cart
+              <ModalHeader className="flex flex-col lg:text-left text-center">
+                <h1>New Cart</h1>
+
+                <p className="dark:text-white/70 text-black/70 lg:text-[15px] text-[14px] font-normal">
+                  Create a new cart and check it on the Cart Page.
+                </p>
               </ModalHeader>
 
               <ModalBody>
                 <div
                   className="relative w-full gap-4 h-full flex flex-col border
-                   border-black/10 dark:border-white/10 md:flex-row items-center
+                   border-black/20 dark:border-white/20 md:flex-row items-center
                  bg-white rounded-lg overflow-hidden dark:bg-black/10 dark:text-white"
                 >
                   <div
                     className="w-full md:w-[50%] lg:h-[170px] h-[150px] relative
                    flex items-center justify-center"
                   >
-                    {image && (
+                    {product.image && (
                       <Image
-                        src={image}
+                        src={product.image}
                         alt="dish"
                         priority
                         sizes="(max-width:600px) 100vw, 50vw"
@@ -131,41 +139,63 @@ const ButtonOrder: React.FC<ButtonOrderProps> = ({
                     className="w-full md:w-[55%] flex flex-col justify-center 
                   p-4 lg:gap-8 gap-6 text-base"
                   >
-                    <h1
-                      className="text-center lg:text-2xl text-xl
+                    <div className="flex flex-col items-center justify-center text-center">
+                      <h1
+                        className="text-center lg:text-2xl text-xl
                        font-medium text-black/80
                      dark:text-white/90 break-words"
-                    >
-                      {name}
-                    </h1>
+                      >
+                        {product.name}
+                      </h1>
+
+                      <Tooltip
+                        content="Category"
+                        className="dark:text-white text-black"
+                      >
+                        <p className="cursor-pointer dark:text-white/70 text-black/70">
+                          {
+                            categoryMap[
+                              product.category as keyof typeof categoryMap
+                            ]
+                          }
+                        </p>
+                      </Tooltip>
+                    </div>
 
                     <div className="flex flex-col gap-3">
-                      <p className="text-gray-600 dark:text-white/60">
+                      <p className="text-black/80 dark:text-white/70 lg:text-left text-center">
                         Price:{" "}
                         <span className="font-bold text-xl dark:text-green-300 text-green-500">
-                          {price}$
+                          {product.price}$
                         </span>
                       </p>
 
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-600  dark:text-white/60">
+                      <div
+                        className="flex items-center gap-2 lg:items-start lg:justify-start
+                       justify-center"
+                      >
+                        <span className="text-black/80  dark:text-white/70">
                           Quantity:{" "}
                         </span>
+
                         <InputNumber
                           defaultValue={number}
                           className="w-20"
                           type="number"
                           min={1}
                           onChange={(value) => {
-                            setNumber(value!);
+                            if (value) {
+                              setNumber(value);
+                            }
                           }}
                         />
                       </div>
 
                       <div className="flex flex-col gap-1">
-                        <p className="text-black/60 dark:text-white/60">
+                        <p className="text-black/70 dark:text-white/70 lg:text-left text-center">
                           Note about cart (Optional):
                         </p>
+
                         <Textarea
                           placeholder="Enter note about cart here..."
                           name="note"
@@ -180,7 +210,10 @@ const ButtonOrder: React.FC<ButtonOrderProps> = ({
                 </div>
               </ModalBody>
 
-              <ModalFooter className="flex lg:flex-row flex-col items-end justify-end">
+              <ModalFooter
+                className="flex lg:flex-row flex-col-reverse lg:items-end lg:justify-end
+              justify-center items-center"
+              >
                 <Button
                   color="primary"
                   onPress={() => {
@@ -208,7 +241,7 @@ const ButtonOrder: React.FC<ButtonOrderProps> = ({
                       color="primary"
                       onPress={handleAddCart}
                       className={`dark:bg-white dark:text-black ${
-                        stock < number &&
+                        product.stock < number &&
                         "opacity-30 select-none pointer-events-none"
                       }`}
                     >

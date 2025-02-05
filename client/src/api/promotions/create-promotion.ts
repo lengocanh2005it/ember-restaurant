@@ -15,10 +15,10 @@ export const handleCreatePromotion = async (
       file: image,
     });
 
-    if (imageUrlResponse && imageUrlResponse.data.url) {
+    if (imageUrlResponse) {
       const data = {
         ...res,
-        image: imageUrlResponse.data.url as string,
+        image: imageUrlResponse.url as string,
       };
 
       const response = await axios.post("/promotions", data, {

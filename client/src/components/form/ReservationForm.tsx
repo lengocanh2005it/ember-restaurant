@@ -12,12 +12,14 @@ import {
 } from "@/components/ui/form";
 import { useAddReservation } from "@/hooks/use-add-reservation";
 import { useAreas } from "@/hooks/use-areas";
+import { useFindPromotion } from "@/hooks/use-find-promotion";
 import { useFindTablesByTypes } from "@/hooks/use-find-tables-with-types";
 import { useTables } from "@/hooks/use-tables";
 import {
   useAppStore,
   useDiscountStore,
   useOrderStore,
+  usePromotionStore,
   useReservationStore,
   useUserStore,
 } from "@/store";
@@ -31,9 +33,12 @@ import {
   Select,
   SelectItem,
   Textarea,
+  Tooltip,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getLocalTimeZone, now, ZonedDateTime } from "@internationalized/date";
+import { debounce } from "lodash";
+import { CheckCircleIcon, XCircleIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
@@ -86,12 +91,22 @@ const formSchema = z
       }),
     promotionCode: z.string().optional(),
   })
-  .superRefine(({ type, areaId, tableIds }, ctx) => {
+  .superRefine(({ type, areaId, tableIds, date_time }, ctx) => {
     if (type && areaId && !tableIds) {
       ctx.addIssue({
         code: "custom",
         message: "Please choose tables.",
         path: ["tableIds"],
+      });
+    }
+
+    const currentDateTime = now(date_time.timeZone);
+
+    if (date_time.compare(currentDateTime) < 0) {
+      ctx.addIssue({
+        code: "custom",
+        message: "The selected date and time must be in the future.",
+        path: ["date_time"],
       });
     }
   });
@@ -123,6 +138,9 @@ const ReservationForm: React.FC = () => {
   const { user } = useUserStore();
   const { discount, setDiscount } = useDiscountStore();
   const { setType } = useAppStore();
+  const { mutate: mutateFindPromotion } = useFindPromotion();
+  const { promotions } = usePromotionStore();
+  const [isFinding, setIsFinding] = useState<boolean>(false);
 
   useEffect(() => {
     if (tablesData) {
@@ -165,7 +183,7 @@ const ReservationForm: React.FC = () => {
       method: undefined,
       agreedToTerms: false,
       note: "",
-      date_time: now(getLocalTimeZone()),
+      date_time: now(getLocalTimeZone()).add({ days: 7 }),
       tableIds: [],
       promotionCode: "",
     },
@@ -218,10 +236,10 @@ const ReservationForm: React.FC = () => {
       tableIds,
       date_time: new Date(cleanedDate),
       note,
-      ...(!discount && promotionCode ? [{ promotionCode }] : []),
+      ...(!discount && promotionCode ? { promotionCode } : {}),
       ...(discount && !promotionCode
-        ? [{ discountId: discount.discount.id }]
-        : []),
+        ? { discountId: discount.discount.id }
+        : {}),
     };
 
     setOrderPayment(null);
@@ -253,6 +271,13 @@ const ReservationForm: React.FC = () => {
     }, 2500);
   };
 
+  const handleFindPromotion = debounce((value: string) => {
+    if (value) {
+      mutateFindPromotion(value);
+    }
+    setIsFinding(false);
+  }, 2000);
+
   return (
     <>
       <Form {...form}>
@@ -272,12 +297,12 @@ const ReservationForm: React.FC = () => {
                   <FormControl>
                     <DatePicker
                       hideTimeZone
-                      inert={false}
                       showMonthAndYearPickers
                       aria-labelledby="date-and-time"
                       aria-label="date-and-time"
                       defaultValue={now(getLocalTimeZone())}
                       {...field}
+                      inert={false}
                     />
                   </FormControl>
                   <FormMessage className="dark:text-red-400 text-red-500" />
@@ -367,6 +392,55 @@ const ReservationForm: React.FC = () => {
                         placeholder="Enter promotion code if you have..."
                         aria-label="PromotionCode"
                         {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          setIsFinding(true);
+                          handleFindPromotion(e.target.value);
+                        }}
+                        endContent={
+                          isFinding ? (
+                            <div
+                              className="animate-spin dark:text-white text-black/70
+                         w-4 h-4"
+                            >
+                              <svg
+                                className="w-full h-full"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <circle
+                                  cx="12"
+                                  cy="12"
+                                  r="10"
+                                  stroke="currentColor"
+                                  strokeWidth="4"
+                                  className="opacity-25"
+                                />
+                                <path
+                                  fill="currentColor"
+                                  d="M4 12a8 8 0 018-8v4a4 4 0 000 8v4a8 8 0 01-8-8z"
+                                  className="opacity-75"
+                                />
+                              </svg>
+                            </div>
+                          ) : promotions.length !== 0 &&
+                            promotionCode !== "" ? (
+                            <Tooltip
+                              content="Valid Promotion Code"
+                              className="dark:text-white text-black"
+                            >
+                              <CheckCircleIcon className="text-success-500 cursor-pointer" />
+                            </Tooltip>
+                          ) : promotionCode !== "" ? (
+                            <Tooltip
+                              content="Invalid Promotion Code"
+                              className="dark:text-white text-black"
+                            >
+                              <XCircleIcon className="text-danger-500 cursor-pointer" />
+                            </Tooltip>
+                          ) : null
+                        }
                       />
                     </FormControl>
                   </FormItem>
@@ -576,6 +650,7 @@ const ReservationForm: React.FC = () => {
                 type="submit"
                 color="primary"
                 className="mx-auto font-bold dark:bg-white dark:text-black text-white"
+                isDisabled={promotionCode !== "" && promotions.length === 0}
               >
                 Submit
               </Button>

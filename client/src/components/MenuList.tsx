@@ -131,7 +131,7 @@ const MenuList: React.FC = () => {
 
             {currentItems.length !== 0 ? (
               <>
-                <div className="grid grid-cols-1 xl:grid-cols-3 lg:gap-6 gap-2">
+                <div className="grid grid-cols-1 xl:grid-cols-3 lg:gap-6 gap-4">
                   {currentItems.map((item: Product) => (
                     <MenuItems key={item.id} item={item} />
                   ))}

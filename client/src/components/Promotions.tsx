@@ -74,7 +74,7 @@ const Promotions: React.FC = () => {
         className="relative flex flex-col lg:items-start items-center lg:text-left text-center
        lg:justify-start justify-center"
       >
-        <div className="relative flex lg:gap-4 gap-2 lg:flex-row flex-col items-center">
+        <div className="relative flex lg:gap-1 lg:flex-row flex-col items-center">
           <h1 className="lg:text-2xl text-xl font-bold lg:text-left text-center">
             Exclusive Promotions
           </h1>

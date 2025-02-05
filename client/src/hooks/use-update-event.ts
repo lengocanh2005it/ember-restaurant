@@ -9,7 +9,6 @@ export const useUpdateEvent = () => {
     mutationFn: handleUpdateEvent,
     onSuccess: (data: any) => {
       query.setQueryData(["events"], data);
-
       showSuccessToast("Updated event successfully!", "top-right", {
         backgroundColor: "#28a745",
         color: "#fff",
@@ -17,14 +16,10 @@ export const useUpdateEvent = () => {
     },
     onError: (err: any) => {
       console.error(err);
-      showErrorToast(
-        "Updated notification failed. Please try again!",
-        "bottom-right",
-        {
-          backgroundColor: "#dc3545",
-          color: "#fff",
-        }
-      );
+      showErrorToast(err.response.data.message, "bottom-right", {
+        backgroundColor: "#dc3545",
+        color: "#fff",
+      });
     },
   });
 };

@@ -67,7 +67,7 @@ const FeatureDishes: React.FC = () => {
               className="flex flex-col relative lg:items-start lg:justify-start items-center 
                 justify-center lg:text-left text-center"
             >
-              <div className="relative flex lg:flex-row flex-col gap-3 items-center">
+              <div className="relative flex lg:flex-row flex-col lg:gap-1 items-center">
                 <h1 className="lg:text-2xl text-xl font-bold">
                   Featured Dishes
                 </h1>

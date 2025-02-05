@@ -77,7 +77,6 @@ const UpdateProfile: React.FC = () => {
     };
   }, [user?.email, setIsExistedEmail]);
 
-  const isVerifyEmail = query.getQueryData(["isVerifyEmail"]) as boolean;
   const isVerified = query.getQueryData(["isVerified"]) as boolean;
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -97,7 +96,7 @@ const UpdateProfile: React.FC = () => {
   });
 
   const { mutate: profileMutate } = useUpdateProfile();
-  const { mutate: mutateUpdateEmail, isPending } = useUpdateEmail();
+  const { mutate: mutateUpdateEmail } = useUpdateEmail();
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

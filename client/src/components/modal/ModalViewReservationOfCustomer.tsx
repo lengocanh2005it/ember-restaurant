@@ -1,9 +1,12 @@
 "use client";
 import ModalViewFeedbackReservations from "@/components/modal/ModalViewFeedbackReservations";
-import { statusMap, methodMap, typeMap } from "@/utils/maps";
+import { methodMap, statusMap, typeMap } from "@/utils/maps";
 import { Reservation } from "@/utils/types";
 import {
+  Accordion,
+  AccordionItem,
   Button,
+  Chip,
   Modal,
   ModalBody,
   ModalContent,
@@ -11,17 +14,19 @@ import {
   ModalHeader,
   Tooltip,
   useDisclosure,
-  Accordion,
-  AccordionItem,
-  Chip,
 } from "@heroui/react";
 import { format } from "date-fns";
-import { EyeIcon } from "lucide-react";
+import { EyeIcon, GiftIcon } from "lucide-react";
 import React from "react";
 
 interface ModalViewReservationOfCustomerProps {
   reservation: Reservation;
 }
+
+const typeDiscountMap = {
+  percentage: "%",
+  fixed: "USD",
+};
 
 const ModalViewReservationOfCustomer: React.FC<
   ModalViewReservationOfCustomerProps
@@ -80,14 +85,26 @@ const ModalViewReservationOfCustomer: React.FC<
       title: "Status",
       value: statusMap[reservation.status as keyof typeof statusMap],
     },
-    ...(reservation.discount
+    ...(reservation.discounts?.length !== 0
       ? [
           {
-            key: 8,
-            title: "Discount",
-            value:
-              reservation.discount.value +
-              (reservation.discount.type === "percentage" ? " %" : " USD"),
+            value: reservation.discounts
+              ? reservation.discounts
+                  .map(
+                    (discount) =>
+                      `${discount.value}${
+                        typeDiscountMap[
+                          discount.type as keyof typeof typeDiscountMap
+                        ]
+                      }`
+                  )
+                  .join(",") +
+                " (" +
+                reservation.discount_price +
+                "$ USD)"
+              : "Null",
+            icon: <GiftIcon />,
+            name: "Discount",
           },
         ]
       : []),

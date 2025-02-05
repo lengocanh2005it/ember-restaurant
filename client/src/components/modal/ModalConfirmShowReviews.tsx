@@ -1,52 +1,70 @@
 "use client";
-import { useUpdateReviews } from "@/hooks/use-update-review";
-import { Review } from "@/utils";
+import { UpdateFeaturedReviewDto } from "@/api/reviews/utils/types";
+import { useUpdateFeaturedReviews } from "@/hooks/use-update-featured-review";
 import {
   Button,
+  Chip,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Selection,
   useDisclosure,
 } from "@heroui/react";
-import React, { useState } from "react";
+import { HomeIcon } from "lucide-react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 
 interface ModalConfirmShowReviewsProps {
-  reviews: Review[];
+  reviewsId: string[];
+  setReviewsId: Dispatch<SetStateAction<Selection>>;
+  userId: string;
 }
 
 const ModalConfirmShowReviews: React.FC<ModalConfirmShowReviewsProps> = ({
-  reviews,
+  reviewsId,
+  setReviewsId,
+  userId,
 }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { mutate: mutateUpdateReviews } = useUpdateReviews();
+  const { mutate: mutateUpdateFeaturedReviews } =
+    useUpdateFeaturedReviews(userId);
 
   const handleClick = () => {
     setIsLoading(true);
+    const data: UpdateFeaturedReviewDto = {
+      reviewIds: reviewsId,
+      userId,
+    };
     setTimeout(() => {
       setIsLoading(false);
+      mutateUpdateFeaturedReviews(data);
+      setReviewsId(new Set());
       onClose();
     }, 2500);
   };
 
   return (
     <>
-      <Button
-        onPress={onOpen}
+      <Chip
+        onClick={onOpen}
         color="primary"
-        className="dark:bg-white dark:text-black"
+        startContent={<HomeIcon size={20} />}
+        className="dark:bg-white dark:text-black cursor-pointer transition-opacity px-2 
+        opacity-70 hover:opacity-100 duration-250"
       >
-        Save
-      </Button>
+        Display in Home Page
+      </Chip>
 
       <Modal
         backdrop="opaque"
         isOpen={isOpen}
         placement="center"
         size="xl"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         motionProps={{
           variants: {
@@ -72,26 +90,31 @@ const ModalConfirmShowReviews: React.FC<ModalConfirmShowReviewsProps> = ({
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Confirm</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
+                Confirmation
+              </ModalHeader>
 
               <ModalBody className="relative flex flex-col gap-1">
-                <h1 className="lg:text-base text-[15px] font-bold">
-                  Do you want to display all reviews on the home page?
+                <h1 className="lg:text-base text-[15px] font-bold uppercase lg:text-left text-center">
+                  Display all reviews on the home page?
                 </h1>
 
-                <p className="lg:text-[14px] text-[12px] dark:text-white/60 text-black/60">
+                <p
+                  className="lg:text-[15px] text-[13px] dark:text-white/60 text-black/60 
+                lg:text-left text-center"
+                >
                   If you choose &apos;Yes&apos;, all of these reviews will be
                   displayed on the restaurant&apos;s home page.
                 </p>
               </ModalBody>
 
-              <ModalFooter>
+              <ModalFooter className="relative flex lg:items-end lg:justify-end items-center justify-center">
                 <Button
                   color="primary"
                   className="dark:bg-white dark:text-black"
                   onPress={onClose}
                 >
-                  No
+                  Cancel
                 </Button>
 
                 {isLoading ? (
@@ -111,7 +134,7 @@ const ModalConfirmShowReviews: React.FC<ModalConfirmShowReviewsProps> = ({
                       className="dark:bg-white dark:text-black text-white"
                       onPress={handleClick}
                     >
-                      Yes
+                      Save
                     </Button>
                   </>
                 )}

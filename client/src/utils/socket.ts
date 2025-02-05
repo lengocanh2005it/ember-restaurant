@@ -9,11 +9,16 @@ export const connectSocket = (accessToken: string) => {
   }
 
   if (!socket) {
-    socket = io.connect(process.env.NEXT_PUBLIC_BASE_URL as string, {
-      auth: {
-        token: accessToken,
-      },
-    });
+    socket = io.connect(
+      process.env.NEXT_PUBLIC_NODE_ENV === "development"
+        ? (process.env.NEXT_PUBLIC_BASE_DEV_URL as string)
+        : (process.env.NEXT_PUBLIC_BASE_PROD_URL as string),
+      {
+        auth: {
+          token: accessToken,
+        },
+      }
+    );
 
     socket.on("connect", () => {});
 

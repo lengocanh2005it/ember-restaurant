@@ -20,6 +20,11 @@ interface DetailsOfOrderProps {
   order: Order;
 }
 
+const typeMap = {
+  percentage: "%",
+  fixed: "USD",
+};
+
 const DetailsOfOrder: React.FC<DetailsOfOrderProps> = ({ order }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [page, setPage] = useState<number>(1);
@@ -93,6 +98,23 @@ const DetailsOfOrder: React.FC<DetailsOfOrderProps> = ({ order }) => {
                       )}
                     </p>
                   </div>
+
+                  {order.discounts && order.discounts.length !== 0 && (
+                    <div className="flex sm:flex-row flex-col sm:items-center sm:gap-1">
+                      <p className="lg:text-[14px] text-[13px] dark:text-white/70 text-black/70">
+                        Discount:
+                      </p>
+
+                      <p>
+                        {order.discounts.map(
+                          (discount) =>
+                            `${discount.value}${
+                              typeMap[discount.type as keyof typeof typeMap]
+                            }`
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <Separator className="px-10 dark:bg-white/30 bg-black/60" />
@@ -166,13 +188,56 @@ const DetailsOfOrder: React.FC<DetailsOfOrderProps> = ({ order }) => {
                 </div>
               </DrawerBody>
 
-              <DrawerFooter className="relative flex flex-col">
+              <DrawerFooter className="relative flex flex-col md:gap-2">
+                {order.discounts && order.discounts.length !== 0 && (
+                  <>
+                    <div className="flex sm:flex-row flex-col sm:items-center sm:justify-between">
+                      <p className="sm:text-[15px] text-[14px] dark:text-white/70 text-black/70">
+                        Original Price:
+                      </p>
+
+                      {order.discounts &&
+                        order.discounts.length !== 0 &&
+                        order.discount_price && (
+                          <p className="font-medium">
+                            {order.original_price}$ (USD)
+                          </p>
+                        )}
+                    </div>
+
+                    <div className="flex sm:flex-row flex-col sm:items-center sm:justify-between">
+                      <p className="sm:text-[15px] text-[14px] dark:text-white/70 text-black/70">
+                        Discount Price:
+                      </p>
+
+                      {order.discounts &&
+                        order.discounts.length !== 0 &&
+                        order.discount_price && (
+                          <p className="font-medium">
+                            {order.discount_price}$ (USD)
+                          </p>
+                        )}
+                    </div>
+                  </>
+                )}
+
                 <div className="flex sm:flex-row flex-col sm:items-center sm:justify-between">
                   <p className="sm:text-[15px] text-[14px] dark:text-white/70 text-black/70">
                     Total Price:
                   </p>
 
-                  <p className="font-bold">{order.total_price}$ (USD)</p>
+                  {order.discounts &&
+                  order.discounts.length !== 0 &&
+                  order.discount_price ? (
+                    <p className="font-medium">
+                      {parseFloat(
+                        (order.original_price - order.discount_price).toFixed(2)
+                      )}
+                      $ (USD)
+                    </p>
+                  ) : (
+                    <p className="font-medium">{order.total_price}$ (USD)</p>
+                  )}
                 </div>
 
                 <div className="flex items-end justify-end relative">

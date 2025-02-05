@@ -135,6 +135,8 @@ export type Order = {
   note?: string;
   status: string;
   total_price: number;
+  original_price: number;
+  discount_price: number;
   order_details: OrderDetails[];
   is_paid: boolean;
   admin_message?: string;
@@ -247,9 +249,11 @@ export type Reservation = {
   guests_count: number;
   status: string;
   note?: string;
-  discount?: Discount;
+  discounts?: Discount[];
   admin_message?: string;
   total_price: number;
+  original_price: number;
+  discount_price: number;
   reviews: Review[];
   tables: Table[];
   payment: Payment;
@@ -300,3 +304,15 @@ export type CachedReservationData = {
 export type Theme = {
   theme: string;
 };
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      userId?: string | null;
+      session_state?: string | null;
+    };
+  }
+}

@@ -1,4 +1,5 @@
 "use client";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Event } from "@/utils";
 import {
   Button,
@@ -92,135 +93,148 @@ const ModalViewEvent: React.FC<ModalViewEventProps> = ({ event }) => {
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col">View Event</ModalHeader>
+              <ModalHeader className="flex flex-col lg:text-left text-center">
+                View Event
+              </ModalHeader>
 
               <ModalBody>
-                <div
-                  className={`flex flex-col lg:gap-1 lg:items-start items-center justify-between p-2
+                <ScrollArea className="h-[400px] pr-3 w-full">
+                  <div className="flex flex-col gap-2">
+                    <div
+                      className={`flex flex-col lg:gap-1 lg:items-start items-center justify-between p-2
                border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
-                >
-                  <h1
-                    className="lg:text-[14px] text-[13px]
-                    dark:text-white/50 text-black/60"
-                  >
-                    Title
-                  </h1>
-                  <p>{event.title ? event.title : "Null"}</p>
-                </div>
-
-                <div className="grid lg:grid-cols-2 grid-cols-1 gap-2">
-                  <div
-                    className={`flex lg:flex-row flex-col lg:gap-2 items-center justify-between p-2
-               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
-                  >
-                    <h1
-                      className="lg:text-[14px] text-[13px]
-                    dark:text-white/50 text-black/60"
                     >
-                      Start Date
-                    </h1>
-                    <p>
-                      {event.start_date
-                        ? event.start_date.split("T")[0]
-                        : "Null"}
-                    </p>
-                  </div>
-
-                  <div
-                    className={`flex lg:flex-row flex-col lg:gap-2 items-center justify-between p-2
-               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
-                  >
-                    <h1
-                      className="lg:text-[14px] text-[13px]
+                      <h1
+                        className="lg:text-[14px] text-[13px]
                     dark:text-white/50 text-black/60"
+                      >
+                        Title
+                      </h1>
+                      <p>{event.title ? event.title : "Null"}</p>
+                    </div>
+
+                    <div className="grid lg:grid-cols-2 grid-cols-1 gap-2">
+                      <div
+                        className={`flex lg:flex-row flex-col lg:gap-2 items-center justify-between p-2
+               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
+                      >
+                        <h1
+                          className="lg:text-[14px] text-[13px]
+                    dark:text-white/50 text-black/60"
+                        >
+                          Start Date
+                        </h1>
+                        <p>
+                          {event.start_date
+                            ? event.start_date.split("T")[0]
+                            : "Null"}
+                        </p>
+                      </div>
+
+                      <div
+                        className={`flex lg:flex-row flex-col lg:gap-2 items-center justify-between p-2
+               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
+                      >
+                        <h1
+                          className="lg:text-[14px] text-[13px]
+                    dark:text-white/50 text-black/60"
+                        >
+                          End Date
+                        </h1>
+                        <p>
+                          {event.end_date
+                            ? event.end_date.split("T")[0]
+                            : "Null"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid lg:grid-cols-2 grid-cols-1 gap-2">
+                      <div
+                        className={`flex lg:flex-row flex-col lg:gap-2 items-center justify-between p-2
+               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
+                      >
+                        <h1
+                          className="lg:text-[14px] text-[13px]
+                    dark:text-white/50 text-black/60"
+                        >
+                          Guests Number
+                        </h1>
+                        <p>
+                          {event.guests_number ? event.guests_number : "Null"}
+                        </p>
+                      </div>
+
+                      <div
+                        className={`flex lg:flex-row flex-col lg:gap-2 items-center justify-between p-2
+               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
+                      >
+                        <h1
+                          className="lg:text-[14px] text-[13px]
+                    dark:text-white/50 text-black/60"
+                        >
+                          Status
+                        </h1>
+                        <p>
+                          {event.status
+                            ? statusMap[event.status as keyof typeof statusMap]
+                            : "Null"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div
+                      className={`flex lg:flex-row flex-col lg:gap-2 items-center justify-between p-2
+               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
                     >
-                      End Date
-                    </h1>
-                    <p>
-                      {event.end_date ? event.end_date.split("T")[0] : "Null"}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid lg:grid-cols-2 grid-cols-1 gap-2">
-                  <div
-                    className={`flex lg:flex-row flex-col lg:gap-2 items-center justify-between p-2
-               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
-                  >
-                    <h1
-                      className="lg:text-[14px] text-[13px]
+                      <h1
+                        className="lg:text-[14px] text-[13px]
                     dark:text-white/50 text-black/60"
+                      >
+                        Type Event
+                      </h1>
+                      <p>
+                        {event.type
+                          ? typeMap[event.type as keyof typeof typeMap]
+                          : "Null"}
+                      </p>
+                    </div>
+
+                    <div
+                      className={`flex flex-col lg:gap-1 lg:items-start items-center justify-between p-2
+               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
                     >
-                      Guests Number
-                    </h1>
-                    <p>{event.guests_number ? event.guests_number : "Null"}</p>
+                      <h1
+                        className="lg:text-[14px] text-[13px]
+                    dark:text-white/50 text-black/60"
+                      >
+                        Description
+                      </h1>
+                      <p>{event.description ? event.description : "Null"}</p>
+                    </div>
+
+                    {event.note !== "" && (
+                      <div
+                        className={`flex flex-col lg:gap-1 lg:items-start items-center justify-between p-2
+               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
+                      >
+                        <h1
+                          className="lg:text-[14px] text-[13px]
+                    dark:text-white/50 text-black/60"
+                        >
+                          Note
+                        </h1>
+                        <p>{event.note}</p>
+                      </div>
+                    )}
                   </div>
-
-                  <div
-                    className={`flex lg:flex-row flex-col lg:gap-2 items-center justify-between p-2
-               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
-                  >
-                    <h1
-                      className="lg:text-[14px] text-[13px]
-                    dark:text-white/50 text-black/60"
-                    >
-                      Status
-                    </h1>
-                    <p>
-                      {event.status
-                        ? statusMap[event.status as keyof typeof statusMap]
-                        : "Null"}
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  className={`flex lg:flex-row flex-col lg:gap-2 items-center justify-between p-2
-               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
-                >
-                  <h1
-                    className="lg:text-[14px] text-[13px]
-                    dark:text-white/50 text-black/60"
-                  >
-                    Type Event
-                  </h1>
-                  <p>
-                    {event.type
-                      ? typeMap[event.type as keyof typeof typeMap]
-                      : "Null"}
-                  </p>
-                </div>
-
-                <div
-                  className={`flex flex-col lg:gap-1 lg:items-start items-center justify-between p-2
-               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
-                >
-                  <h1
-                    className="lg:text-[14px] text-[13px]
-                    dark:text-white/50 text-black/60"
-                  >
-                    Description
-                  </h1>
-                  <p>{event.description ? event.description : "Null"}</p>
-                </div>
-
-                {event.note !== "" && (
-                  <div
-                    className={`flex flex-col lg:gap-1 lg:items-start items-center justify-between p-2
-               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
-                  >
-                    <h1
-                      className="lg:text-[14px] text-[13px]
-                    dark:text-white/50 text-black/60"
-                    >
-                      Note
-                    </h1>
-                    <p>{event.note}</p>
-                  </div>
-                )}
+                </ScrollArea>
               </ModalBody>
 
-              <ModalFooter>
+              <ModalFooter
+                className="relative flex lg:items-end lg:justify-end 
+              justify-center items-center"
+              >
                 <Button
                   color="primary"
                   onPress={onClose}

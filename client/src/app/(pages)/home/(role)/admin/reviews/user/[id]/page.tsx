@@ -4,7 +4,7 @@ import ReviewDetailsOfCustomer from "@/components/ReviewDetailsOfCustomer";
 import { useReviewsByUserId } from "@/hooks/use-reviews-of-user";
 import { Review } from "@/utils";
 import { Pagination } from "@heroui/react";
-import React, { useEffect, useMemo, useState, use } from "react";
+import React, { use, useEffect, useMemo, useState } from "react";
 
 const ReviewDetails: React.FC = (props: any) => {
   const params = use(props.params) as Record<string, string>;
@@ -12,7 +12,6 @@ const ReviewDetails: React.FC = (props: any) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const itemsPerPage = 4;
   const [page, setPage] = useState<number>(1);
-  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
 
   const { data, isLoading, isError } = useReviewsByUserId(params.id);
 
@@ -21,19 +20,6 @@ const ReviewDetails: React.FC = (props: any) => {
       setReviews(data as Review[]);
     }
   }, [data]);
-
-  useEffect(() => {
-    if (reviews && reviews.length > 0) {
-      const initialCheckedItems = reviews.reduce(
-        (acc, review) => ({
-          ...acc,
-          [review.id]: review.is_featured || false,
-        }),
-        {}
-      );
-      setCheckedItems(initialCheckedItems);
-    }
-  }, [reviews]);
 
   const totalPage = useMemo(() => {
     return Math.ceil(reviews?.length / itemsPerPage) ?? 0;
@@ -55,7 +41,7 @@ const ReviewDetails: React.FC = (props: any) => {
   }
 
   return (
-    <main className="overflow-x-hidden flex flex-col gap-2 lg:container mx-auto lg:px-6 py-4">
+    <main className="overflow-x-hidden flex flex-col gap-2 lg:container mx-auto lg:px-6 px-2 py-4">
       <div
         className="flex flex-col lg:items-start items-center lg:justify-start 
         justify-center lg:text-left text-center"
@@ -70,12 +56,7 @@ const ReviewDetails: React.FC = (props: any) => {
         </p>
       </div>
 
-      <ReviewDetailsOfCustomer
-        reviews={items}
-        userId={params.id as string}
-        checkedItems={checkedItems}
-        setCheckedItems={setCheckedItems}
-      />
+      <ReviewDetailsOfCustomer reviews={items} userId={params.id as string} />
 
       {reviews.length !== 0 && (
         <div className="flex flex-col lg:justify-start lg:items-start justify-center items-center">

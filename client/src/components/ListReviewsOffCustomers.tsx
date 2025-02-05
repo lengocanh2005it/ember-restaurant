@@ -19,7 +19,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { User } from "@/utils";
 
 const columns = [
-  { name: "NAME", uid: "name" },
+  { name: "CUSTOMER", uid: "name" },
   { name: "PHONE NUMBER", uid: "phone" },
   { name: "EMAIL", uid: "email" },
   { name: "REVIEWS", uid: "reviews" },

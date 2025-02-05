@@ -11,11 +11,13 @@ import {
 } from "@/components/ui/form";
 import VoucherList from "@/components/VoucherList";
 import { useAddOrder } from "@/hooks/use-add-order";
+import { useFindPromotion } from "@/hooks/use-find-promotion";
 import {
   useAppStore,
   useCartStore,
   useDiscountStore,
   useOrderStore,
+  usePromotionStore,
   useReservationStore,
   useUserStore,
 } from "@/store";
@@ -35,7 +37,8 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MessageCircleIcon } from "lucide-react";
+import { debounce } from "lodash";
+import { CheckCircleIcon, MessageCircleIcon, XCircleIcon } from "lucide-react";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
@@ -98,6 +101,9 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
   const { setOrderData } = useOrderStore();
   const { setReservationData, setReservationPayment, setReservationUpdate } =
     useReservationStore();
+  const { mutate: mutateFindPromotion } = useFindPromotion();
+  const { promotions, setPromotions } = usePromotionStore();
+  const [isFinding, setIsFinding] = useState<boolean>(false);
 
   const { mutate: mutateAddOrder } = useAddOrder(user?.id!);
 
@@ -109,6 +115,7 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
       note: "",
       delivery_method: undefined,
       payment_method: undefined,
+      promotionCode: "",
     },
   });
 
@@ -212,6 +219,7 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
         });
         setOrderData(null);
         setType("");
+        setPromotions([]);
         setSelectedCarts([]);
         setCheckedItems({});
         window.scrollTo({
@@ -238,10 +246,20 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
     );
   };
 
+  const handleFindPromotion = debounce((value: string) => {
+    if (value) {
+      mutateFindPromotion(value);
+    }
+    setIsFinding(false);
+  }, 2000);
+
   return (
     <>
       <Button
-        onPress={onOpen}
+        onPress={() => {
+          onOpen();
+          setPromotions([]);
+        }}
         className="dark:bg-white dark:text-black w-fit mx-auto"
         color="primary"
       >
@@ -297,7 +315,7 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="flex flex-col gap-2"
                   >
-                    {promotionCode === "" && (
+                    {!promotionCode && (
                       <div className="flex items-center gap-2">
                         <p>Voucher: </p>
 
@@ -476,6 +494,55 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
                                   placeholder="Enter promotion code if you have..."
                                   aria-label="PromotionCode"
                                   {...field}
+                                  onChange={(e) => {
+                                    field.onChange(e);
+                                    setIsFinding(true);
+                                    handleFindPromotion(e.target.value);
+                                  }}
+                                  endContent={
+                                    isFinding ? (
+                                      <div
+                                        className="animate-spin dark:text-white text-black/70
+                                   w-4 h-4"
+                                      >
+                                        <svg
+                                          className="w-full h-full"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                          <circle
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            strokeWidth="4"
+                                            className="opacity-25"
+                                          />
+                                          <path
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8v4a4 4 0 000 8v4a8 8 0 01-8-8z"
+                                            className="opacity-75"
+                                          />
+                                        </svg>
+                                      </div>
+                                    ) : promotions.length !== 0 &&
+                                      promotionCode !== "" ? (
+                                      <Tooltip
+                                        content="Valid Promotion Code"
+                                        className="dark:text-white text-black"
+                                      >
+                                        <CheckCircleIcon className="text-success-500 cursor-pointer" />
+                                      </Tooltip>
+                                    ) : promotionCode !== "" ? (
+                                      <Tooltip
+                                        content="Invalid Promotion Code"
+                                        className="dark:text-white text-black"
+                                      >
+                                        <XCircleIcon className="text-danger-500 cursor-pointer" />
+                                      </Tooltip>
+                                    ) : null
+                                  }
                                 />
                               </FormControl>
                             </FormItem>
@@ -540,6 +607,9 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
                           color="primary"
                           type="submit"
                           className="dark:bg-white dark:text-black"
+                          isDisabled={
+                            promotionCode !== "" && promotions.length === 0
+                          }
                         >
                           Confirm
                         </Button>

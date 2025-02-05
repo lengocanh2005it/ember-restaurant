@@ -1,7 +1,6 @@
 "use client";
 import DetailsReservationPriceModal from "@/components/modal/DetailsReservationPriceModal";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useUserStore } from "@/store";
 import { methodMap, statusMap } from "@/utils/maps";
 import { Reservation } from "@/utils/types";
 import {
@@ -40,12 +39,16 @@ interface DetailsReservationProps {
   reservation: Reservation;
 }
 
+const typeMap = {
+  percentage: "%",
+  fixed: "USD",
+};
+
 const DetailsReservation: React.FC<DetailsReservationProps> = ({
   reservation,
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [arrayData, setArrayData] = useState<ArrayData[]>([]);
-  const { user } = useUserStore();
 
   useEffect(() => {
     const dataToPush: ArrayData[] = [
@@ -85,11 +88,32 @@ const DetailsReservation: React.FC<DetailsReservationProps> = ({
         icon: <CreditCardIcon />,
         name: "Payment Status",
       },
-      ...(reservation.discount
+      ...(reservation.discounts?.length !== 0
         ? [
             {
-              value: reservation.discount
-                ? reservation.discount.value + " %"
+              value: reservation.original_price
+                ? reservation.original_price + "$"
+                : "Null",
+              icon: <DollarSignIcon />,
+              name: "Original Price",
+            },
+          ]
+        : []),
+      ...(reservation.discounts?.length !== 0
+        ? [
+            {
+              value: reservation.discounts
+                ? reservation.discounts
+                    .map(
+                      (discount) =>
+                        `${discount.value}${
+                          typeMap[discount.type as keyof typeof typeMap]
+                        }`
+                    )
+                    .join(",") +
+                  " (" +
+                  reservation.discount_price +
+                  "$ USD)"
                 : "Null",
               icon: <GiftIcon />,
               name: "Discount",
@@ -132,6 +156,7 @@ const DetailsReservation: React.FC<DetailsReservationProps> = ({
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         placement="center"
+        size="lg"
         motionProps={{
           variants: {
             enter: {
@@ -161,7 +186,7 @@ const DetailsReservation: React.FC<DetailsReservationProps> = ({
               </ModalHeader>
 
               <ModalBody>
-                <ScrollArea className="h-[400px] w-full pr-3">
+                <ScrollArea className="h-[450px] w-full pr-3">
                   <div className="flex flex-col gap-2">
                     {arrayData.map((data) => (
                       <div
@@ -198,6 +223,7 @@ const DetailsReservation: React.FC<DetailsReservationProps> = ({
                 >
                   <DetailsReservationPriceModal
                     tables={reservation.tables}
+                    reservation={reservation}
                     key={
                       reservation.id + new Date().getTime().toString() + v4()
                     }

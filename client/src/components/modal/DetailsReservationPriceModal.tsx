@@ -1,6 +1,6 @@
 "use client";
 import { Separator } from "@/components/ui/separator";
-import { Table } from "@/utils";
+import { Reservation, Table } from "@/utils";
 import {
   Button,
   Chip,
@@ -16,6 +16,7 @@ import React, { useMemo, useState } from "react";
 
 interface DetailsReservationPriceProps {
   tables: Table[];
+  reservation: Reservation;
 }
 
 const typeMap = {
@@ -23,8 +24,14 @@ const typeMap = {
   vip: "VIP",
 };
 
+const typeDiscountMap = {
+  percentage: "%",
+  fixed: "USD",
+};
+
 const DetailsReservationPriceModal: React.FC<DetailsReservationPriceProps> = ({
   tables,
+  reservation,
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [page, setPage] = useState<number>(1);
@@ -57,8 +64,6 @@ const DetailsReservationPriceModal: React.FC<DetailsReservationPriceProps> = ({
         backdrop="opaque"
         isOpen={isOpen}
         size="lg"
-        isDismissable={false}
-        isKeyboardDismissDisabled={false}
         placement="center"
         onOpenChange={onOpenChange}
         motionProps={{
@@ -151,21 +156,77 @@ const DetailsReservationPriceModal: React.FC<DetailsReservationPriceProps> = ({
                   )}
                 </div>
 
-                <div className="relative flex items-center justify-between">
-                  <p className="dark:text-white/80 text-black/80 lg:text-base text-[15px]">
-                    Total Price:
-                  </p>
+                {reservation.discounts && reservation.discounts.length !== 0 ? (
+                  <>
+                    <div className="relative flex items-center justify-between">
+                      <p className="dark:text-white/80 text-black/80 lg:text-base text-[15px]">
+                        Original Price:
+                      </p>
 
-                  <p className="font-medium lg:text-xl text-base">
-                    {Number(
-                      tables.reduce(
-                        (acc, curr) => acc + parseFloat(curr.price.toString()),
-                        0
-                      )
-                    ).toFixed(2)}
-                    $
-                  </p>
-                </div>
+                      <p className="font-medium lg:text-xl text-base">
+                        {reservation.original_price}$
+                      </p>
+                    </div>
+
+                    <div className="relative flex items-center justify-between">
+                      <p className="dark:text-white/80 text-black/80 lg:text-base text-[15px]">
+                        Discount Price:
+                      </p>
+
+                      {reservation.discounts[0].type === "percentage" ? (
+                        <p className="font-medium lg:text-xl text-base">
+                          {reservation.discounts.map(
+                            (discount) =>
+                              `${discount.value}${
+                                typeDiscountMap[
+                                  discount.type as keyof typeof typeDiscountMap
+                                ]
+                              }`
+                          )}{" "}
+                          ({reservation.discount_price}$ USD)
+                        </p>
+                      ) : (
+                        <p className="font-medium lg:text-xl text-base">
+                          {reservation.discounts.map(
+                            (discount) =>
+                              `${discount.value} ${
+                                typeDiscountMap[
+                                  discount.type as keyof typeof typeDiscountMap
+                                ]
+                              }`
+                          )}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="relative flex items-center justify-between">
+                      <p className="dark:text-white/80 text-black/80 lg:text-base text-[15px]">
+                        Total Price:
+                      </p>
+
+                      <p className="font-medium lg:text-xl text-base">
+                        {reservation.total_price}$
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <div className="relative flex items-center justify-between">
+                    <p className="dark:text-white/80 text-black/80 lg:text-base text-[15px]">
+                      Total Price:
+                    </p>
+
+                    <p className="font-medium lg:text-xl text-base">
+                      {Number(
+                        tables.reduce(
+                          (acc, curr) =>
+                            acc + parseFloat(curr.price.toString()),
+                          0
+                        )
+                      ).toFixed(2)}
+                      $
+                    </p>
+                  </div>
+                )}
               </ModalBody>
 
               <ModalFooter>

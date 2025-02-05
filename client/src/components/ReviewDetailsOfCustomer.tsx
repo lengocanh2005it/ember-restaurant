@@ -2,7 +2,8 @@ import ModalConfirmShowReviews from "@/components/modal/ModalConfirmShowReviews"
 import { useDeleteReview } from "@/hooks/use-delete-review";
 import { Review, User } from "@/utils/types";
 import {
-  Checkbox,
+  Chip,
+  Selection,
   Table,
   TableBody,
   TableCell,
@@ -15,38 +16,29 @@ import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { TrashIcon } from "lucide-react";
 import Image from "next/image";
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 interface ReviewDetailsOfCustomerProps {
   reviews: Review[];
   userId: string;
-  checkedItems: Record<string, boolean>;
-  setCheckedItems: Dispatch<SetStateAction<Record<string, boolean>>>;
 }
 
 const columns = [
-  { name: "DATE", uid: "date" },
+  { name: "DATE TIME", uid: "date" },
   { name: "RATINGS NUMBER", uid: "rating_number" },
-  { name: "COMMENT", uid: "comment" },
-  { name: "SHOW IN HOME PAGE", uid: "is_featured" },
+  { name: "COMMENT DETAILS", uid: "comment" },
+  { name: "IN HOME PAGE", uid: "is_featured" },
   { name: "OPTIONS", uid: "options" },
 ];
 
 const ReviewDetailsOfCustomer: React.FC<ReviewDetailsOfCustomerProps> = ({
   reviews,
   userId,
-  setCheckedItems,
 }) => {
   const query = useQueryClient();
   const { mutate: mutateDeleteReview } = useDeleteReview(userId);
-  const [selectedReviews, setSelectedReviews] = useState<Review[]>([]);
   const [customer, setCustomer] = useState<User | null>(null);
+  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
 
   const cachedCustomerData = query.getQueryData(["customer"]);
 
@@ -63,18 +55,9 @@ const ReviewDetailsOfCustomer: React.FC<ReviewDetailsOfCustomerProps> = ({
     [mutateDeleteReview]
   );
 
-  const handleTextboxChange = useCallback(
-    (reviewId: string) => {
-      setCheckedItems((prevCheckedItems) => {
-        const currentState = prevCheckedItems[reviewId];
-        return {
-          ...prevCheckedItems,
-          [reviewId]: !currentState,
-        };
-      });
-    },
-    [setCheckedItems]
-  );
+  const handleCheckboxChange = (keys: Selection) => {
+    setSelectedKeys(keys);
+  };
 
   const renderCell = (review: Review, columnKey: React.Key) => {
     const cellValue = review[columnKey as keyof Review];
@@ -87,7 +70,11 @@ const ReviewDetailsOfCustomer: React.FC<ReviewDetailsOfCustomerProps> = ({
               <TrashIcon
                 className="cursor-pointer opacity-50 hover:opacity-100 duration-300
                  ease-in-out transition-opacity"
-                onClick={() => handleClick(customer?.id!, review.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedKeys(new Set());
+                  handleClick(customer?.id!, review.id);
+                }}
               />
             </Tooltip>
           </div>
@@ -99,32 +86,35 @@ const ReviewDetailsOfCustomer: React.FC<ReviewDetailsOfCustomerProps> = ({
       }
 
       case "comment": {
-        return <p className="max-w-[500px] truncate">{cellValue as string}</p>;
+        return (
+          <p className="max-w-[600px] break-words">{cellValue as string}</p>
+        );
       }
 
       case "date": {
         return (
-          <p>{format(review?.date ? review.date : new Date(), "dd/MM/yyyy")}</p>
+          <p className="max-w-full">
+            {format(
+              review?.date ? review.date : new Date(),
+              "EEEE, dd/MM/yyyy HH:mm:yy"
+            )}
+          </p>
         );
       }
 
       case "is_featured": {
         return (
-          <Checkbox
-            key={review.id}
-            isSelected={review.is_featured}
-            onValueChange={() => {
-              handleTextboxChange(review.id);
-            }}
-          />
+          <Chip
+            variant="dot"
+            color={review.is_featured ? "success" : "warning"}
+            className="border-none"
+          >
+            {review.is_featured === true ? "Displayed" : "Not Displayed"}
+          </Chip>
         );
       }
       default:
-        return (
-          <p className="max-w-[100px] relative">
-            {cellValue as string | number}
-          </p>
-        );
+        return <p>{cellValue as string | number}</p>;
     }
   };
 
@@ -152,13 +142,13 @@ const ReviewDetailsOfCustomer: React.FC<ReviewDetailsOfCustomerProps> = ({
         </div>
 
         <div className="relative flex flex-col">
-          <h1 className="lg:text-base text-[15px]">
+          <h1 className="lg:text-base text-[15px] font-medium">
             {customer?.name ? customer.name : customer?.username}
           </h1>
 
           <p
-            className="lg:text-base text-[14px]
-           dark:text-white/80 text-black/80"
+            className="lg:text-[15px] text-[14px]
+           dark:text-white/70 text-black/70"
           >
             {customer?.username
               ? "Username: " + customer.username
@@ -167,7 +157,13 @@ const ReviewDetailsOfCustomer: React.FC<ReviewDetailsOfCustomerProps> = ({
         </div>
       </div>
 
-      <Table aria-label="Table of all reviews">
+      <Table
+        aria-label="Table of all reviews"
+        selectionMode="multiple"
+        showSelectionCheckboxes={false}
+        onSelectionChange={handleCheckboxChange}
+        selectedKeys={selectedKeys}
+      >
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn key={column.uid}>{column.name}</TableColumn>
@@ -187,9 +183,17 @@ const ReviewDetailsOfCustomer: React.FC<ReviewDetailsOfCustomerProps> = ({
         </TableBody>
       </Table>
 
-      {selectedReviews.length !== 0 && (
-        <div className="relative items-end justify-end flex flex-col">
-          <ModalConfirmShowReviews reviews={selectedReviews} />
+      {(selectedKeys === "all" || selectedKeys.size > 0) && (
+        <div className="relative lg:items-end lg:justify-end items-center justify-center flex flex-col">
+          <ModalConfirmShowReviews
+            reviewsId={
+              selectedKeys === "all"
+                ? reviews.map((r) => r.id)
+                : Array.from(selectedKeys as Set<string>)
+            }
+            userId={customer?.id ? customer.id : ""}
+            setReviewsId={setSelectedKeys}
+          />
         </div>
       )}
     </section>

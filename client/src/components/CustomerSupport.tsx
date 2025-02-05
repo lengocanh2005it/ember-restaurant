@@ -90,6 +90,8 @@ export default function CustomerSupport() {
         backdrop="opaque"
         isOpen={isOpen}
         size="xl"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         motionProps={{
           variants: {
@@ -117,12 +119,12 @@ export default function CustomerSupport() {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col text-black dark:text-white">
-                <h1 className="lg:text-2xl text-xl font-bold lg:text-left text-center">
+                <h1 className="lg:text-xl text-base font-bold lg:text-left text-center">
                   Make A Request
                 </h1>
 
                 <p
-                  className="lg:text-base text-[15px] lg:text-left text-center
+                  className="lg:text-[15px] text-[14px] lg:text-left text-center
                  text-black/80 dark:text-white/80 font-normal"
                 >
                   If you have any request that need answering, don&apos;t
@@ -171,7 +173,7 @@ export default function CustomerSupport() {
                     </div>
 
                     <div
-                      className="relative flex sm:flex-row flex-col lg:items-center 
+                      className="relative flex sm:flex-row flex-col-reverse lg:items-center 
                     gap-2 lg:justify-end items-center justify-center"
                     >
                       <Button
@@ -201,7 +203,7 @@ export default function CustomerSupport() {
                             className="dark:bg-white dark:text-black w-fit"
                             startContent={<SendIcon />}
                           >
-                            Send
+                            Send Request
                           </Button>
                         </>
                       )}

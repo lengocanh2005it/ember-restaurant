@@ -30,6 +30,7 @@ import { SquarePenIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const types = [
   { key: "concert", label: "Concert" },
@@ -186,6 +187,8 @@ const ModalUpdateEvent: React.FC<ModalUpdateEventProps> = ({ event }) => {
         backdrop="opaque"
         isOpen={isOpen}
         placement="center"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         size="lg"
         motionProps={{
@@ -212,7 +215,7 @@ const ModalUpdateEvent: React.FC<ModalUpdateEventProps> = ({ event }) => {
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
                 Update Event
               </ModalHeader>
 
@@ -220,117 +223,167 @@ const ModalUpdateEvent: React.FC<ModalUpdateEventProps> = ({ event }) => {
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-4"
+                    className="flex flex-col lg:gap-3 gap-2"
                   >
-                    <FormField
-                      control={form.control}
-                      name="title"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="dark:text-white text-black">
-                            Title
-                          </FormLabel>
-
-                          <FormControl>
-                            <Input placeholder="Title..." {...field} />
-                          </FormControl>
-
-                          <FormMessage className="dark:text-red-300 text-red-500" />
-                        </FormItem>
-                      )}
-                    />
-
-                    <div className="relative grid lg:grid-cols-2 grid-cols-1 gap-3">
+                    <ScrollArea className="h-[480px] pr-4 pb-4 w-full relative">
                       <FormField
                         control={form.control}
-                        name="start_date"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="dark:text-white">
-                              Start Date
-                            </FormLabel>
-                            <FormControl>
-                              <DatePicker
-                                isRequired
-                                aria-labelledby="date"
-                                value={
-                                  field.value
-                                    ? dateToCalendarDate(field.value)
-                                    : null
-                                }
-                                onChange={(dateValue) => {
-                                  field.onChange(
-                                    dateValue
-                                      ? calendarDateToDate(dateValue)
-                                      : null
-                                  );
-                                }}
-                              />
-                            </FormControl>
-                            <FormMessage className="dark:text-red-400 text-red-500" />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="end_date"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="dark:text-white">
-                              End Date
-                            </FormLabel>
-                            <FormControl>
-                              <DatePicker
-                                isRequired
-                                aria-labelledby="date"
-                                value={
-                                  field.value
-                                    ? dateToCalendarDate(field.value)
-                                    : null
-                                }
-                                onChange={(dateValue) => {
-                                  field.onChange(
-                                    dateValue
-                                      ? calendarDateToDate(dateValue)
-                                      : null
-                                  );
-                                }}
-                              />
-                            </FormControl>
-                            <FormMessage className="dark:text-red-400 text-red-500" />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    <div className="grid lg:grid-cols-2 grid-cols-1 gap-2">
-                      <FormField
-                        control={form.control}
-                        name="type"
+                        name="title"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="dark:text-white text-black">
-                              Type Event
+                              Title
+                            </FormLabel>
+
+                            <FormControl>
+                              <Input placeholder="Title..." {...field} />
+                            </FormControl>
+
+                            <FormMessage className="dark:text-red-300 text-red-500" />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="relative grid lg:grid-cols-2 grid-cols-1 gap-3">
+                        <FormField
+                          control={form.control}
+                          name="start_date"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="dark:text-white">
+                                Start Date
+                              </FormLabel>
+                              <FormControl>
+                                <DatePicker
+                                  isRequired
+                                  aria-labelledby="date"
+                                  value={
+                                    field.value
+                                      ? dateToCalendarDate(field.value)
+                                      : null
+                                  }
+                                  onChange={(dateValue) => {
+                                    field.onChange(
+                                      dateValue
+                                        ? calendarDateToDate(dateValue)
+                                        : null
+                                    );
+                                  }}
+                                />
+                              </FormControl>
+                              <FormMessage className="dark:text-red-400 text-red-500" />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="end_date"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="dark:text-white">
+                                End Date
+                              </FormLabel>
+                              <FormControl>
+                                <DatePicker
+                                  isRequired
+                                  aria-labelledby="date"
+                                  value={
+                                    field.value
+                                      ? dateToCalendarDate(field.value)
+                                      : null
+                                  }
+                                  onChange={(dateValue) => {
+                                    field.onChange(
+                                      dateValue
+                                        ? calendarDateToDate(dateValue)
+                                        : null
+                                    );
+                                  }}
+                                />
+                              </FormControl>
+                              <FormMessage className="dark:text-red-400 text-red-500" />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="grid lg:grid-cols-2 grid-cols-1 gap-2">
+                        <FormField
+                          control={form.control}
+                          name="type"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="dark:text-white text-black">
+                                Type Event
+                              </FormLabel>
+                              <FormControl>
+                                <Select
+                                  items={types}
+                                  placeholder="Choose one type of this event..."
+                                  aria-labelledby="method"
+                                  defaultSelectedKeys={new Set([event.type])}
+                                  {...field}
+                                >
+                                  {(method) => (
+                                    <SelectItem
+                                      key={method.key}
+                                      className="text-black dark:text-white"
+                                      aria-labelledby="method"
+                                    >
+                                      {method.label}
+                                    </SelectItem>
+                                  )}
+                                </Select>
+                              </FormControl>
+                              <FormMessage className="dark:text-red-400 text-red-500" />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="guests_number"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="dark:text-white text-black">
+                                Number Of Guests
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  isRequired
+                                  aria-labelledby="guests"
+                                  {...field}
+                                  min={1}
+                                  value={
+                                    field.value ? field.value.toString() : ""
+                                  }
+                                  onChange={(e) =>
+                                    field.onChange(Number(e.target.value))
+                                  }
+                                  type="number"
+                                />
+                              </FormControl>
+                              <FormMessage className="dark:text-red-400 text-red-500" />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="dark:text-white text-black">
+                              Description
                             </FormLabel>
                             <FormControl>
-                              <Select
-                                items={types}
-                                placeholder="Choose one type of this event..."
-                                aria-labelledby="method"
-                                defaultSelectedKeys={new Set([event.type])}
+                              <Textarea
+                                placeholder="Description..."
                                 {...field}
-                              >
-                                {(method) => (
-                                  <SelectItem
-                                    key={method.key}
-                                    className="text-black dark:text-white"
-                                    aria-labelledby="method"
-                                  >
-                                    {method.label}
-                                  </SelectItem>
-                                )}
-                              </Select>
+                                aria-labelledby="description"
+                              />
                             </FormControl>
                             <FormMessage className="dark:text-red-400 text-red-500" />
                           </FormItem>
@@ -339,72 +392,24 @@ const ModalUpdateEvent: React.FC<ModalUpdateEventProps> = ({ event }) => {
 
                       <FormField
                         control={form.control}
-                        name="guests_number"
+                        name="note"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="dark:text-white text-black">
-                              Number Of Guests
+                              Note About The Event (Optional)
                             </FormLabel>
                             <FormControl>
-                              <Input
-                                isRequired
-                                aria-labelledby="guests"
+                              <Textarea
+                                placeholder="Note..."
                                 {...field}
-                                min={1}
-                                value={
-                                  field.value ? field.value.toString() : ""
-                                }
-                                onChange={(e) =>
-                                  field.onChange(Number(e.target.value))
-                                }
-                                type="number"
+                                aria-labelledby="note"
                               />
                             </FormControl>
                             <FormMessage className="dark:text-red-400 text-red-500" />
                           </FormItem>
                         )}
                       />
-                    </div>
-
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="dark:text-white text-black">
-                            Description
-                          </FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Description..."
-                              {...field}
-                              aria-labelledby="description"
-                            />
-                          </FormControl>
-                          <FormMessage className="dark:text-red-400 text-red-500" />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="note"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="dark:text-white text-black">
-                            Note About The Event (Optional)
-                          </FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Note..."
-                              {...field}
-                              aria-labelledby="note"
-                            />
-                          </FormControl>
-                          <FormMessage className="dark:text-red-400 text-red-500" />
-                        </FormItem>
-                      )}
-                    />
+                    </ScrollArea>
 
                     <div className="flex items-center justify-end gap-4">
                       <Button

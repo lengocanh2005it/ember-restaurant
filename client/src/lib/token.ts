@@ -3,6 +3,7 @@ import axios from "@/lib/axios";
 import { showErrorToast } from "@/utils";
 import { connectSocket, disconnectSocket } from "@/utils/socket";
 import Cookies from "js-cookie";
+import { signIn } from "next-auth/react";
 
 const isTokenExpired = (): boolean => {
   let accessToken = "";
@@ -13,10 +14,7 @@ const isTokenExpired = (): boolean => {
     accessToken = localStorage.getItem("accessToken")!;
   }
 
-  if (!accessToken) {
-    console.error("Access token not found.");
-    return true;
-  }
+  if (!accessToken) return true;
 
   const payload = accessToken.split(".")[1];
 
@@ -40,8 +38,9 @@ export const getValidAccessToken = async (): Promise<string> => {
 
   if (Cookies.get("accessToken")) {
     accessToken = Cookies.get("accessToken")!;
-  } else {
-    accessToken = localStorage.getItem("accessToken")!;
+  } else if (localStorage.getItem("accessToken")) {
+    const newAccessToken = localStorage.getItem("accessToken");
+    accessToken = newAccessToken as string;
   }
 
   const isExpired = isTokenExpired();
@@ -62,6 +61,8 @@ export const getValidAccessToken = async (): Promise<string> => {
         } else {
           Cookies.set("accessToken", accessToken);
         }
+
+        await signIn();
 
         connectSocket(accessToken);
       } else {

@@ -1,36 +1,41 @@
-import React from "react";
-
-import Google from "@/components/ui/google";
+"use client";
 import Facebook from "@/components/ui/facebook";
-import { useRouter } from "next/navigation";
+import Google from "@/components/ui/google";
+import { Button, Tooltip } from "@heroui/react";
+import { signIn } from "next-auth/react";
+import React from "react";
 
 const buttons = [
   {
     icon: <Google />,
-    link: "http://localhost:3001/api/v1/auth/google/login",
+    provider: "google",
+    name: "Google",
   },
   {
     icon: <Facebook />,
-    link: "http://localhost:3001/api/v1/auth/facebook/login",
+    provider: "facebook",
+    name: "Facebook",
   },
 ];
 
-const ButtonLoginOthers = () => {
-  const router = useRouter();
+const ButtonLoginOthers: React.FC = () => {
   return (
     <React.Fragment>
       {buttons.map((button, index) => {
         return (
-          <button
+          <Tooltip
             key={index}
-            className="bg-white rounded-full p-1 ease-in-out duration-300 transition-all hover:bg-[#dedede]"
-            onClick={() => {
-              router.push(button.link);
-            }}
-            type="button"
+            content={button.name}
+            className="dark:text-white text-black"
           >
-            {button.icon}
-          </button>
+            <Button
+              onPress={() => signIn(button.provider)}
+              isIconOnly
+              className="rounded-full bg-white flex items-center justify-center"
+            >
+              {button.icon}
+            </Button>
+          </Tooltip>
         );
       })}
     </React.Fragment>
