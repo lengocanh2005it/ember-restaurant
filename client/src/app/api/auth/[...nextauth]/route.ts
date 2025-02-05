@@ -80,7 +80,8 @@ const handler = NextAuth({
               path: "/",
               httpOnly: process.env.NODE_ENV === "production" ? true : false,
               secure: process.env.NODE_ENV === "production" ? true : false,
-              maxAge: 86400,
+              maxAge: 1000 * 60 * 30,
+              sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             });
 
             cookieStore.set({
@@ -89,7 +90,8 @@ const handler = NextAuth({
               path: "/",
               httpOnly: false,
               secure: process.env.NODE_ENV === "production" ? true : false,
-              maxAge: 86400,
+              maxAge: 1000 * 60 * 2,
+              sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             });
           }
         }
