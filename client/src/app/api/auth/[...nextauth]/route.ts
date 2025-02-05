@@ -82,6 +82,10 @@ const handler = NextAuth({
               secure: process.env.NODE_ENV === "production" ? true : false,
               maxAge: 1000 * 60 * 30,
               sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+              domain:
+                process.env.NODE_ENV === "production"
+                  ? ".ember-restaurant.vercel.app"
+                  : undefined,
             });
 
             cookieStore.set({
