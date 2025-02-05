@@ -2,7 +2,9 @@ import axios from "@/lib/axios";
 
 export const handleFetchProfileOfUser = async () => {
   try {
-    const response = await axios.get("/auth/profile");
+    const response = await axios.get("/auth/profile", {
+      withCredentials: true,
+    });
 
     return response.data.data;
   } catch (err) {
