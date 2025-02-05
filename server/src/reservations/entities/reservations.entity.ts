@@ -54,6 +54,12 @@ export class Reservation {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   readonly total_price!: number;
 
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  readonly discount_price!: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  readonly original_price!: number;
+
   @Column({ nullable: true })
   readonly admin_message?: string;
 

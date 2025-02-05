@@ -167,7 +167,9 @@ export class DiscountsService implements OnModuleInit {
 
     const today = new Date();
 
-    const isValid = discount.start_date < today && discount.end_date > today;
+    const isValid =
+      discount.start_date.getTime() < today.getTime() &&
+      discount.end_date.getTime() > today.getTime();
 
     if (!isValid || !discount.is_active) {
       await this.discountRepository.delete({
@@ -187,7 +189,7 @@ export class DiscountsService implements OnModuleInit {
   ): number {
     this.discountContext.setStrategy(discountType, value);
 
-    const discount = this.discountContext.calculate(amount);
+    const discount = this.discountContext.calculateDiscount(amount);
 
     const finalAmount = amount - discount;
 

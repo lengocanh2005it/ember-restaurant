@@ -11,9 +11,9 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseModule } from 'src/database/database.module';
 import { DatabaseService } from 'src/database/database.service';
-import { FormatResponseApiInterceptor } from 'src/utils/formatResponseApi.interceptor';
-import { HttpExceptionFilter } from 'src/utils/http-exception.filter';
-import { LoggerMiddleware } from 'src/utils/logger-middleware';
+import { FormatResponseApiInterceptor } from 'src/utils/common/interceptors/formatResponseApi.interceptor';
+import { HttpExceptionFilter } from 'src/utils/common/filters/http-exception.filter';
+import { LoggerMiddleware } from 'src/utils/common/middlewares/logger.middleware';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AreasModule } from './areas/areas.module';
@@ -34,10 +34,11 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { RolesModule } from './roles/roles.module';
 import { SupportTicketModule } from './support_ticket/support-ticket.module';
 import { TablesModule } from './tables/tables.module';
+import { TicketMessagesModule } from './ticket_messages/ticket_messages.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { UserDiscountModule } from './user-discount/user-discount.module';
 import { UsersModule } from './users/users.module';
-import { TicketMessagesModule } from './ticket_messages/ticket_messages.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -91,6 +92,7 @@ import { TicketMessagesModule } from './ticket_messages/ticket_messages.module';
     AreasModule,
     DatabaseModule,
     TicketMessagesModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { DiscountContext } from 'src/discounts/discount.context';
+import { DiscountsService } from 'src/discounts/discounts.service';
 import { PaymentsService } from 'src/payments/payments.service';
+import { PromotionsService } from 'src/promotions/promotions.service';
 import { CreateReservationDto } from 'src/reservations/dtos/create-reservation.dto';
 import { UpdateReservationDto } from 'src/reservations/dtos/update-reservation.dto';
 import { Reservation } from 'src/reservations/entities/reservations.entity';
 import { TablesService } from 'src/tables/tables.service';
+import { UserDiscountService } from 'src/user-discount/user-discount.service';
 import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
@@ -15,6 +19,10 @@ export class ReservationsService {
     @InjectDataSource() private readonly dataSource: DataSource,
     private readonly tablesService: TablesService,
     private readonly paymentsService: PaymentsService,
+    private readonly discountsService: DiscountsService,
+    private readonly discountContext: DiscountContext,
+    private readonly userDiscountService: UserDiscountService,
+    private readonly promotionsService: PromotionsService,
   ) {}
 
   async findAll(queries: Record<string, string>): Promise<any> {
@@ -48,17 +56,76 @@ export class ReservationsService {
   }
 
   async createOne(createReservationDto: CreateReservationDto): Promise<any> {
-    const { userId, tableIds, areaId, discountId, ...res } =
+    const { userId, tableIds, areaId, discountId, promotionCode, ...res } =
       createReservationDto;
 
-    const total_price = await this.tablesService.calculateTotalPrice(tableIds);
+    let total_price = await this.tablesService.calculateTotalPrice(tableIds);
+    let discountedAmount = 0;
+
+    if (discountId) {
+      const discount =
+        await this.discountsService.checkValidOfDiscount(discountId);
+
+      if (discount) {
+        const { type, value } = discount;
+
+        this.discountContext.setStrategy(type, value);
+
+        discountedAmount = this.discountContext.calculateDiscount(total_price);
+
+        total_price = total_price - discountedAmount;
+
+        await this.userDiscountService.decreaseUserDiscountQuantity(
+          userId,
+          discountId,
+        );
+      }
+    }
+
+    if (promotionCode) {
+      const discountFromPromotionCode =
+        await this.promotionsService.checkPromotionCode(promotionCode);
+
+      if (discountFromPromotionCode) {
+        const { type, value } = discountFromPromotionCode;
+
+        this.discountContext.setStrategy(type, value);
+
+        discountedAmount = this.discountContext.calculateDiscount(total_price);
+
+        total_price = total_price - discountedAmount;
+      }
+    }
 
     const reservation = this.reservationRepository.create({
       ...res,
       total_price,
+      original_price: total_price + discountedAmount,
+      discount_price: discountedAmount,
     });
 
     await this.reservationRepository.save(reservation);
+
+    if (discountId) {
+      await this.reservationRepository
+        .createQueryBuilder('reservations')
+        .relation(Reservation, 'discounts')
+        .of(reservation.id)
+        .add(discountId);
+    }
+
+    if (promotionCode) {
+      const discountFromPromotionCode =
+        await this.promotionsService.checkPromotionCode(promotionCode);
+
+      if (discountFromPromotionCode) {
+        await this.reservationRepository
+          .createQueryBuilder('reservations')
+          .relation(Reservation, 'discounts')
+          .of(reservation.id)
+          .add(discountFromPromotionCode.id);
+      }
+    }
 
     await this.tablesService.addTablesToReservation(
       tableIds,
@@ -66,10 +133,6 @@ export class ReservationsService {
       areaId,
       res.guests_count,
     );
-
-    if (discountId) {
-      // logic here
-    }
 
     await this.dataSource
       .createQueryBuilder()
@@ -203,8 +266,17 @@ export class ReservationsService {
       .leftJoinAndSelect('reservation.user', 'user')
       .leftJoinAndSelect('reservation.tables', 'tables')
       .leftJoinAndSelect('reservation.payment', 'payment')
+      .leftJoinAndSelect('reservation.discounts', 'discounts')
       .leftJoinAndSelect('tables.area', 'area')
-      .select(['reservation', 'review', 'tables', 'payment', 'area', 'user'])
+      .select([
+        'reservation',
+        'review',
+        'tables',
+        'payment',
+        'area',
+        'user',
+        'discounts',
+      ])
       .where('user.id = :userId', { userId });
 
     if (endOfDay) {

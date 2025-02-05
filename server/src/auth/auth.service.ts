@@ -1,13 +1,14 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
 import { InjectDataSource } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { AuthPayloadDto } from 'src/auth/dtos/auth.dto';
+import { LocalLoginDto, SocialLoginDto } from 'src/auth/dtos/auth.dto';
 import { RolesService } from 'src/roles/roles.service';
 import { User } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
@@ -24,16 +25,17 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async validateUser({
-    username,
-    password,
-  }: AuthPayloadDto): Promise<Record<string, string>> {
+  async validateUser(
+    localLoginDto: LocalLoginDto,
+  ): Promise<Record<string, string>> {
+    const { username, password } = localLoginDto;
+
     const findUser = await this.usersService.handleFindUserByUsername(username);
 
     const isMatch = bcrypt.compareSync(password, findUser.password);
 
     if (!findUser || !isMatch)
-      throw new UnauthorizedException('Username Or Password Is Incorrect.');
+      throw new UnauthorizedException('Username Or Password is incorrect.');
 
     const { id } = findUser;
 
@@ -67,9 +69,10 @@ export class AuthService {
       if (!existingEmail.google_id)
         throw new BadRequestException('Google authentication failed');
 
-      const user = await this.usersService.handleFindUserBySocialId(
-        'google_id',
+      const user = await this.usersService.handleVerifySocialUser(
+        'google',
         googleId,
+        email,
       );
 
       const payload = { userId: user.id };
@@ -123,8 +126,8 @@ export class AuthService {
     details: UserFacebookDetails,
   ): Promise<Record<string, any>> {
     const { facebookId, email, displayName } = details;
-    const user = await this.usersService.handleFindUserBySocialId(
-      'facebook_id',
+    const user = await this.usersService.handleVerifySocialUser(
+      'facebook',
       details.facebookId,
     );
 
@@ -186,13 +189,12 @@ export class AuthService {
         secret: this.configService.get('JWT_SECRET_KEY'),
       });
 
-      let user = null as User;
+      if (!userId)
+        throw new UnauthorizedException('UserId not found in Jwt Payload.');
 
-      if (userId) {
-        user = await this.usersService.findOne(userId);
-      }
+      const user = await this.usersService.findOne(userId);
 
-      if (!user) throw new UnauthorizedException('Unauthenticated.');
+      if (!user) throw new NotFoundException('User Not Found.');
 
       const payload = {
         userId: user.id,
@@ -209,6 +211,34 @@ export class AuthService {
       }
     }
   }
+
+  public handleSocialLogin = async (
+    socialLoginDto: SocialLoginDto,
+  ): Promise<any> => {
+    const { email, subId, provider } = socialLoginDto;
+
+    const user =
+      (email &&
+        (await this.usersService.handleVerifySocialUser(
+          provider as 'google' | 'facebook',
+          subId,
+          email,
+        ))) ||
+      (await this.usersService.handleLoginSocialUser(socialLoginDto));
+
+    const generateToken = (expiresIn: string) =>
+      this.jwtService.sign({ userId: user.id }, { expiresIn });
+
+    return {
+      accessToken: generateToken(
+        this.configService.get<string>('ACCESS_TOKEN_LIFE'),
+      ),
+      refreshToken: generateToken(
+        this.configService.get<string>('REFRESH_TOKEN_LIFE'),
+      ),
+      userId: user.id,
+    };
+  };
 
   async generateResetToken(email: string): Promise<string> {
     const payload = { email };

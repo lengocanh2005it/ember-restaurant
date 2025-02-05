@@ -12,6 +12,7 @@ import {
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { RoleAuthGuard } from 'src/auth/guards/role.guard';
 import { CreateReviewDto } from 'src/reviews/dtos/create-review.dto';
+import { UpdateFeaturedReviewsDto } from 'src/reviews/dtos/update-featured-review.dto';
 import { Review } from 'src/reviews/entities/reviews.entity';
 import { ReviewsService } from 'src/reviews/reviews.service';
 import { Roles } from 'src/roles/role.decorator';
@@ -59,5 +60,16 @@ export class ReviewsController {
     @Body('reviews') reviews: Review[],
   ): Promise<Review[]> {
     return await this.reviewsService.handleUpdateReviews(reviews);
+  }
+
+  @Patch('featured')
+  @UseGuards(JwtAuthGuard, RoleAuthGuard)
+  @Roles(Role.ADMIN)
+  async handleUpdateFeaturedReviews(
+    @Body() updateFeaturedReviewsDto: UpdateFeaturedReviewsDto,
+  ) {
+    return await this.reviewsService.handleUpdateFeaturedReviews(
+      updateFeaturedReviewsDto,
+    );
   }
 }

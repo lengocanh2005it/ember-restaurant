@@ -7,7 +7,6 @@ import { FacebookStrategy } from 'src/auth/strategies/facebook.strategy';
 import { GoogleStrategy } from 'src/auth/strategies/google.strategy';
 import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';
 import { LocalStrategy } from 'src/auth/strategies/local.strategy';
-import { SessionSerializer } from 'src/auth/utils/serializer';
 import { DiscountsModule } from 'src/discounts/discounts.module';
 import { EmailsModule } from 'src/emails/emails.module';
 import { OrderProduct } from 'src/order-product/entities/order-product.entity';
@@ -37,6 +36,7 @@ import { UserDiscountModule } from 'src/user-discount/user-discount.module';
 import { User } from 'src/users/entities/users.entity';
 import { UsersModule } from 'src/users/users.module';
 import { UsersService } from 'src/users/users.service';
+import { SessionSerializer } from 'src/utils/common/serializers/session.serialize';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
@@ -73,9 +73,6 @@ import { AuthService } from './auth.service';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET_KEY'),
-        signOptions: {
-          expiresIn: configService.get<string>('ACCESS_TOKEN_LIFE'),
-        },
       }),
     }),
     PassportModule.register({

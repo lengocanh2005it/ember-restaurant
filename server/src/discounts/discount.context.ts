@@ -17,7 +17,7 @@ export class DiscountContext {
     );
   }
 
-  calculate(amount: number): number {
+  calculateDiscount(amount: number): number {
     if (!this.strategy) throw new BadRequestException('Unknown Strategy!');
     return this.strategy.calculateDiscount(amount);
   }

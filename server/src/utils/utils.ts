@@ -1,10 +1,13 @@
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { config } from 'dotenv';
+import * as signature from 'cookie-signature';
 import { CreateDiscountDto } from 'src/discounts/dtos/create-discount.dto';
 import { CreateProductDto } from 'src/products/dtos/create-product.dto';
-import { ApiResponseType } from 'src/utils';
+import { RedisService } from 'src/redis/redis.service';
+import { ApiResponseType, SessionData } from 'src/utils';
 import { Repository } from 'typeorm';
+import { UnauthorizedException, BadRequestException } from '@nestjs/common';
 
 config();
 
@@ -168,4 +171,86 @@ export const getEnvValue = (prodKey: string, devKey: string) => {
   return environment === 'production'
     ? configService.get<string>(prodKey)
     : configService.get<string>(devKey);
+};
+
+export const getDataOfSessionFromRequest = async (
+  request: any,
+  configService: ConfigService,
+  redisService: RedisService,
+): Promise<SessionData> => {
+  const sessionID = request.cookies['user_session'];
+
+  if (!sessionID) throw new UnauthorizedException('User Not Authenticated.');
+
+  if (!(sessionID as string).startsWith('s:'))
+    throw new BadRequestException('Invalid SessionID.');
+
+  const unsignedSessionID = signature.unsign(
+    sessionID.slice(2),
+    configService.get<string>('SESSION_SECRET_KEY') as string,
+  );
+
+  if (!unsignedSessionID)
+    throw new BadRequestException('Invalid session signature.');
+
+  const data = await redisService.getKey(`sess:${unsignedSessionID}`);
+
+  if (!data) throw new BadRequestException('Unknown type of data.');
+
+  return JSON.parse(data as string).user;
+};
+
+export const initializeCookies = (
+  response: any,
+  user: any,
+  role: string,
+  method: string,
+  configService: ConfigService,
+  refreshToken?: string,
+) => {
+  response.cookie('role', role, {
+    httpOnly: configService.get<string>('NODE_ENV') === 'production',
+    secure: configService.get<string>('NODE_ENV') === 'production',
+    maxAge: 1000 * 60 * 30,
+    sameSite:
+      configService.get<string>('NODE_ENV') === 'production' ? 'none' : 'lax',
+  });
+
+  response.cookie('isLoggedIn', 'true', {
+    httpOnly: configService.get<string>('NODE_ENV') === 'production',
+    secure: configService.get<string>('NODE_ENV') === 'production',
+    maxAge: 1000 * 60 * 30,
+    sameSite:
+      configService.get<string>('NODE_ENV') === 'production' ? 'none' : 'lax',
+  });
+
+  response.cookie('theme', user.theme, {
+    httpOnly: configService.get<string>('NODE_ENV') === 'production',
+    secure: configService.get<string>('NODE_ENV') === 'production',
+    maxAge: 1000 * 60 * 30,
+    sameSite:
+      configService.get<string>('NODE_ENV') === 'production' ? 'none' : 'lax',
+  });
+
+  response.cookie(
+    'refreshToken',
+    method !== 'local' ? user.refreshToken : refreshToken,
+    {
+      httpOnly: configService.get<string>('NODE_ENV') === 'production',
+      secure: configService.get<string>('NODE_ENV') === 'production',
+      maxAge: 1000 * 60 * 30,
+      sameSite:
+        configService.get<string>('NODE_ENV') === 'production' ? 'none' : 'lax',
+    },
+  );
+
+  if (method !== 'local') {
+    response.cookie('accessToken', user.accessToken, {
+      httpOnly: configService.get<string>('NODE_ENV') === 'production',
+      secure: configService.get<string>('NODE_ENV') === 'production',
+      maxAge: 1000 * 60 * 2,
+      sameSite:
+        configService.get<string>('NODE_ENV') === 'production' ? 'none' : 'lax',
+    });
+  }
 };

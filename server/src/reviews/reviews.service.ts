@@ -11,6 +11,7 @@ import { ProductsService } from 'src/products/products.service';
 import { Reservation } from 'src/reservations/entities/reservations.entity';
 import { ReservationsService } from 'src/reservations/reservations.service';
 import { CreateReviewDto } from 'src/reviews/dtos/create-review.dto';
+import { UpdateFeaturedReviewsDto } from 'src/reviews/dtos/update-featured-review.dto';
 import { Review } from 'src/reviews/entities/reviews.entity';
 import { User } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
@@ -28,6 +29,7 @@ export class ReviewsService {
     private readonly usersService: UsersService,
   ) {}
 
+  // ngoc
   private async getAllReviews(featured?: string): Promise<Review[]> {
     let reviews = await this.reviewRepository.find({
       relations: ['user'],
@@ -216,4 +218,24 @@ export class ReviewsService {
       }, 0),
     };
   }
+
+  public handleUpdateFeaturedReviews = async (
+    updateFeaturedReviews: UpdateFeaturedReviewsDto,
+  ): Promise<any> => {
+    const { userId, reviewIds } = updateFeaturedReviews;
+
+    const reviews = await this.reviewRepository.find();
+
+    for (const reviewId of reviews.map((r) => r.id)) {
+      await this.reviewRepository.update(
+        { id: reviewId },
+        { is_featured: reviewIds.some((r) => r === reviewId) },
+      );
+    }
+
+    return {
+      reviews_user: await this.usersService.handleFindReviewOfUser(userId),
+      reviews: await this.getAllReviews('true'),
+    };
+  };
 }

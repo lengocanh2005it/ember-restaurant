@@ -66,8 +66,7 @@ export class User {
   readonly loyalty_points!: number;
 
   @Column({
-    default:
-      'https://res.cloudinary.com/daiqcjyk9/image/upload/v1735465375/default_user_logo_b1f7pd.png',
+    type: 'text',
   })
   readonly image?: string;
 

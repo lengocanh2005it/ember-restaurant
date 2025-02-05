@@ -47,4 +47,7 @@ export class CreateReservationDto {
 
   @IsOptional()
   readonly discountId?: string;
+
+  @IsOptional()
+  readonly promotionCode?: string;
 }

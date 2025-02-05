@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { DiscountContext } from 'src/discounts/discount.context';
 import { DiscountsService } from 'src/discounts/discounts.service';
 import { Order } from 'src/orders/entities/orders.entity';
 import { CreatePaymentDto } from 'src/payments/dtos/create-payment.dto';
@@ -24,6 +25,7 @@ export class PaymentsService {
     private readonly paymentRepository: Repository<Payment>,
     @InjectDataSource() private readonly dataSource: DataSource,
     private readonly discountsService: DiscountsService,
+    private readonly discountContext: DiscountContext,
     private readonly paymentContext: PaymentContext,
     private readonly stripeService: StripeService,
     private readonly paymentGateway: PaymentGateway,
