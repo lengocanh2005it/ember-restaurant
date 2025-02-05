@@ -5,18 +5,22 @@ import PhotosWelcome from "@/components/Photos/PhotosWelcome";
 import { showErrorToast } from "@/utils";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import React, { useEffect, use } from "react";
+import React, { use, useEffect } from "react";
 
 const LoginPage: React.FC = (props: any) => {
   const searchParams = use(props.searchParams);
   const { error } = searchParams as any;
 
   useEffect(() => {
-    if (error && error === "google-authentication-failed") {
-      showErrorToast("Email has been already used!", "top-right", {
-        backgroundColor: "#dc3545",
-        color: "#fff",
-      });
+    if (error && error === "AccessDenied") {
+      showErrorToast(
+        "Email has been already used by another user!",
+        "top-right",
+        {
+          backgroundColor: "#dc3545",
+          color: "#fff",
+        }
+      );
     }
   }, [error]);
 

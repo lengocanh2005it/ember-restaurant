@@ -31,13 +31,13 @@ const ModalConfirmDeleteEvent: React.FC<ModalConfirmDeleteEventProps> = ({
       setIsLoading(false);
       onClose();
       mutateDeleteEvent(eventId);
-    });
+    }, 2500);
   };
 
   return (
     <>
       <Tooltip
-        content="Update"
+        content="Delete"
         showArrow
         className="dark:text-white text-black"
       >
@@ -79,22 +79,22 @@ const ModalConfirmDeleteEvent: React.FC<ModalConfirmDeleteEventProps> = ({
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
                 Confirmation
               </ModalHeader>
 
-              <ModalBody>
-                <h1 className="lg:text-base text-[14px] uppercase font-bold">
+              <ModalBody className="flex flex-col lg:text-left text-center">
+                <h1 className="lg:text-base text-[15px] uppercase font-bold">
                   Do you want to delete this event?
                 </h1>
 
-                <p className="lg:text-[13px] text-[12px] dark:text-white/60 text-black/60">
+                <p className="lg:text-[15px] text-[14px] dark:text-white/80 text-black/80">
                   If you click &quot;Yes&quot;, this event will be deleted
                   permanently in system&apos;database.
                 </p>
               </ModalBody>
 
-              <ModalFooter>
+              <ModalFooter className="flex lg:items-end lg:justify-end justify-center items-center">
                 <Button
                   color="primary"
                   className="dark:bg-white dark:text-black"
@@ -115,7 +115,11 @@ const ModalConfirmDeleteEvent: React.FC<ModalConfirmDeleteEventProps> = ({
                   </>
                 ) : (
                   <>
-                    <Button color="danger" onPress={handleClick}>
+                    <Button
+                      color="primary"
+                      className="dark:bg-white dark:text-black text-white"
+                      onPress={handleClick}
+                    >
                       Submit
                     </Button>
                   </>

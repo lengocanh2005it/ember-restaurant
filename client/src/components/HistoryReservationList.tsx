@@ -50,6 +50,10 @@ const columns = [
     label: "PAYMENT STATUS",
   },
   {
+    key: "discount",
+    label: "DISCOUNT",
+  },
+  {
     key: "total_price",
     label: "TOTAL PRICE",
   },
@@ -72,6 +76,11 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 const methodMap = {
   cash: "Pay In Cash",
   card: "Credit Card",
+};
+
+const typeMap = {
+  percentage: "%",
+  fixed: "USD",
 };
 
 interface ReservationListProps {
@@ -103,13 +112,20 @@ const ReservationList: React.FC<ReservationListProps> = ({ reservations }) => {
 
     switch (columnKey) {
       case "discount": {
-        if (!(cellValue instanceof Date)) {
-          if (cellValue) {
-            return <p>{cellValue as number}%</p>;
-          } else {
-            return <p>0%</p>;
-          }
-        }
+        return (
+          <p>
+            {reservation?.discounts?.length !== 0
+              ? reservation.discounts
+                  ?.map(
+                    (discount) =>
+                      `${discount.value}${
+                        typeMap[discount.type as keyof typeof typeMap]
+                      }`
+                  )
+                  .join(",")
+              : "Null"}
+          </p>
+        );
       }
 
       case "payment_method": {

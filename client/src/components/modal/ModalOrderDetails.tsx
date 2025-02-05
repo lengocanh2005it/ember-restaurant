@@ -5,11 +5,9 @@ import { VerticalDotsIcon } from "@/components/icons/VerticalDotsIcon";
 import ModalUpdateOrder from "@/components/modal/ModalUpdateOrder";
 import { useDeleteOrder } from "@/hooks/use-delete-order";
 import { useUserStore } from "@/store";
-import { Discount, Order } from "@/utils/types";
+import { Order } from "@/utils/types";
 import {
   Button,
-  Card,
-  CardBody,
   Modal,
   ModalBody,
   ModalContent,
@@ -21,17 +19,6 @@ import {
 import { TrashIcon } from "lucide-react";
 import React from "react";
 
-type Data = {
-  original_price: number;
-  delivery_address?: string;
-  delivery_method: string;
-  discounts?: Discount[];
-  orderId?: string;
-  phone_number: string;
-  note?: string;
-  is_paid: boolean;
-};
-
 interface ModalOrderProps {
   order: Order;
 }
@@ -39,6 +26,11 @@ interface ModalOrderProps {
 const deliveryMap = {
   home_delivery: "Home Delivery",
   pick_up: "Pick Up",
+};
+
+const typeMap = {
+  percentage: "%",
+  fixed: "USD",
 };
 
 const ModalOrderDetails: React.FC<ModalOrderProps> = ({ order }) => {
@@ -50,7 +42,7 @@ const ModalOrderDetails: React.FC<ModalOrderProps> = ({ order }) => {
 
   const dataArray = [
     ...(order.discounts?.length !== 0
-      ? [{ id: 1, title: "Original Price", value: order.total_price + "$" }]
+      ? [{ id: 1, title: "Original Price", value: order.original_price + "$" }]
       : []),
     ...(order.delivery_address
       ? [
@@ -71,13 +63,17 @@ const ModalOrderDetails: React.FC<ModalOrderProps> = ({ order }) => {
       title: "Phone Number",
       value: order?.user?.phone,
     },
-    ...(order.discounts?.length !== 0
+    ...(order.discounts?.length !== 0 && order.discount_price !== 0
       ? [
           {
             id: 4,
             title: "Discount",
             value: order.discounts
-              ?.map((discount) => discount.value + "%")
+              ?.map(
+                (discount) =>
+                  discount.value +
+                  typeMap[discount.type as keyof typeof typeMap]
+              )
               .join(","),
           },
         ]
@@ -87,17 +83,8 @@ const ModalOrderDetails: React.FC<ModalOrderProps> = ({ order }) => {
       title: "Total Price",
       value:
         order.discounts && order.discounts.length !== 0
-          ? Number(
-              order.total_price -
-                (order.total_price *
-                  order.discounts
-                    .map((data) => data.value)
-                    .reduce((acc, curr) => {
-                      return acc + curr;
-                    }, 0)) /
-                  100
-            ).toFixed(2) + "$"
-          : order.total_price + "$",
+          ? order.total_price + "$"
+          : order.original_price + "$",
     },
     ...(order.note
       ? [
@@ -177,7 +164,10 @@ const ModalOrderDetails: React.FC<ModalOrderProps> = ({ order }) => {
                 </div>
               </ModalBody>
 
-              <ModalFooter className="flex items-center justify-between">
+              <ModalFooter
+                className="flex md:flex-row md:items-center md:justify-between
+               flex-col justify-center items-center"
+              >
                 {(order.status === "pending" || order.status === "error") && (
                   <div className="flex items-center gap-2">
                     <Tooltip

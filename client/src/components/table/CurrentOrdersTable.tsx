@@ -125,44 +125,16 @@ const CurrentOrdersTable: React.FC<CurrentOrdersTableProps> = ({ orders }) => {
           );
         }
         case "total_price": {
-          return (
-            <p>
-              {order.discounts && order.discounts.length !== 0
-                ? Number(
-                    order.total_price -
-                      (order.total_price *
-                        order.discounts
-                          .map((order) => order.value)
-                          .reduce((acc, curr) => {
-                            return acc + curr;
-                          }, 0)) /
-                        100
-                  ).toFixed(2)
-                : order.total_price}
-              $
-            </p>
-          );
+          return <p>{order.total_price}$</p>;
         }
         case "options": {
           return (
             <div className="flex items-center">
               <span
-                onClick={(e) => {
+                onClick={() => {
                   setOrderUpdate({
                     ...order,
-                    total_price:
-                      order.discounts && order.discounts.length !== 0
-                        ? +Number(
-                            order.total_price -
-                              (order.total_price *
-                                order.discounts
-                                  .map((order) => order.value)
-                                  .reduce((acc, curr) => {
-                                    return acc + curr;
-                                  }, 0)) /
-                                100
-                          ).toFixed(2)
-                        : order.total_price,
+                    total_price: order.total_price,
                   });
                 }}
               >
@@ -170,9 +142,7 @@ const CurrentOrdersTable: React.FC<CurrentOrdersTableProps> = ({ orders }) => {
               </span>
 
               {order.admin_message && order.admin_message !== "" && (
-                <>
-                  <ModalMessageOrder message={order.admin_message} />
-                </>
+                <ModalMessageOrder message={order.admin_message} />
               )}
             </div>
           );

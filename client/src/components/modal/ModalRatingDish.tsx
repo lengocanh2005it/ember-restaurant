@@ -54,6 +54,16 @@ interface ModalRatingDishProps {
   product: Product;
 }
 
+const categoryMap: Record<string, string> = {
+  appetizer: "Appetizer",
+  dessert: "Dessert",
+  main_course: "Main Course",
+  snack: "Snack",
+  signature_dishes: "Signature Dishes",
+  beverage: "Beverage",
+  hotpot: "Hot Pot",
+};
+
 const ModalRatingDish: React.FC<ModalRatingDishProps> = ({ product }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { onOpen, onOpenChange, isOpen, onClose } = useDisclosure();
@@ -65,7 +75,7 @@ const ModalRatingDish: React.FC<ModalRatingDishProps> = ({ product }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ratingNumber: 0,
+      ratingNumber: undefined,
       comment: "",
     },
   });
@@ -150,21 +160,37 @@ const ModalRatingDish: React.FC<ModalRatingDishProps> = ({ product }) => {
                 <div className="flex flex-col gap-1">
                   <div className="flex md:flex-row flex-col md:justify-between md:items-center gap-1">
                     <h1>
-                      Dish name:{" "}
-                      <span className="font-bold">{product.name}</span>
+                      Dish&apos;s Name:{" "}
+                      <span className="font-medium">{product.name}</span>
                     </h1>
 
                     <p>
-                      Price: <span className="font-bold">{product.price}$</span>
+                      Price:{" "}
+                      <span className="font-medium">
+                        {product.price}$ (USD)
+                      </span>
                     </p>
                   </div>
 
-                  <p>
-                    Rating numbers:{" "}
-                    <span className="font-bold">
-                      {product.average_rating}⭐
-                    </span>
-                  </p>
+                  <div className="flex md:flex-row flex-col md:justify-between md:items-center gap-1">
+                    <p>
+                      Rating number:{" "}
+                      <span className="font-medium">
+                        {product.average_rating}⭐
+                      </span>
+                    </p>
+
+                    <p>
+                      Category:{" "}
+                      <span className="font-medium">
+                        {
+                          categoryMap[
+                            product.category as keyof typeof categoryMap
+                          ]
+                        }
+                      </span>
+                    </p>
+                  </div>
                 </div>
 
                 <Form {...form}>
@@ -229,11 +255,20 @@ const ModalRatingDish: React.FC<ModalRatingDishProps> = ({ product }) => {
                       )}
                     />
 
-                    <p className="lg:text-[14px] text-[12px] dark:text-white/60 text-black/60">
-                      <span className="font-bold">Note:</span> Once you have
-                      submitted a review for the dish, you are fully responsible
-                      for your comments.
-                    </p>
+                    <div
+                      className="lg:text-[14px] text-[13px] flex flex-col 
+                    dark:text-white/60 text-black/70 lg:text-left text-center 
+                    lg:items-start items-center"
+                    >
+                      <p className="font-medium lg:text-base text-[14px]">
+                        Note:
+                      </p>
+
+                      <p>
+                        Once you have submitted a review for the dish, you are
+                        fully responsible for your comments.
+                      </p>
+                    </div>
 
                     <div
                       className="relative flex lg:items-end lg:justify-end 
@@ -261,7 +296,7 @@ const ModalRatingDish: React.FC<ModalRatingDishProps> = ({ product }) => {
                         <>
                           <Button
                             color="primary"
-                            className="dark:bg-white dark:text-black text-black"
+                            className="dark:bg-white dark:text-black text-white"
                             type="submit"
                           >
                             Submit

@@ -28,6 +28,11 @@ const deliveryMap = {
   pick_up: "Pick Up",
 };
 
+const typeMap = {
+  percentage: "%",
+  fixed: "USD",
+};
+
 const ModalViewOrdersOfCustomer: React.FC<ModalViewOrdersOfCustomerProps> = ({
   order,
 }) => {
@@ -37,7 +42,10 @@ const ModalViewOrdersOfCustomer: React.FC<ModalViewOrdersOfCustomerProps> = ({
     {
       key: 6,
       name: "Date Time",
-      value: format(order.createdAt.toLocaleString(), "dd/MM/yyyy HH:mm:yy"),
+      value: format(
+        order.createdAt.toLocaleString(),
+        "EEEE, dd/MM/yyyy HH:mm:yy"
+      ),
     },
     {
       key: 2,
@@ -67,13 +75,24 @@ const ModalViewOrdersOfCustomer: React.FC<ModalViewOrdersOfCustomerProps> = ({
     ...(order.discounts && order.discounts.length !== 0
       ? [
           {
+            key: 11,
+            name: "Original Price",
+            value: order.original_price + "$",
+          },
+        ]
+      : []),
+    ...(order.discounts && order.discounts.length !== 0
+      ? [
+          {
             key: 7,
             name: "Discounts",
             value: order.discounts
               .map(
                 (discount) =>
                   discount.value +
-                  `${discount.type === "percentage" ? "%" : " USD"}`
+                  `${typeMap[discount.type as keyof typeof typeMap]} (${
+                    order.discount_price
+                  }$)`
               )
               .join(","),
           },
@@ -145,7 +164,8 @@ const ModalViewOrdersOfCustomer: React.FC<ModalViewOrdersOfCustomerProps> = ({
                       detail.key === 3 ||
                       detail.key === 5 ||
                       detail.key === 1 ||
-                      detail.key === 7
+                      detail.key === 7 ||
+                      detail.key === 11
                         ? "flex-row items-center justify-between"
                         : "flex-col"
                     } p-2 border dark:border-white/20

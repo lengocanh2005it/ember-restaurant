@@ -1,9 +1,7 @@
 "use client";
-import { CreateReservationDto } from "@/api/reservation/utils/types";
 import ModalShowPayments from "@/components/modal/ModalShowPayments";
 import { useAddReservation } from "@/hooks/use-add-reservation";
 import { useReservationStore, useUserStore } from "@/store";
-import { CachedReservationData } from "@/utils";
 import {
   Button,
   Modal,

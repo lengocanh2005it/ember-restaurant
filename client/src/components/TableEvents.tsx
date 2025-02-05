@@ -17,6 +17,7 @@ import ModalViewEvent from "@/components/modal/ModalViewEvent";
 import ModalConfirmDeleteEvent from "@/components/modal/ModalConfirmDeleteEvent";
 import ModalUpdateEvent from "@/components/modal/ModalUpdateEvent";
 import { Event } from "@/utils/types";
+import { format } from "date-fns";
 
 const statusMap = {
   scheduled: "Scheduled",
@@ -80,10 +81,24 @@ const TableEvents: React.FC = () => {
         );
       }
       case "start_date": {
-        return <p>{(cellValue as string).split("T")[0]}</p>;
+        return (
+          <p>
+            {format(
+              event?.start_date ? event.start_date : new Date(),
+              "dd/MM/yyyy"
+            )}
+          </p>
+        );
       }
       case "end_date": {
-        return <p>{(cellValue as string).split("T")[0]}</p>;
+        return (
+          <p>
+            {format(
+              event?.end_date ? event.end_date : new Date(),
+              "dd/MM/yyyy"
+            )}
+          </p>
+        );
       }
       case "options": {
         return (

@@ -35,8 +35,8 @@ const MenuItems: React.FC<MenuItemProps> = ({ item }) => {
 
   return (
     <div
-      className="border border-black/10 dark:border-white/40 rounded-2xl shadow-md
-       hover:shadow-xl px-4 py-4 flex flex-col 
+      className="border border-black/10 dark:border-white/40 rounded-2xl shadow-custom
+       hover:shadow-custom_hover px-4 py-4 flex flex-col 
     justify-between group cursor-pointer ease-in-out gap-2
     transition-all duration-300 dark:bg-primary dark:text-white"
     >
@@ -149,15 +149,7 @@ const MenuItems: React.FC<MenuItemProps> = ({ item }) => {
                   </Tooltip>
                 </>
               ) : (
-                <>
-                  <ButtonOrder
-                    name={item.name as string}
-                    image={item.image as string}
-                    stock={item.stock as number}
-                    price={item.price}
-                    id={item.id}
-                  />
-                </>
+                <ButtonOrder product={item} />
               )}
             </div>
           </>

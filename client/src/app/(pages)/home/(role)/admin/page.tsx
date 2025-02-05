@@ -1,20 +1,19 @@
 "use client";
-import { Button, Accordion, AccordionItem, Chip } from "@heroui/react";
+import { Accordion, AccordionItem, Button, Chip } from "@heroui/react";
 import {
   BellRingIcon,
   CaptionsIcon,
   GiftIcon,
   HandPlatterIcon,
   MenuIcon,
-  MessageSquareText,
   PercentIcon,
   ShieldIcon,
   ShoppingCartIcon,
   TableIcon,
   UsersIcon,
 } from "lucide-react";
-import React from "react";
 import { useRouter } from "next/navigation";
+import React from "react";
 
 const SettingsPage: React.FC = () => {
   const router = useRouter();

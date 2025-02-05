@@ -88,7 +88,7 @@ const UpcomingEvents: React.FC = () => {
         className="relative flex flex-col lg:items-start lg:justify-start lg:text-left
            items-center justify-center text-center"
       >
-        <div className="flex lg:flex-row flex-col lg:gap-4 gap-1 items-center">
+        <div className="flex lg:flex-row flex-col lg:gap-1 items-center">
           <h1 className="lg:text-2xl text-xl font-bold md:text-left text-center">
             Upcoming Events
           </h1>

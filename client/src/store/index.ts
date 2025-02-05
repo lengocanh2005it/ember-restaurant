@@ -6,3 +6,4 @@ export * from "./productStore";
 export * from "./notificationStore";
 export * from "./orderStore";
 export * from "./reservationStore";
+export * from "./promotionStore";

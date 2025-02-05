@@ -23,4 +23,10 @@ export type UpdateReviewDto = {
   productId?: string;
   orderIds?: string[];
   reservationIds?: string[];
+  is_featured?: boolean;
+};
+
+export type UpdateFeaturedReviewDto = {
+  reviewIds: string[];
+  userId: string;
 };
