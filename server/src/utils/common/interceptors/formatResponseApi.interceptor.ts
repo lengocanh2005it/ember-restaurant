@@ -7,7 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { map, Observable } from 'rxjs';
 import { RESPONSE_MESSAGE } from 'src/decorators/response-message.decorator';
-import { ApiResponseType } from 'src/utils/types';
+import { ApiResponseType } from 'src/utils/common/types/types';
 
 @Injectable()
 export class FormatResponseApiInterceptor<T> implements NestInterceptor<T> {

@@ -4,33 +4,33 @@ import {
   Controller,
   Get,
   Post,
+  Query,
   Req,
   Res,
   UnauthorizedException,
   UseGuards,
-  Query,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { SkipThrottle } from '@nestjs/throttler';
 import { Request, Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
-import { FacebookAuthGuard } from 'src/auth/guards/facebook.guard';
-import { GoogleAuthGuard } from 'src/auth/guards/google.guard';
+import { SocialLoginDto } from 'src/auth/dtos/auth.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { LocalAuthGuard } from 'src/auth/guards/local.guard';
 import { RoleAuthGuard } from 'src/auth/guards/role.guard';
-import { initCookies } from 'src/auth/utils/initCookies';
 import { EmailsService } from 'src/emails/emails.service';
+import { RedisService } from 'src/redis/redis.service';
 import { Roles } from 'src/roles/role.decorator';
 import { Role } from 'src/roles/role.enum';
 import { UsersService } from 'src/users/users.service';
 import {
-  UserSessionPayload,
+  SessionData,
   Theme,
   encodePassword,
   generateVerificationCode,
-  getEnvValue,
+  getDataOfSessionFromRequest,
+  initializeCookies,
 } from 'src/utils';
 
 @Controller('auth')
@@ -41,6 +41,7 @@ export class AuthController {
     private readonly emailsService: EmailsService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly redisService: RedisService,
   ) {}
 
   @Get('role')
@@ -62,14 +63,30 @@ export class AuthController {
     return res.sendStatus(200);
   }
 
+  @Post('social/login')
+  async handleSocialLogin(
+    @Req() req: any,
+    @Body() socialLoginDto: SocialLoginDto,
+  ): Promise<Record<string, string | number>> {
+    const { accessToken, refreshToken, userId } =
+      await this.authService.handleSocialLogin(socialLoginDto);
+
+    req.session.user = {
+      userId,
+      accessToken,
+      refreshToken,
+    };
+
+    return { accessToken, userId, refreshToken, sessionID: req.sessionID };
+  }
+
   @Post('login')
   @UseGuards(LocalAuthGuard)
   async login(@Req() req: any, @Res() res: Response): Promise<void> {
-    const { userId, refreshToken, accessToken } =
-      req.user as UserSessionPayload;
+    const { userId, refreshToken, accessToken } = req.user as SessionData;
 
     if (!refreshToken || !accessToken)
-      throw new UnauthorizedException('Unauthenticated.');
+      throw new UnauthorizedException('Tokens not found.');
 
     req.session.user = {
       userId,
@@ -80,7 +97,7 @@ export class AuthController {
     const user = await this.usersService.findOne(userId);
 
     if (user.username === this.configService.get<string>('ADMIN_NAME')) {
-      initCookies(
+      initializeCookies(
         res,
         user,
         'admin',
@@ -89,29 +106,39 @@ export class AuthController {
         refreshToken,
       );
     } else {
-      initCookies(res, user, 'user', 'local', this.configService, refreshToken);
+      initializeCookies(
+        res,
+        user,
+        'user',
+        'local',
+        this.configService,
+        refreshToken,
+      );
     }
 
-    res.json({
+    res.status(201).json({
       statusCode: 201,
       message: 'Logged in successfully!',
-      data: { accessToken: accessToken },
+      data: { accessToken, userId, refreshToken, sessionID: req.sessionID },
     });
   }
 
   @Post('logout')
-  logout(@Res() res: Response) {
-    res.cookie('isLoggedIn', '', { httpOnly: true, secure: true, maxAge: 0 });
-    res.cookie('refreshToken', '', { httpOnly: true, secure: true, maxAge: 0 });
-    res.cookie('user_session', '', { httpOnly: true, secure: true, maxAge: 0 });
-    res.cookie('role', '', { httpOnly: true, secure: true, maxAge: 0 });
-    res.cookie('theme', '', { httpOnly: true, secure: false, maxAge: 0 });
-    res.cookie('accessToken', '', {
-      httpOnly: false,
-      secure: false,
-      maxAge: 0,
+  async logout(@Res() res: Response): Promise<void> {
+    const cookies = [
+      { name: 'isLoggedIn', httpOnly: true, secure: true },
+      { name: 'refreshToken', httpOnly: true, secure: true },
+      { name: 'user_session', httpOnly: true, secure: true },
+      { name: 'role', httpOnly: true, secure: true },
+      { name: 'theme', httpOnly: true, secure: false },
+      { name: 'accessToken', httpOnly: false, secure: false },
+    ];
+
+    cookies.forEach(({ name, httpOnly, secure }) => {
+      res.cookie(name, '', { httpOnly, secure, maxAge: 0 });
     });
-    return res.json({
+
+    res.status(200).json({
       statusCode: 200,
       message: 'Logged out successfully!',
     });
@@ -124,17 +151,18 @@ export class AuthController {
   ): Promise<void> {
     const refreshToken = req.cookies.refreshToken;
 
-    if (refreshToken) {
-      const accessToken = await this.authService.refreshToken(refreshToken);
+    if (!refreshToken)
+      throw new UnauthorizedException(
+        'Authentication failed: Refresh token is missing.',
+      );
 
-      res.json({
-        statusCode: 201,
-        message: 'Refresh token successfully!',
-        data: { accessToken },
-      });
-    } else {
-      throw new UnauthorizedException();
-    }
+    const accessToken = await this.authService.refreshToken(refreshToken);
+
+    res.status(201).json({
+      statusCode: 201,
+      message: 'Refresh token successfully!',
+      data: { accessToken },
+    });
   }
 
   @SkipThrottle()
@@ -143,12 +171,14 @@ export class AuthController {
     @Res() res: Response,
     @Body() themePayload: Theme,
     @Req() request: any,
-  ) {
-    if (!request.session.user || !request.session.user.userId) {
-      throw new UnauthorizedException('User not authenticated');
-    }
+  ): Promise<void> {
+    const data = await getDataOfSessionFromRequest(
+      request,
+      this.configService,
+      this.redisService,
+    );
 
-    const userId: string = request.session.user.userId;
+    const userId = data.userId;
 
     const { theme } = themePayload;
 
@@ -168,22 +198,22 @@ export class AuthController {
 
     await this.usersService.handleUpdateThemeOfUser(userId, theme);
 
-    return res.json({
+    res.json({
       statusCode: 201,
-      message: 'Updated theme successfully!',
+      message: 'Updated theme successfully.',
     });
   }
 
   @Get('profile')
   @SkipThrottle()
-  @UseGuards(JwtAuthGuard, RoleAuthGuard)
-  @Roles(Role.ADMIN, Role.USER)
   async getProfile(@Req() request: any): Promise<any> {
-    if (!request.session.user || !request.session.user.userId) {
-      throw new UnauthorizedException('User Not Authenticated.');
-    }
+    const data = await getDataOfSessionFromRequest(
+      request,
+      this.configService,
+      this.redisService,
+    );
 
-    const userId: string = request.session.user.userId;
+    const userId = data.userId;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, createdAt, updatedAt, ...res } =
@@ -192,62 +222,12 @@ export class AuthController {
     return res;
   }
 
-  @Get('google/login')
-  @UseGuards(GoogleAuthGuard)
-  async handleGoogleLogin() {
-    return { msg: 'Google authentication!' };
-  }
-
-  @Get('google/redirect')
-  @UseGuards(GoogleAuthGuard)
-  async handleGoogleRedirect(@Req() req: any, @Res() res: Response) {
-    const user = req.user;
-
-    if (user && user.accessToken) {
-      req.session.user = { userId: user.id };
-
-      initCookies(res, user, 'user', 'google', this.configService);
-
-      return res.redirect(
-        getEnvValue('REDIRECT_URL_HOMEPAGE_PROD', 'REDIRECT_URL_HOMEPAGE_DEV'),
-      );
-    }
-
-    return res.redirect(
-      getEnvValue('REDIRECT_URL_LOGINPAGE_PROD', 'REDIRECT_URL_LOGINPAGE_DEV'),
-    );
-  }
-
-  @Get('facebook/login')
-  @UseGuards(FacebookAuthGuard)
-  handleFacebookLogin() {
-    return { msg: 'Facebook authentication!' };
-  }
-
-  @Get('facebook/redirect')
-  @UseGuards(FacebookAuthGuard)
-  handleFacebookRedirect(@Req() req: any, @Res() res: Response) {
-    const user = req.user;
-
-    if (user && user.accessToken) {
-      req.session.user = { userId: user.id };
-
-      initCookies(res, user, 'user', 'facebook', this.configService);
-
-      return res.redirect(
-        getEnvValue('REDIRECT_URL_HOMEPAGE_PROD', 'REDIRECT_URL_HOMEPAGE_PROD'),
-      );
-    }
-    return res.redirect(
-      this.configService.get<string>('REDIRECT_URL_LOGINPAGE'),
-    );
-  }
-
   @Post('request/reset-password')
   async handleRequestResetPassword(
     @Body('email') email: string,
   ): Promise<void> {
     const token = await this.authService.generateResetToken(email);
+
     await this.emailsService.sendResetEmail(email, token);
   }
 
@@ -270,7 +250,7 @@ export class AuthController {
     @Body('email') email: string,
     @Body('userId') userId: string,
     @Query() queries: Record<string, string>,
-  ) {
+  ): Promise<Record<string, string | number>> {
     const user = await this.usersService.handleFindUserByEmail(email);
 
     if (queries && queries.options === 'check') {
@@ -309,7 +289,7 @@ export class AuthController {
   async verifyEmail(
     @Body('verificationCode') verificationCode: string,
     @Body('newEmail') newEmail: string,
-  ): Promise<any> {
+  ): Promise<Record<string, string | number>> {
     const code = await this.emailsService.findOneByCode(
       verificationCode,
       newEmail,

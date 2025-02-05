@@ -23,6 +23,8 @@ import { TablesModule } from 'src/tables/tables.module';
 import { Table } from 'src/tables/entities/tables.entity';
 import { PaymentsModule } from 'src/payments/payments.module';
 import { Payment } from 'src/payments/entities/payments.entity';
+import { PromotionsModule } from 'src/promotions/promotions.module';
+import { Promotion } from 'src/promotions/entities/promotions.entity';
 
 @Module({
   imports: [
@@ -34,6 +36,7 @@ import { Payment } from 'src/payments/entities/payments.entity';
       Product,
       Table,
       Payment,
+      Promotion,
     ]),
     ProductsModule,
     UsersModule,
@@ -46,6 +49,7 @@ import { Payment } from 'src/payments/entities/payments.entity';
     ReservationsModule,
     TablesModule,
     PaymentsModule,
+    PromotionsModule,
   ],
   providers: [
     CartsService,

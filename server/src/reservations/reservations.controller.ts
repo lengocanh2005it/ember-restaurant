@@ -33,7 +33,7 @@ export class ReservationsController {
 
   @Post()
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
-  @Roles(Role.USER, Role.ADMIN, Role.MANAGER)
+  @Roles(Role.USER, Role.ADMIN)
   async createOne(
     @Body() createReservationDto: CreateReservationDto,
   ): Promise<any> {

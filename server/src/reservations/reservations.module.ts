@@ -28,6 +28,7 @@ import { UserDiscountModule } from 'src/user-discount/user-discount.module';
 import { ReservationsController } from './reservations.controller';
 import { ReservationsService } from './reservations.service';
 import { JwtService } from '@nestjs/jwt';
+import { PromotionsService } from 'src/promotions/promotions.service';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { JwtService } from '@nestjs/jwt';
     ReservationsService,
     TablesService,
     PaymentsService,
+    PromotionsService,
     PaymentContext,
     PaymentStrategyFactory,
     StripeService,

@@ -102,27 +102,72 @@ export class OrdersService {
       throw new BadRequestException('UserID Not Found.');
     }
 
-    const { discountId, userId, promotionCode } = createOrderProductDto.order;
+    const { discountId, userId, promotionCode, total_price } =
+      createOrderProductDto.order;
+
+    const transformProducts =
+      await this.productsService.transformProductAndQuantityToProducts(
+        createOrderProductDto.products,
+      );
+
+    let discountedAmount = parseFloat(
+      transformProducts
+        .map((product) => Number(product.product.price) * product.quantity)
+        .reduce((acc, curr) => {
+          return acc + curr;
+        }, 0)
+        .toFixed(2),
+    );
 
     if (discountId) {
       const discount =
         await this.discountsService.checkValidOfDiscount(discountId);
 
       if (discount) {
-        await this.userDiscountService.decreaseUserDiscountQuantity(
-          userId,
-          discount.id,
-        );
+        const { type, value, id } = discount;
+
+        this.discountContext.setStrategy(type, value);
+
+        discountedAmount =
+          this.discountContext.calculateDiscount(discountedAmount);
+
+        await this.userDiscountService.decreaseUserDiscountQuantity(userId, id);
       }
     }
 
-    const order = this.orderRepository.create(createOrderProductDto.order);
+    if (promotionCode) {
+      const discountFromPromotion =
+        await this.promotionsService.checkPromotionCode(promotionCode);
+
+      if (discountFromPromotion) {
+        const { type, value } = discountFromPromotion;
+
+        this.discountContext.setStrategy(type, value);
+
+        discountedAmount =
+          this.discountContext.calculateDiscount(discountedAmount);
+      }
+    }
+
+    const order = this.orderRepository.create({
+      ...createOrderProductDto.order,
+      discount_price: discountedAmount !== total_price ? discountedAmount : 0,
+      original_price: total_price,
+      total_price:
+        discountedAmount !== total_price
+          ? total_price - discountedAmount
+          : total_price,
+    });
 
     await this.orderRepository.save(order);
 
     if (promotionCode) {
       const discountFromPromotion =
         await this.promotionsService.checkPromotionCode(promotionCode);
+
+      const { type, value } = discountFromPromotion;
+
+      this.discountContext.setStrategy(type, value);
 
       await setRelation(
         this.orderRepository,
@@ -148,12 +193,7 @@ export class OrdersService {
       );
     }
 
-    const products =
-      await this.productsService.transformProductAndQuantityToProducts(
-        createOrderProductDto.products,
-      );
-
-    await this.orderProductService.createOrderDetails(order, products);
+    await this.orderProductService.createOrderDetails(order, transformProducts);
 
     await setRelation(
       this.orderRepository,
@@ -195,9 +235,11 @@ export class OrdersService {
         await this.discountsService.checkValidOfDiscount(discountId);
 
       if (discount) {
-        this.discountContext.setStrategy('percentage', discount.value);
+        this.discountContext.setStrategy(discount.type, discount.value);
 
-        discountedAmount = this.discountContext.calculate(res.total_price);
+        discountedAmount = this.discountContext.calculateDiscount(
+          res.total_price,
+        );
 
         await this.userDiscountService.decreaseUserDiscountQuantity(
           userId,

@@ -11,7 +11,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { User } from 'src/users/entities/users.entity';
-import { getEnvValue, JwtUserPayload } from 'src/utils';
+import { getEnvValue, JwtPayload } from 'src/utils';
 import { DataSource } from 'typeorm';
 
 @WebSocketGateway({
@@ -39,7 +39,7 @@ export class PaymentGateway
     try {
       const decoded = this.jwtService.verify(token, {
         secret: this.configService.get<string>('JWT_SECRET_KEY') as string,
-      }) as JwtUserPayload;
+      }) as JwtPayload;
 
       const user = await this.dataSource
         .getRepository(User)

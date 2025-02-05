@@ -24,16 +24,22 @@ export class PromotionsService implements OnModuleInit {
     await this.updateExpirationPromotions();
   }
 
-  async getPromotions(): Promise<Promotion[]> {
+  async getPromotions(queries?: Record<string, string>): Promise<Promotion[]> {
+    const whereCondition: any = { status: 'active' };
+
+    if (queries?.promotionCode) {
+      whereCondition.code = queries.promotionCode;
+    }
+
     const promotions = await this.promotionRepository.find({
-      where: { status: 'active' },
+      where: whereCondition,
       relations: ['discount'],
     });
 
     return promotions.map((promotion) => ({
       ...promotion,
       discount: {
-        productId: promotion.discount.id,
+        discountId: promotion.discount.id,
         value: promotion.discount.value,
         type: promotion.discount.type,
       },
@@ -124,7 +130,9 @@ export class PromotionsService implements OnModuleInit {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const isEligible = startDate <= today && today <= endDate;
+    const isEligible =
+      startDate.getTime() <= today.getTime() &&
+      today.getTime() <= endDate.getTime();
 
     if (!isEligible) throw new BadRequestException('Promotion has expired.');
 

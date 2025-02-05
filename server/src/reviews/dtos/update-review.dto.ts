@@ -1,7 +1,8 @@
 import { IsBoolean, IsNotEmpty } from 'class-validator';
+import { CreateReviewDto } from 'src/reviews/dtos/create-review.dto';
 
-export class UpdateReviewDto {
+export class UpdateReviewDto extends CreateReviewDto {
   @IsBoolean()
   @IsNotEmpty()
-  readonly isFeatured!: boolean;
+  readonly is_featured!: boolean;
 }

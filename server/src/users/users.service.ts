@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { SocialLoginDto } from 'src/auth/dtos/auth.dto';
 import { Cart } from 'src/carts/entities/carts.entity';
 import { DiscountsService } from 'src/discounts/discounts.service';
 import { Discount } from 'src/discounts/entities/discounts.entity';
@@ -114,6 +115,36 @@ export class UsersService {
     return await this.userRepository.findOneBy({ email });
   }
 
+  async handleVerifySocialUser(
+    social: 'google' | 'facebook',
+    socialId: string,
+    email?: string,
+  ) {
+    if (email) {
+      const user = await this.userRepository.findOneBy({ email });
+
+      if (user && !user.google_id && !user.facebook_id)
+        throw new BadRequestException('Email has been used another user.');
+    }
+
+    const where = {
+      ...(social === 'google'
+        ? { google_id: socialId }
+        : { facebook_id: socialId }),
+    } as any;
+
+    if (email) {
+      where.email = email;
+    }
+
+    const findUser = await this.userRepository.findOne({
+      where,
+      relations: ['roles'],
+    });
+
+    return findUser;
+  }
+
   async handleFindUserByUsername(username: string): Promise<User> {
     const user = await this.userRepository.findOneBy({ username });
 
@@ -145,6 +176,7 @@ export class UsersService {
     const user = this.userRepository.create({
       username,
       password: encodePassword(password),
+      image: this.configService.get<string>('DEFAULT_IMAGE_URL'),
     });
 
     await this.userRepository.save(user);
@@ -391,6 +423,7 @@ export class UsersService {
       username,
       password: encodePassword(password),
       name: this.configService.get<string>('ADMIN_FULL_NAME'),
+      image: this.configService.get<string>('DEFAULT_IMAGE_URL'),
     });
 
     await this.userRepository.save(user);
@@ -445,20 +478,6 @@ export class UsersService {
         loyalty_points: user.loyalty_points + 10,
       },
     );
-  };
-
-  public handleFindUserBySocialId = async (
-    socialField: 'google_id' | 'facebook_id',
-    socialId: string,
-  ): Promise<User> => {
-    const user = await this.userRepository.findOne({
-      where: {
-        [socialField]: socialId,
-      },
-      relations: ['roles'],
-    });
-
-    return user;
   };
 
   public handleCreateUserBySocialId = async (
@@ -520,4 +539,37 @@ export class UsersService {
 
     throw new Error('Invalid query parameter');
   }
+
+  public handleLoginSocialUser = async (socialLoginDto: SocialLoginDto) => {
+    const { email, name, image, subId, provider } = socialLoginDto;
+
+    const findUser = await this.userRepository.findOneBy({
+      ...(provider === 'google'
+        ? { google_id: subId }
+        : { facebook_id: subId }),
+    });
+
+    if (findUser) return findUser;
+
+    const newUser = this.userRepository.create({
+      name,
+      ...(email && { email }),
+      ...(image && { image }),
+      ...(provider === 'google'
+        ? { google_id: subId }
+        : { facebook_id: subId }),
+    });
+
+    await this.userRepository.save(newUser);
+
+    const role = await this.rolesService.findRoleByName('user');
+
+    await this.userRepository
+      .createQueryBuilder('user')
+      .relation(User, 'roles')
+      .of(newUser.id)
+      .add(role.id);
+
+    return newUser;
+  };
 }

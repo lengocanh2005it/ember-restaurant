@@ -6,8 +6,10 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { RoleAuthGuard } from 'src/auth/guards/role.guard';
 import { CreatePromotionDto } from 'src/promotions/dtos/create-promotion.dto';
@@ -22,10 +24,13 @@ export class PromotionsController {
   constructor(private readonly promotionsService: PromotionsService) {}
 
   @Get()
+  @SkipThrottle()
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN, Role.USER)
-  async getPromotions(): Promise<Promotion[]> {
-    return await this.promotionsService.getPromotions();
+  async getPromotions(
+    @Query() queries: Record<string, string>,
+  ): Promise<Promotion[]> {
+    return await this.promotionsService.getPromotions(queries);
   }
 
   @Get(':id')

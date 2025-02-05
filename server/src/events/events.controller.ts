@@ -38,8 +38,9 @@ export class EventsController {
   @Post()
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN)
-  async createEvent(@Body() createEventDto: CreateEventDto): Promise<Event> {
-    return await this.eventsService.createEvent(createEventDto);
+  async createEvent(@Body() createEventDto: CreateEventDto): Promise<Event[]> {
+    await this.eventsService.createEvent(createEventDto);
+    return await this.getEvents();
   }
 
   @Patch(':id')

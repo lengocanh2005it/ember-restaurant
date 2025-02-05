@@ -35,6 +35,12 @@ export class Order {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   readonly total_price!: number;
 
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  readonly original_price!: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  readonly discount_price: number;
+
   @Column({
     type: 'enum',
     enum: ['pending', 'success', 'error'],
