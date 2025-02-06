@@ -84,7 +84,7 @@ const handler = NextAuth({
               sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
               domain:
                 process.env.NODE_ENV === "production"
-                  ? ".ember-restaurant.vercel.app"
+                  ? "ember-restaurant-backend.onrender.com"
                   : undefined,
             });
 
