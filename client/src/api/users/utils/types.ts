@@ -31,3 +31,9 @@ export type VerifyEmailDto = {
   newEmail: string;
   verificationCode: string;
 };
+
+export type CreateSessionOfUserDto = {
+  userId: string;
+  accessToken: string;
+  refreshToken: string;
+};

@@ -312,7 +312,7 @@ declare module "next-auth" {
       email?: string | null;
       image?: string | null;
       userId?: string | null;
-      session_state?: string | null;
+      accessToken?: string | null;
     };
   }
 }
