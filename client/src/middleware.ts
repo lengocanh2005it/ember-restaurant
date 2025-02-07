@@ -1,8 +1,7 @@
-import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-export function middleware(request: NextRequest) {
+export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 

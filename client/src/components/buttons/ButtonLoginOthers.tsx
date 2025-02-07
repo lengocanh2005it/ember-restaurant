@@ -29,7 +29,7 @@ const ButtonLoginOthers: React.FC = () => {
             className="dark:text-white text-black"
           >
             <Button
-              onPress={() => signIn(button.provider)}
+              onPress={async () => await signIn(button.provider)}
               isIconOnly
               className="rounded-full bg-white flex items-center justify-center"
             >

@@ -6,7 +6,7 @@ export const useProfile = () => {
     queryKey: ["profile"],
     queryFn: handleFetchProfileOfUser,
     staleTime: 60 * 1000 * 20,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     refetchOnMount: true,
   });
 };
