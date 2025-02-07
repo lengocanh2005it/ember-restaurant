@@ -253,14 +253,21 @@ export class AuthService {
   ) {
     const isProd = this.configService.get<string>('NODE_ENV') === 'production';
 
-    const options: CookieOptions = {
-      httpOnly: isProd,
+    const sessionOptions: CookieOptions = {
+      httpOnly: true,
       secure: isProd,
       maxAge: 1000 * 60 * 30,
       sameSite: isProd ? 'none' : 'lax',
     };
 
-    res.cookie('user_session', sessionID, options);
-    res.cookie('accessToken', accessToken, options);
+    const accessTokenOptions: CookieOptions = {
+      httpOnly: false,
+      secure: isProd,
+      maxAge: 1000 * 60 * 30,
+      sameSite: isProd ? 'none' : 'lax',
+    };
+
+    res.cookie('user_session', sessionID, sessionOptions);
+    res.cookie('accessToken', accessToken, accessTokenOptions);
   }
 }
