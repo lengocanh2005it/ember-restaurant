@@ -130,7 +130,15 @@ export class AuthController {
     ];
 
     cookies.forEach(({ name, httpOnly, secure }) => {
-      res.cookie(name, '', { httpOnly, secure, maxAge: 0 });
+      res.cookie(name, '', {
+        httpOnly,
+        secure,
+        maxAge: 0,
+        sameSite:
+          this.configService.get<string>('NODE_ENV') === 'production'
+            ? 'none'
+            : 'lax',
+      });
     });
 
     res.status(200).json({
