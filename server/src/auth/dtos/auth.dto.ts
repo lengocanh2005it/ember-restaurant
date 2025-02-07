@@ -29,3 +29,14 @@ export class SocialLoginDto {
   @IsNotEmpty()
   readonly provider!: string;
 }
+
+export class CreateSessionDto {
+  @IsOptional()
+  readonly userId?: string;
+
+  @IsOptional()
+  readonly accessToken?: string;
+
+  @IsOptional()
+  readonly refreshToken?: string;
+}

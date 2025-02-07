@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
 import { InjectDataSource } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { CookieOptions, Response } from 'express';
 import { LocalLoginDto, SocialLoginDto } from 'src/auth/dtos/auth.dto';
 import { RolesService } from 'src/roles/roles.service';
 import { User } from 'src/users/entities/users.entity';
@@ -243,5 +244,23 @@ export class AuthService {
   async generateResetToken(email: string): Promise<string> {
     const payload = { email };
     return this.jwtService.sign(payload);
+  }
+
+  public setSessionCookies(
+    res: Response,
+    sessionID: string,
+    accessToken: string,
+  ) {
+    const isProd = this.configService.get<string>('NODE_ENV') === 'production';
+
+    const options: CookieOptions = {
+      httpOnly: isProd,
+      secure: isProd,
+      maxAge: 1000 * 60 * 30,
+      sameSite: isProd ? 'none' : 'lax',
+    };
+
+    res.cookie('user_session', sessionID, options);
+    res.cookie('accessToken', accessToken, options);
   }
 }

@@ -23,6 +23,7 @@ import { EmailsService } from 'src/emails/emails.service';
 import { RedisService } from 'src/redis/redis.service';
 import { Roles } from 'src/roles/role.decorator';
 import { Role } from 'src/roles/role.enum';
+import { User } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
 import {
   SessionData,
@@ -67,15 +68,9 @@ export class AuthController {
   async handleSocialLogin(
     @Req() req: any,
     @Body() socialLoginDto: SocialLoginDto,
-  ): Promise<Record<string, string | number>> {
+  ): Promise<any> {
     const { accessToken, refreshToken, userId } =
       await this.authService.handleSocialLogin(socialLoginDto);
-
-    req.session.user = {
-      userId,
-      accessToken,
-      refreshToken,
-    };
 
     return { accessToken, userId, refreshToken, sessionID: req.sessionID };
   }
@@ -206,7 +201,41 @@ export class AuthController {
 
   @Get('profile')
   @SkipThrottle()
-  async getProfile(@Req() request: any): Promise<any> {
+  @UseGuards(JwtAuthGuard, RoleAuthGuard)
+  async getProfile(
+    @Req() request: any,
+    @Res() response: Response,
+  ): Promise<any> {
+    const sessionId = request.cookies['user_session'];
+
+    if (!sessionId) {
+      const user = request.user as User;
+
+      const { id } = user;
+
+      const accessToken = this.jwtService.sign(
+        { userId: id },
+        {
+          expiresIn: this.configService.get('ACCESS_TOKEN_LIFE'),
+        },
+      );
+
+      const refreshToken = this.jwtService.sign(
+        { userId: id },
+        {
+          expiresIn: this.configService.get('REFRESH_TOKEN_LIFE'),
+        },
+      );
+
+      request.session.user = { userId: id, accessToken, refreshToken };
+
+      const { sessionID } = request;
+
+      this.authService.setSessionCookies(response, sessionID, accessToken);
+
+      return response.status(200).json({ data: user });
+    }
+
     const data = await getDataOfSessionFromRequest(
       request,
       this.configService,
@@ -219,7 +248,7 @@ export class AuthController {
     const { password, createdAt, updatedAt, ...res } =
       await this.usersService.findOne(userId);
 
-    return res;
+    return response.status(200).json({ data: res });
   }
 
   @Post('request/reset-password')
