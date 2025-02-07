@@ -12,12 +12,20 @@ import { useAppStore, useUserStore } from "@/store";
 import { JwtPayload, User } from "@/utils/types";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
+import { useSession } from "next-auth/react";
 import React, { useEffect } from "react";
 
 const HomePage: React.FC = () => {
   const { setIsDarkMode, setAccessToken, setIsAdmin, isAdmin, setTheme } =
     useAppStore();
   const { setUser } = useUserStore();
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session && session.user && session.user.accessToken) {
+      localStorage.setItem("accessToken", session.user.accessToken);
+    }
+  }, [session]);
 
   const { data, isLoading, isError } = useProfile();
 
