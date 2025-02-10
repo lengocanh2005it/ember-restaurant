@@ -50,7 +50,7 @@ export class AreasController {
   async updateOne(
     @Param('id') id: string,
     @Body() updateAreaDto: UpdateAreaDto,
-  ): Promise<any> {
+  ): Promise<Record<string, Area | Area[]>> {
     return await this.areasService.updateOne(updateAreaDto, id);
   }
 

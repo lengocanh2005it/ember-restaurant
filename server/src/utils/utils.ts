@@ -7,7 +7,14 @@ import { CookieOptions, Request, Response } from 'express';
 import { CreateDiscountDto } from 'src/discounts/dtos/create-discount.dto';
 import { CreateProductDto } from 'src/products/dtos/create-product.dto';
 import { RedisService } from 'src/redis/redis.service';
-import { ApiResponseType, IS_PROD, UserSessionData } from 'src/utils';
+import {
+  ACCESS_TOKEN_MAX_AGE,
+  ApiResponseType,
+  IS_PROD,
+  REFRESH_TOKEN_MAX_AGE,
+  SESSION_MAX_AGE,
+  UserSessionData,
+} from 'src/utils';
 import { Repository } from 'typeorm';
 
 config();
@@ -206,18 +213,18 @@ export const initializeCookies = (
   accessToken: string,
   refreshToken: string,
 ): void => {
-  response.cookie('isLoggedIn', 'true', createCookieOptions(1000 * 60 * 45));
+  response.cookie('isLoggedIn', 'true', createCookieOptions(SESSION_MAX_AGE));
 
   response.cookie(
     'refreshToken',
     refreshToken,
-    createCookieOptions(1000 * 60 * 30),
+    createCookieOptions(REFRESH_TOKEN_MAX_AGE),
   );
 
   response.cookie(
     'accessToken',
     accessToken,
-    createCookieOptions(1000 * 60 * 2),
+    createCookieOptions(ACCESS_TOKEN_MAX_AGE),
   );
 };
 

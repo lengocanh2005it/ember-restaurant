@@ -15,7 +15,7 @@ export class DiscountsService implements OnModuleInit {
     private readonly discountContext: DiscountContext,
   ) {}
 
-  async onModuleInit() {
+  async onModuleInit(): Promise<void> {
     await this.updateExpirationDiscounts();
     await this.initialDiscounts();
     await this.updateEndDateOfDiscount();
@@ -32,15 +32,7 @@ export class DiscountsService implements OnModuleInit {
       });
     }
 
-    return discounts.map((discount) => {
-      const { start_date, end_date, ...res } = discount;
-
-      return {
-        ...res,
-        start_date: start_date.toISOString().split('T')[0],
-        end_date: end_date.toISOString().split('T')[0],
-      } as any;
-    });
+    return discounts;
   }
 
   async findOne(id: string): Promise<Discount> {
@@ -109,7 +101,7 @@ export class DiscountsService implements OnModuleInit {
     }
   };
 
-  public updateEndDateOfDiscount = async () => {
+  public updateEndDateOfDiscount = async (): Promise<void> => {
     const discounts = await this.discountRepository.find();
 
     for (const discount of discounts) {

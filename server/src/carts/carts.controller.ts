@@ -15,6 +15,7 @@ import { CartsService } from 'src/carts/carts.service';
 import { CreateCartDto } from 'src/carts/dtos/create-cart.dto';
 import { UpdateCartDto } from 'src/carts/dtos/update-cart.dto';
 import { Cart } from 'src/carts/entities/carts.entity';
+import { Product } from 'src/products/entities/products.entity';
 import { Roles } from 'src/roles/role.decorator';
 import { Role } from 'src/roles/role.enum';
 import { UsersService } from 'src/users/users.service';
@@ -43,7 +44,9 @@ export class CartsController {
   @Post()
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.USER)
-  async createOne(@Body() createCartDto: CreateCartDto): Promise<Cart[]> {
+  async createOne(
+    @Body() createCartDto: CreateCartDto,
+  ): Promise<Record<string, Cart[] | Product[]>> {
     return await this.cartService.createOne(createCartDto);
   }
 
@@ -64,7 +67,7 @@ export class CartsController {
   async deleteOne(
     @Param('id') id: string,
     @Query() queries: Record<string, string>,
-  ): Promise<any> {
+  ): Promise<Cart[]> {
     await this.cartService.deleteOne(id);
     return await this.usersService.handleFindCartsOfUser(queries.userId);
   }

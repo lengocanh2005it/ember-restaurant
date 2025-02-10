@@ -37,7 +37,10 @@ export class AreasService {
     return await this.areaRepository.save(area);
   }
 
-  async updateOne(updateAreaDto: UpdateAreaDto, id: string): Promise<any> {
+  async updateOne(
+    updateAreaDto: UpdateAreaDto,
+    id: string,
+  ): Promise<Record<string, Area | Area[]>> {
     const area = await this.areaRepository.findOne({
       where: { id },
       relations: ['tables'],

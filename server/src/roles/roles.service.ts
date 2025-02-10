@@ -1,15 +1,17 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { Permission } from 'src/permissions/entities/permissions.entity';
 import { PermissionsService } from 'src/permissions/permissions.service';
 import { CreateRoleDto } from 'src/roles/dtos/create-role.dto';
 import { Role } from 'src/roles/entities/roles.entity';
-import { Repository } from 'typeorm';
+import { User } from 'src/users/entities/users.entity';
+import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
 export class RolesService implements OnModuleInit {
   constructor(
     @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
+    @InjectDataSource() private readonly dataSource: DataSource,
     private readonly permissionsService: PermissionsService,
   ) {}
 
@@ -159,5 +161,16 @@ export class RolesService implements OnModuleInit {
         }
       }
     }
+  };
+
+  public addRoleToUser = async (
+    userId: string,
+    roleId: string,
+  ): Promise<void> => {
+    await this.dataSource
+      .createQueryBuilder()
+      .relation(User, 'roles')
+      .of(userId)
+      .add(roleId);
   };
 }

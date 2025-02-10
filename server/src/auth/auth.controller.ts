@@ -26,6 +26,7 @@ import { Roles } from 'src/roles/role.decorator';
 import { Role } from 'src/roles/role.enum';
 import { UsersService } from 'src/users/users.service';
 import {
+  ACCESS_TOKEN_MAX_AGE,
   IS_PROD,
   Theme,
   createCookieOptions,
@@ -83,7 +84,7 @@ export class AuthController {
   async handleFacebookRedirect(
     @Req() request: Request,
     @Res() response: Response,
-  ) {
+  ): Promise<void> {
     const user = request.user;
 
     await this.authService.createSessionForUser(
@@ -162,7 +163,11 @@ export class AuthController {
 
     const accessToken = await this.authService.refreshToken(refreshToken);
 
-    res.cookie('accessToken', accessToken, createCookieOptions(1000 * 60 * 2));
+    res.cookie(
+      'accessToken',
+      accessToken,
+      createCookieOptions(ACCESS_TOKEN_MAX_AGE),
+    );
 
     return res.status(201).json({
       statusCode: 201,
@@ -220,7 +225,7 @@ export class AuthController {
   ): Promise<void> {
     const token = await this.authService.generateResetToken(email);
 
-    await this.emailsService.sendResetEmail(email, token);
+    return await this.emailsService.sendResetEmail(email, token);
   }
 
   @Post('reset-password')
@@ -232,7 +237,10 @@ export class AuthController {
 
     const hashedPassword = encodePassword(newPassword);
 
-    await this.usersService.handleUpdatePassword(decoded.email, hashedPassword);
+    return await this.usersService.handleUpdatePassword(
+      decoded.email,
+      hashedPassword,
+    );
   }
 
   @Post('update-email')
@@ -243,7 +251,7 @@ export class AuthController {
     @Body('userId') userId: string,
     @Query() queries: Record<string, string>,
   ): Promise<Record<string, string | number>> {
-    const user = await this.usersService.handleFindUserByEmail(email);
+    const user = await this.usersService.handleFindUserByField('email', email);
 
     if (queries && queries.options === 'check') {
       if (user && user.id !== userId) {

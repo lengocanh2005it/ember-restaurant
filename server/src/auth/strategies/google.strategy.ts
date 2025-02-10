@@ -8,6 +8,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import axios from 'axios';
 import { Strategy } from 'passport-google-oauth20';
 import { AuthService } from 'src/auth/auth.service';
+import { User } from 'src/users/entities/users.entity';
 import { getEnvValue, UserGoogleData } from 'src/utils';
 
 @Injectable()
@@ -28,8 +29,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     });
   }
 
-  async validate(accessToken: string) {
+  async validate(accessToken: string): Promise<Partial<User>> {
     const response = await axios.get(
+      `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`,
+    );
+
+    console.log(
       `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`,
     );
 

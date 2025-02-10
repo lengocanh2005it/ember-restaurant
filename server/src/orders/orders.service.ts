@@ -205,7 +205,7 @@ export class OrdersService {
     );
   }
 
-  async updateOne(id: string, updateOrderDto: UpdateOrderDto): Promise<any> {
+  async updateOne(id: string, updateOrderDto: UpdateOrderDto): Promise<void> {
     const { order_details, payment_method, discountId, userId, ...res } =
       updateOrderDto;
 

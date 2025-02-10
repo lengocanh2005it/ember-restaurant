@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
-import { InjectDataSource } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { LocalLoginDto } from 'src/auth/dtos/auth.dto';
@@ -16,13 +15,12 @@ import {
   CreateSocialAccount,
   GenerateTokensType,
   initializeCookies,
+  SESSION_MAX_AGE,
 } from 'src/utils';
-import { DataSource } from 'typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectDataSource() private readonly dataSource: DataSource,
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
@@ -31,7 +29,10 @@ export class AuthService {
   async validateLocalAccount(localLoginDto: LocalLoginDto): Promise<User> {
     const { username, password } = localLoginDto;
 
-    const findUser = await this.usersService.handleFindUserByUsername(username);
+    const findUser = await this.usersService.handleFindUserByField(
+      'username',
+      username,
+    );
 
     const isMatch = bcrypt.compareSync(password, findUser.password);
 
@@ -46,8 +47,10 @@ export class AuthService {
   ): Promise<User> {
     const { email } = createSocialAccount;
 
-    const existingUserEmail =
-      await this.usersService.handleFindUserByEmail(email);
+    const existingUserEmail = await this.usersService.handleFindUserByField(
+      'email',
+      email,
+    );
 
     if (existingUserEmail) {
       const { google_id, facebook_id } = existingUserEmail;
@@ -143,6 +146,7 @@ export class AuthService {
       refreshToken,
       role: user.roles.map((role) => role.name),
       login_method,
+      expiresAt: new Date(Date.now() + SESSION_MAX_AGE),
     };
 
     initializeCookies(response, accessToken, refreshToken);
