@@ -1,6 +1,5 @@
 import { DeleteSupportTicketDto } from "@/api/support-ticket/utils/types";
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 
 export const handleDeleteSupportTicket = async (
   deleteSupportTicketDto: DeleteSupportTicketDto
@@ -8,15 +7,8 @@ export const handleDeleteSupportTicket = async (
   try {
     const { requestId, userId } = deleteSupportTicketDto;
 
-    const accessToken = await getValidAccessToken();
-
     const response = await axios.delete(
-      `/support-ticket/${requestId}/?userId=${userId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
+      `/support-ticket/${requestId}/?userId=${userId}`
     );
 
     if (!response.data) throw new Error("Internal Server Error!");

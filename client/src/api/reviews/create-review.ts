@@ -1,19 +1,11 @@
 import { CreateReviewDto } from "@/api/reviews/utils/types";
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
-import { AxiosResponse } from "axios";
 
 export const handleCreateReview = async (
   createReviewDto: CreateReviewDto
 ): Promise<any> => {
   try {
-    const accessToken = await getValidAccessToken();
-
-    const response = await axios.post("/reviews", createReviewDto, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const response = await axios.post("/reviews", createReviewDto);
 
     if (!response.data) throw new Error("Internal Server Error.");
 

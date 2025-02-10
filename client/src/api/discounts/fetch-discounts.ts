@@ -1,16 +1,9 @@
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 import { AxiosResponse } from "axios";
 
 export const handleFetchDiscounts = async (): Promise<any> => {
   try {
-    const accessToken = await getValidAccessToken();
-
-    const response = await axios.get("/discounts", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const response = await axios.get("/discounts");
 
     if (!response.data) throw new Error("Internal Sever Error!");
 

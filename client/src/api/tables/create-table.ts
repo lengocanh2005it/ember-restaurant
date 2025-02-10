@@ -1,18 +1,11 @@
 import { CreateTableDto } from "@/api/tables/utils/types";
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 
 export const handleCreateTable = async (
   createTableDto: CreateTableDto
 ): Promise<any> => {
   try {
-    const accessToken = await getValidAccessToken();
-
-    const response = await axios.post("tables", createTableDto, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const response = await axios.post("tables", createTableDto);
 
     if (!response.data) throw new Error("Internal Server Error!");
 

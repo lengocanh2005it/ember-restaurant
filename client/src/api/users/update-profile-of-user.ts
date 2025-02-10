@@ -1,14 +1,11 @@
 import { handleUploadFiles } from "@/api/files/upload-files";
 import { UpdateProfileOfUserDto } from "@/api/users/utils/types";
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 
 export const handleUpdateProfileOfUser = async (
   updateProfileOfUserDto: UpdateProfileOfUserDto
 ): Promise<any> => {
   try {
-    const accessToken = await getValidAccessToken();
-
     const { userId, image, ...res } = updateProfileOfUserDto;
 
     let data = res as any;
@@ -26,12 +23,7 @@ export const handleUpdateProfileOfUser = async (
       }
     }
 
-    const response = await axios.patch(`/users/${userId}`, data, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      withCredentials: true,
-    });
+    const response = await axios.patch(`/users/${userId}`, data);
 
     if (!response.data) throw new Error("Internal Server Error!");
 

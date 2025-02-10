@@ -1,15 +1,8 @@
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 
 export const handleDeleteEvent = async (eventId: string): Promise<any> => {
   try {
-    const accessToken = await getValidAccessToken();
-
-    const response = await axios.delete(`/events/${eventId}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const response = await axios.delete(`/events/${eventId}`);
 
     if (!response.data) throw new Error("Internal Server Error!");
 

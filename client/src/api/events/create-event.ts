@@ -1,14 +1,11 @@
 import { CreateEventDto } from "@/api/events/utils/types";
 import { handleUploadFiles } from "@/api/files/upload-files";
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 
 export const handleCreateEvent = async (
   createEventDto: CreateEventDto
 ): Promise<any> => {
   try {
-    const accessToken = await getValidAccessToken();
-
     const { image, ...res } = createEventDto;
 
     const imageUrlResponse = await handleUploadFiles({
@@ -22,11 +19,7 @@ export const handleCreateEvent = async (
         image: imageUrlResponse.url as string,
       };
 
-      const response = await axios.post("/events", data, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axios.post("/events", data);
 
       if (!response.data) throw new Error("Internal Server Error!");
 

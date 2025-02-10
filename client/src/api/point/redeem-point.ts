@@ -1,18 +1,10 @@
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 
 export const handleRedeemPoint = async (userId: string): Promise<any> => {
   try {
-    const accessToken = await getValidAccessToken();
-
     const response = await axios.post(
       `/users/${userId}/?loyalty_points=true`,
-      undefined,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
+      undefined
     );
 
     if (!response.data) throw new Error("Internal Server Error!");

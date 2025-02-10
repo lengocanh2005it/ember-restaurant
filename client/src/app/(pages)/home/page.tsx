@@ -9,23 +9,12 @@ import CustomerReviews from "@/components/Reviews";
 import UpcomingEvents from "@/components/UpcomingEvents";
 import { useProfile } from "@/hooks/use-profile";
 import { useAppStore, useUserStore } from "@/store";
-import { JwtPayload, User } from "@/utils/types";
-import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
-import { useSession } from "next-auth/react";
+import { User } from "@/utils/types";
 import React, { useEffect } from "react";
 
 const HomePage: React.FC = () => {
-  const { setIsDarkMode, setAccessToken, setIsAdmin, isAdmin, setTheme } =
-    useAppStore();
+  const { setIsDarkMode, setIsAdmin, isAdmin, setTheme } = useAppStore();
   const { setUser } = useUserStore();
-  const { data: session } = useSession();
-
-  useEffect(() => {
-    if (session && session.user && session.user.accessToken) {
-      localStorage.setItem("accessToken", session.user.accessToken);
-    }
-  }, [session]);
 
   const { data, isLoading, isError } = useProfile();
 
@@ -48,25 +37,19 @@ const HomePage: React.FC = () => {
   ];
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
+    if (data) {
+      setUser(data as User);
 
-    if (token) {
-      const decodedToken = jwtDecode(token) as JwtPayload;
+      if (data) {
+        const isAdminRole = (data as User).roles.some(
+          (role) => role === "admin"
+        );
 
-      if (decodedToken?.roles) {
-        const isAdminRole = decodedToken.roles.some((role) => role === "admin");
         setIsAdmin(isAdminRole);
       }
-
-      setAccessToken(token);
-    }
-  }, [setAccessToken, setIsAdmin]);
-
-  useEffect(() => {
-    const theme = Cookies.get("theme");
-    if (theme) {
-      setIsDarkMode(theme === "light" ? false : true);
-      setTheme(theme);
+      setIsDarkMode((data as User).theme === "light" ? false : true);
+      setTheme((data as User).theme);
+      setIsAdmin((data as User).roles.some((role) => role === "admin"));
     }
 
     if (window.location.hash && window.location.hash === "#_=_") {
@@ -76,15 +59,7 @@ const HomePage: React.FC = () => {
         window.location.hash = "";
       }
     }
-  }, [setTheme, setIsDarkMode]);
-
-  useEffect(() => {
-    if (data) {
-      setUser(data as User);
-      setIsDarkMode((data as User).theme === "light" ? false : true);
-      setIsAdmin((data as User).roles.some((role) => role === "admin"));
-    }
-  }, [data, setUser, setIsAdmin, setIsDarkMode]);
+  }, [data, setUser, setIsAdmin, setIsDarkMode, setTheme]);
 
   if (isLoading) {
     return <LoadingPage />;

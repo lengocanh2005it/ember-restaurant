@@ -1,15 +1,8 @@
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 
 export const handleFetchAreaById = async (areaId: string): Promise<any> => {
   try {
-    const accessToken = await getValidAccessToken();
-
-    const response = await axios.get(`/areas/${areaId}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const response = await axios.get(`/areas/${areaId}`);
 
     if (!response.data) throw new Error("Internal Server Error!");
 
