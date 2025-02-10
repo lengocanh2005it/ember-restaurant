@@ -10,8 +10,16 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(username: string, password: string) {
-    const payload = await this.authService.validateUser({ username, password });
-    if (!payload) throw new UnauthorizedException('Unauthenticated.');
-    return payload;
+    const user = await this.authService.validateLocalAccount({
+      username,
+      password,
+    });
+
+    if (!user) throw new UnauthorizedException('Unauthenticated.');
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: userPassword, createdAt, updatedAt, ...res } = user;
+
+    return res;
   }
 }

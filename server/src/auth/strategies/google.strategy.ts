@@ -1,9 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { Profile, Strategy } from 'passport-google-oauth20';
+import axios from 'axios';
+import { Strategy } from 'passport-google-oauth20';
 import { AuthService } from 'src/auth/auth.service';
-import { getEnvValue } from 'src/utils';
+import { getEnvValue, UserGoogleData } from 'src/utils';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
@@ -23,17 +28,33 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     });
   }
 
-  async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    const payload = await this.authService.validateUserGoogle({
-      email: profile.emails[0].value,
-      displayName: profile.displayName,
-      googleId: profile.id,
+  async validate(accessToken: string) {
+    const response = await axios.get(
+      `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`,
+    );
+
+    if (!response.data) throw new BadRequestException('Invalid accessToken.');
+
+    const data = response.data as UserGoogleData;
+
+    const { email, email_verified, name, picture, sub } = data;
+
+    const googleAccount = await this.authService.validateGoogleAccount({
+      ...(email_verified === true && { email }),
+      displayName: name,
+      imageUrl: picture,
+      socialId: sub,
+      provider: 'google',
     });
 
-    return {
-      ...payload?.user,
-      accessToken: payload?.accessToken,
-      refreshToken: payload?.refreshToken,
-    };
+    if (!googleAccount)
+      throw new UnauthorizedException(
+        'OAuth provider did not return user information.',
+      );
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { username, password, createdAt, updatedAt, ...res } = googleAccount;
+
+    return res;
   }
 }

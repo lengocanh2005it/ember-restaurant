@@ -9,7 +9,7 @@ import helmet from 'helmet';
 import * as passport from 'passport';
 import { DatabaseService } from 'src/database/database.service';
 import { RedisService } from 'src/redis/redis.service';
-import { getEnvValue } from 'src/utils';
+import { getEnvValue, IS_PROD } from 'src/utils';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -28,7 +28,6 @@ async function bootstrap() {
   app.enableCors({
     origin: getEnvValue('ORIGINAL_FE_URL_PROD', 'ORIGINAL_FE_URL_DEV'),
     credentials: true,
-    exposedHeaders: ['x-user-role', 'theme'],
   });
   app.use(
     session({
@@ -40,13 +39,10 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: 1000 * 60 * 30,
-        secure: configService.get<string>('NODE_ENV') === 'production',
-        httpOnly: configService.get<string>('NODE_ENV') === 'production',
-        sameSite:
-          configService.get<string>('NODE_ENV') === 'production'
-            ? 'none'
-            : 'lax',
+        maxAge: 1000 * 60 * 45,
+        secure: IS_PROD,
+        httpOnly: IS_PROD,
+        sameSite: IS_PROD ? 'none' : 'lax',
       },
     }),
   );

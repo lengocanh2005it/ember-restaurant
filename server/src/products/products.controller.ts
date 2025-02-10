@@ -11,7 +11,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ResponseMessage } from 'src/decorators/response-message.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { RoleAuthGuard } from 'src/auth/guards/role.guard';
 import { CreateProductDto } from 'src/products/dtos/create-product.dto';
@@ -20,6 +19,7 @@ import { Product } from 'src/products/entities/products.entity';
 import { ProductsService } from 'src/products/products.service';
 import { Roles } from 'src/roles/role.decorator';
 import { Role } from 'src/roles/role.enum';
+import { ResponseMessage } from 'src/utils/common/decorators/response-message.decorator';
 
 @Controller('products')
 export class ProductsController {

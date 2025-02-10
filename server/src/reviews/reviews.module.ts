@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthService } from 'src/auth/auth.service';
 import { DiscountsModule } from 'src/discounts/discounts.module';
 import { DiscountsService } from 'src/discounts/discounts.service';
 import { Discount } from 'src/discounts/entities/discounts.entity';
@@ -75,6 +76,7 @@ import { UsersService } from 'src/users/users.service';
     UsersService,
     PaymentGateway,
     JwtService,
+    AuthService,
   ],
   controllers: [ReviewsController],
   exports: [ReviewsService],

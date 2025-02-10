@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { User } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
+import { JwtPayload } from 'src/utils';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -18,10 +18,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
+  async validate(payload: JwtPayload) {
+    const { userId } = payload;
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, createdAt, updatedAt, ...res } =
-      (await this.usersService.findOne(payload.userId)) as User;
+      await this.usersService.findOne(userId);
 
     return res;
   }

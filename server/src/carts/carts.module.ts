@@ -25,6 +25,8 @@ import { PaymentsModule } from 'src/payments/payments.module';
 import { Payment } from 'src/payments/entities/payments.entity';
 import { PromotionsModule } from 'src/promotions/promotions.module';
 import { Promotion } from 'src/promotions/entities/promotions.entity';
+import { AuthService } from 'src/auth/auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -57,6 +59,8 @@ import { Promotion } from 'src/promotions/entities/promotions.entity';
     UserDiscountService,
     ReservationsService,
     ProductsService,
+    AuthService,
+    JwtService,
   ],
   controllers: [CartsController],
   exports: [CartsService],

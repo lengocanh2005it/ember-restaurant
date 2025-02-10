@@ -33,6 +33,7 @@ import { UsersModule } from 'src/users/users.module';
 import { UsersService } from 'src/users/users.service';
 import { SupportTicketController } from './support-ticket.controller';
 import { SupportTicketService } from './support-ticket.service';
+import { AuthService } from 'src/auth/auth.service';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { SupportTicketService } from './support-ticket.service';
     TicketMessagesService,
     PaymentGateway,
     JwtService,
+    AuthService,
   ],
   controllers: [SupportTicketController],
   exports: [SupportTicketService],

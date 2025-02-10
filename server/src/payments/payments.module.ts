@@ -39,6 +39,7 @@ import { UsersService } from 'src/users/users.service';
 import { PaymentsController } from './payments.controller';
 import { PaymentsService } from './payments.service';
 import { JwtService } from '@nestjs/jwt';
+import { AuthService } from 'src/auth/auth.service';
 
 @Module({
   imports: [
@@ -86,6 +87,7 @@ import { JwtService } from '@nestjs/jwt';
     PayPalService,
     PaymentGateway,
     JwtService,
+    AuthService,
   ],
   controllers: [PaymentsController],
   exports: [

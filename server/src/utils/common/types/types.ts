@@ -1,15 +1,13 @@
 import { User } from 'src/users/entities/users.entity';
+import 'express-session';
+import 'express';
 
-export type UserGoogleDetails = {
-  email: string;
+export type CreateSocialAccount = {
+  email?: string;
   displayName: string;
-  googleId: string;
-};
-
-export type UserFacebookDetails = {
-  email: string;
-  displayName: string;
-  facebookId: string;
+  socialId: string;
+  provider: string;
+  imageUrl: string;
 };
 
 export type ImageResponse = {
@@ -58,12 +56,55 @@ export type JwtPayload = {
   exp: number;
 };
 
-export type SessionData = {
+export type UserSessionData = {
   userId: string;
   accessToken: string;
   refreshToken: string;
-  role: string;
+  role: string[];
   username?: string;
   login_method: string;
   expiresAt?: number;
 };
+
+export type GenerateTokensType = {
+  accessToken: string;
+  refreshToken: string;
+};
+
+export type SocialLoginType = GenerateTokensType & {
+  userId: string;
+  sessionID: string;
+};
+
+export type UserGoogleData = {
+  sub: string;
+  name: string;
+  given_name: string;
+  family_name: string;
+  picture: string;
+  email: string;
+  email_verified: boolean;
+};
+
+export type UserFacebookData = {
+  id: string;
+  name: string;
+  picture: {
+    heigh: number;
+    is_silhouette: boolean;
+    url: string;
+    width: number;
+  };
+};
+
+declare module 'express-session' {
+  interface SessionData {
+    user?: UserSessionData;
+  }
+}
+
+declare module 'express' {
+  interface Request {
+    user?: User;
+  }
+}

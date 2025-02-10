@@ -37,6 +37,7 @@ import { User } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
+import { AuthService } from 'src/auth/auth.service';
 
 @Module({
   imports: [
@@ -82,6 +83,7 @@ import { OrdersService } from './orders.service';
     ApplePayService,
     PaymentGateway,
     JwtService,
+    AuthService,
   ],
   controllers: [OrdersController],
   exports: [OrdersService],

@@ -18,7 +18,7 @@ import { UserDiscountService } from 'src/user-discount/user-discount.service';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { UpdateUserDto } from 'src/users/dtos/update-user.dto';
 import { User } from 'src/users/entities/users.entity';
-import { encodePassword } from 'src/utils';
+import { CreateSocialAccount, encodePassword } from 'src/utils';
 import { DataSource, Like, Repository } from 'typeorm';
 
 @Injectable()
@@ -91,7 +91,7 @@ export class UsersService {
       })) as any;
   }
 
-  async findOne(id: string, queries?: Record<string, string>): Promise<any> {
+  async findOne(id: string, queries?: Record<string, string>): Promise<User> {
     const user = await this.userRepository.findOne({
       where: {
         id,
@@ -112,41 +112,19 @@ export class UsersService {
   }
 
   async handleFindUserByEmail(email: string): Promise<User> {
-    return await this.userRepository.findOneBy({ email });
-  }
-
-  async handleVerifySocialUser(
-    social: 'google' | 'facebook',
-    socialId: string,
-    email?: string,
-  ) {
-    if (email) {
-      const user = await this.userRepository.findOneBy({ email });
-
-      if (user && !user.google_id && !user.facebook_id)
-        throw new BadRequestException('Email has been used another user.');
-    }
-
-    const where = {
-      ...(social === 'google'
-        ? { google_id: socialId }
-        : { facebook_id: socialId }),
-    } as any;
-
-    if (email) {
-      where.email = email;
-    }
-
-    const findUser = await this.userRepository.findOne({
-      where,
+    return await this.userRepository.findOne({
+      where: {
+        email,
+      },
       relations: ['roles'],
     });
-
-    return findUser;
   }
 
   async handleFindUserByUsername(username: string): Promise<User> {
-    const user = await this.userRepository.findOneBy({ username });
+    const user = await this.userRepository.findOne({
+      where: { username },
+      relations: ['roles'],
+    });
 
     if (!user) throw new NotFoundException('User Not Found.');
 
@@ -480,19 +458,46 @@ export class UsersService {
     );
   };
 
-  public handleCreateUserBySocialId = async (
+  public handleFindSocialAccount = async (
     socialField: 'google_id' | 'facebook_id',
     socialId: string,
-    name: string,
-    email: string,
   ): Promise<User> => {
+    const user = await this.userRepository.findOne({
+      where: {
+        [socialField]: socialId,
+      },
+      relations: ['roles'],
+    });
+
+    if (!user) throw new NotFoundException('User Not Found.');
+
+    return user;
+  };
+
+  public handleCreateUserBySocialId = async (
+    createSocialAccount: CreateSocialAccount,
+  ): Promise<User> => {
+    const { provider, socialId, email, displayName, imageUrl } =
+      createSocialAccount;
+
     const user = this.userRepository.create({
-      [socialField]: socialId,
-      name,
-      email,
+      ...(provider === 'google'
+        ? { google_id: socialId }
+        : { facebook_id: socialId }),
+      name: displayName,
+      ...(email && { email }),
+      image: imageUrl,
     });
 
     await this.userRepository.save(user);
+
+    const role = await this.rolesService.findRoleByName('user');
+
+    await this.dataSource
+      .createQueryBuilder()
+      .relation(User, 'roles')
+      .of(user.id)
+      .add(role.id);
 
     return await this.userRepository.findOne({
       where: {

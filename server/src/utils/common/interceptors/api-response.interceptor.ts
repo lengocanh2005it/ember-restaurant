@@ -6,11 +6,11 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { map, Observable } from 'rxjs';
-import { RESPONSE_MESSAGE } from 'src/decorators/response-message.decorator';
+import { RESPONSE_MESSAGE } from 'src/utils/common/decorators/response-message.decorator';
 import { ApiResponseType } from 'src/utils/common/types/types';
 
 @Injectable()
-export class FormatResponseApiInterceptor<T> implements NestInterceptor<T> {
+export class ApiResponseInterceptor<T> implements NestInterceptor<T> {
   constructor(private readonly reflector: Reflector) {}
 
   intercept(

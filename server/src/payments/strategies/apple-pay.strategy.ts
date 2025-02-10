@@ -7,5 +7,7 @@ import { PaymentStrategy } from 'src/payments/strategies/payment.strategy';
 export class ApplePayStrategy implements PaymentStrategy {
   constructor(private readonly applePayService: ApplePayService) {}
 
-  async processPayment(createPaymentDto: CreatePaymentDto): Promise<any> {}
+  async processPayment(createPaymentDto: CreatePaymentDto): Promise<any> {
+    console.log(createPaymentDto);
+  }
 }
