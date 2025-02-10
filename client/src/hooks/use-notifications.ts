@@ -1,12 +1,13 @@
 import { handleFetchNotifications } from "@/api/notifications/fetch-notifications";
+import { CUSTOM_STALE_TIME } from "@/config/constants";
 import { useQuery } from "@tanstack/react-query";
 
 export const useNotifications = () => {
   return useQuery({
     queryKey: ["notifications"],
     queryFn: handleFetchNotifications,
-    staleTime: 60 * 1000 * 20,
+    staleTime: CUSTOM_STALE_TIME,
     refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 };

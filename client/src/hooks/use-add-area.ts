@@ -7,7 +7,7 @@ export const useAddArea = () => {
 
   return useMutation({
     mutationFn: handleCreateArea,
-    onSuccess: (data: any) => {
+    onSuccess: (data) => {
       query.setQueryData(["areas"], data);
       showSuccessToast("Added new area successfully!", "top-right", {
         backgroundColor: "#28a745",

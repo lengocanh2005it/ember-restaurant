@@ -31,16 +31,11 @@ import {
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { stageStatues } from "@/config/constants";
 
 const methods = [
   { key: "card", label: "Credit Card" },
   { key: "cash", label: "Pay In Cash" },
-];
-
-const statuses = [
-  { key: "pending", label: "Pending" },
-  { key: "success", label: "Success" },
-  { key: "error", label: "Error" },
 ];
 
 const formSchema = z.object({
@@ -330,7 +325,7 @@ const EditReservationForm: React.FC<EditReservationFromProp> = ({
                 <FormControl>
                   <Select
                     key={field.value || ""}
-                    items={statuses}
+                    items={stageStatues}
                     defaultSelectedKeys={[`${reservation.status}`]}
                     placeholder="Choose one status..."
                     aria-labelledby="status"

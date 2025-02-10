@@ -16,7 +16,13 @@ import {
 } from "@/components/ui/form";
 import { useRegister } from "@/hooks/use-register";
 import { Button, Input } from "@heroui/react";
-import { EyeIcon, EyeOffIcon, LockIcon, UserIcon } from "lucide-react";
+import {
+  EyeIcon,
+  EyeOffIcon,
+  LockIcon,
+  UserIcon,
+  UserRoundPlusIcon,
+} from "lucide-react";
 import { CreateUserDto } from "@/api/register/utils/types";
 
 const formSchema = z
@@ -125,7 +131,7 @@ const RegisterForm: React.FC = () => {
                       />
                     </div>
                   </FormControl>
-                  <FormMessage className="dark:text-red-400" />
+                  <FormMessage className="dark:text-red-400 text-red-500" />
                 </FormItem>
               )}
             />
@@ -175,7 +181,7 @@ const RegisterForm: React.FC = () => {
                       />
                     </div>
                   </FormControl>
-                  <FormMessage className="dark:text-red-400" />
+                  <FormMessage className="dark:text-red-400 text-red-500" />
                 </FormItem>
               )}
             />
@@ -225,23 +231,24 @@ const RegisterForm: React.FC = () => {
                       />
                     </div>
                   </FormControl>
-                  <FormMessage className="dark:text-red-400" />
+                  <FormMessage className="dark:text-red-400 text-red-500" />
                 </FormItem>
               )}
             />
 
             {!isLoading ? (
               <>
-                <Button type="submit" className="w-fit mx-auto font-bold">
+                <Button
+                  type="submit"
+                  className="w-fit mx-auto font-medium"
+                  startContent={<UserRoundPlusIcon />}
+                >
                   Register
                 </Button>
               </>
             ) : (
               <>
-                <Button
-                  isLoading
-                  className="w-fit mx-auto font-bold bg-white/20 text-white/80"
-                >
+                <Button isLoading className="w-fit mx-auto font-medium">
                   Creating new account...
                 </Button>
               </>

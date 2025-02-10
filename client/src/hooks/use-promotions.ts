@@ -1,12 +1,13 @@
 import { handleFetchPromotions } from "@/api/promotions/fetch-promotions";
+import { CUSTOM_STALE_TIME } from "@/config/constants";
 import { useQuery } from "@tanstack/react-query";
 
 export const usePromotions = () => {
   return useQuery({
     queryKey: ["promotions"],
     queryFn: handleFetchPromotions,
-    staleTime: 60 * 1000 * 20,
+    staleTime: CUSTOM_STALE_TIME,
     refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 };

@@ -22,12 +22,7 @@ import { XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-const statuses = [
-  { key: "pending", label: "Pending" },
-  { key: "success", label: "Success" },
-  { key: "error", label: "Error" },
-];
+import { stageStatues } from "@/config/constants";
 
 const formSchema = z.object({
   status: z.enum(["pending", "success", "error"], {
@@ -264,12 +259,12 @@ const EditOrderOfCustomer: React.FC = () => {
                       </FormLabel>
                       <FormControl>
                         <Select
-                          items={statuses}
+                          items={stageStatues}
                           placeholder="Choose status"
                           aria-labelledby="status"
                           {...field}
                         >
-                          {statuses.map((sta) => (
+                          {stageStatues.map((sta) => (
                             <SelectItem
                               key={sta.key}
                               aria-labelledby="status"

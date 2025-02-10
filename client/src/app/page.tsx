@@ -63,7 +63,7 @@ const Home: React.FC = () => {
           >
             <div className="relative flex flex-col">
               <span className="lg:text-xl text-base text-white/50">
-                London, UK
+                123 Main Street, London, UK
               </span>
 
               <h1 className="h1">

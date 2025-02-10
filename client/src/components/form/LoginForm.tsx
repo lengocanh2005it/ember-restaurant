@@ -14,7 +14,13 @@ import { useLogin } from "@/hooks/use-login";
 import { Button, Checkbox, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { EyeIcon, EyeOffIcon, LockIcon, UserIcon } from "lucide-react";
+import {
+  EyeIcon,
+  EyeOffIcon,
+  LockIcon,
+  LogInIcon,
+  UserIcon,
+} from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -179,17 +185,14 @@ const LoginForm: React.FC = () => {
             </FormItem>
 
             {isLoading ? (
-              <Button
-                isLoading
-                className="w-fit mx-auto font-bold bg-white/20 text-white/80"
-              >
+              <Button isLoading className="w-fit mx-auto font-medium">
                 Loading...
               </Button>
             ) : (
               <Button
                 type="submit"
-                color="default"
-                className="w-fit mx-auto font-bold"
+                className="w-fit mx-auto font-medium"
+                startContent={<LogInIcon />}
               >
                 Login
               </Button>

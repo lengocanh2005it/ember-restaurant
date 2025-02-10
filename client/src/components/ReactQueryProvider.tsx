@@ -1,12 +1,13 @@
 "use client";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { DEFAULT_GC_TIME, DEFAULT_STALE_TIME } from "@/config/constants";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 20 * 1000 * 60,
-      gcTime: 60 * 1000 * 15,
+      staleTime: DEFAULT_STALE_TIME,
+      gcTime: DEFAULT_GC_TIME,
       refetchOnWindowFocus: true,
       refetchOnMount: true,
     },

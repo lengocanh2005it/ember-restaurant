@@ -1,9 +1,10 @@
 import { CreateAreaDto } from "@/api/areas/utils/types";
 import axios from "@/lib/axios";
+import { Area } from "@/utils";
 
 export const handleCreateArea = async (
   createAreaDto: CreateAreaDto
-): Promise<any> => {
+): Promise<Area[]> => {
   try {
     const response = await axios.post("areas", createAreaDto);
 
