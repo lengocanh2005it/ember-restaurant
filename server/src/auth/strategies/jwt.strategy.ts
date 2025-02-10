@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { User } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
 import { JwtPayload } from 'src/utils';
 
@@ -18,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayload) {
+  async validate(payload: JwtPayload): Promise<Partial<User>> {
     const { userId } = payload;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

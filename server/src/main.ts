@@ -9,7 +9,7 @@ import helmet from 'helmet';
 import * as passport from 'passport';
 import { DatabaseService } from 'src/database/database.service';
 import { RedisService } from 'src/redis/redis.service';
-import { getEnvValue, IS_PROD } from 'src/utils';
+import { getEnvValue, IS_PROD, SESSION_MAX_AGE } from 'src/utils';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -39,7 +39,7 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: 1000 * 60 * 45,
+        maxAge: SESSION_MAX_AGE,
         secure: IS_PROD,
         httpOnly: IS_PROD,
         sameSite: IS_PROD ? 'none' : 'lax',

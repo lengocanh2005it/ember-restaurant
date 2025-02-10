@@ -1,6 +1,6 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import * as fs from 'fs';
 import * as nodemailer from 'nodemailer';
 import { Transporter } from 'nodemailer';
@@ -8,8 +8,9 @@ import Mail from 'nodemailer/lib/mailer';
 import * as path from 'path';
 import { Email } from 'src/emails/entities/emails.entity';
 import { UploadsService } from 'src/uploads/uploads.service';
+import { User } from 'src/users/entities/users.entity';
 import { getEnvValue } from 'src/utils';
-import { LessThan, Repository } from 'typeorm';
+import { DataSource, LessThan, Repository } from 'typeorm';
 
 @Injectable()
 export class EmailsService implements OnModuleInit {
@@ -18,6 +19,7 @@ export class EmailsService implements OnModuleInit {
   constructor(
     @InjectRepository(Email)
     private readonly emailRepository: Repository<Email>,
+    @InjectDataSource() private readonly dataSource: DataSource,
     private readonly uploadsService: UploadsService,
     private readonly configService: ConfigService,
   ) {
@@ -30,7 +32,7 @@ export class EmailsService implements OnModuleInit {
     });
   }
 
-  async onModuleInit() {
+  async onModuleInit(): Promise<void> {
     await this.emailRepository.delete({
       expired_at: LessThan(new Date()),
     });
@@ -112,7 +114,29 @@ export class EmailsService implements OnModuleInit {
     await this.transporter.sendMail(mailOptions);
   };
 
-  public sendResetEmail = async (email: string, token: string) => {
+  public sendResetEmail = async (
+    email: string,
+    token: string,
+  ): Promise<void> => {
+    const localAccountWithEmail = await this.dataSource
+      .getRepository(User)
+      .findOneBy({ email });
+
+    if (localAccountWithEmail) {
+      const { google_id, facebook_id } = localAccountWithEmail;
+
+      const methodAccount = google_id
+        ? 'Google'
+        : facebook_id
+          ? 'Facebook'
+          : 'Another';
+
+      throw new BadRequestException(
+        `The account linked to this email is a ${methodAccount} login account, not a username and 
+        password login account, so the password cannot be recovered.`,
+      );
+    }
+
     const resetLink = `${getEnvValue('RESET_PASSWORD_LINK_PROD', 'RESET_PASSWORD_LINK_DEV')}/?token=${token}`;
 
     const htmlContent = `

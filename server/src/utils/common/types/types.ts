@@ -63,7 +63,7 @@ export type UserSessionData = {
   role: string[];
   username?: string;
   login_method: string;
-  expiresAt?: number;
+  expiresAt?: Date;
 };
 
 export type GenerateTokensType = {

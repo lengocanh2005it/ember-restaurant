@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCartDto } from 'src/carts/dtos/create-cart.dto';
 import { UpdateCartDto } from 'src/carts/dtos/update-cart.dto';
 import { Cart } from 'src/carts/entities/carts.entity';
+import { Product } from 'src/products/entities/products.entity';
 import { ProductsService } from 'src/products/products.service';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
@@ -31,7 +32,9 @@ export class CartsService {
     return await this.cartRepository.findOneBy({ id });
   }
 
-  async createOne(cartCreateDto: CreateCartDto): Promise<any> {
+  async createOne(
+    cartCreateDto: CreateCartDto,
+  ): Promise<Record<string, Cart[] | Product[]>> {
     const { userId, productId, quantity } = cartCreateDto;
 
     const product = await this.productsService.findOne(productId);
@@ -85,7 +88,10 @@ export class CartsService {
       .of(newCart.id)
       .set(user.id);
 
-    return await this.usersService.handleFindCartsOfUser(userId);
+    return {
+      carts: await this.usersService.handleFindCartsOfUser(userId),
+      products: await this.productsService.findAll(),
+    };
   }
 
   async updateOne(

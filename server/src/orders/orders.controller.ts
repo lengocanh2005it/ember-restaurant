@@ -67,7 +67,7 @@ export class OrdersController {
     @Param('id') id: string,
     @Query('delete') deleteOption: string,
     @Query('userId') userId: string,
-  ): Promise<void> {
+  ): Promise<Record<string, Partial<Order>[]>> {
     const forceDelete: boolean = deleteOption === 'hard';
     await this.ordersService.deleteOne(id, forceDelete);
     return await this.usersService.handleFindOrdersOfUsers(userId);
@@ -79,7 +79,7 @@ export class OrdersController {
   async updateOrder(
     @Param('id') id: string,
     @Body() updateOrderDto: UpdateOrderDto,
-  ): Promise<any> {
+  ): Promise<Record<string, Partial<Order>[]>> {
     await this.ordersService.updateOne(id, updateOrderDto);
     return await this.usersService.handleFindOrdersOfUsers(
       updateOrderDto.userId,

@@ -8,6 +8,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import axios from 'axios';
 import { Strategy } from 'passport-facebook';
 import { AuthService } from 'src/auth/auth.service';
+import { User } from 'src/users/entities/users.entity';
 import { getEnvValue, UserFacebookData } from 'src/utils';
 
 @Injectable()
@@ -28,7 +29,7 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     });
   }
 
-  async validate(accessToken: string): Promise<any> {
+  async validate(accessToken: string): Promise<Partial<User>> {
     const response = await axios.get(
       `https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${accessToken}`,
     );

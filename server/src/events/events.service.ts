@@ -12,7 +12,7 @@ export class EventsService implements OnModuleInit {
     private readonly eventRepository: Repository<Event>,
   ) {}
 
-  async onModuleInit() {
+  async onModuleInit(): Promise<void> {
     await this.checkStatusOfEvents();
   }
 

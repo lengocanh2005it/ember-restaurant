@@ -5,15 +5,17 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
-import { SocialLoginDto } from 'src/auth/dtos/auth.dto';
 import { Cart } from 'src/carts/entities/carts.entity';
 import { DiscountsService } from 'src/discounts/discounts.service';
 import { Discount } from 'src/discounts/entities/discounts.entity';
+import { Order } from 'src/orders/entities/orders.entity';
 import { OrdersService } from 'src/orders/orders.service';
 import { Payment } from 'src/payments/entities/payments.entity';
+import { Reservation } from 'src/reservations/entities/reservations.entity';
 import { ReservationsService } from 'src/reservations/reservations.service';
 import { Review } from 'src/reviews/entities/reviews.entity';
 import { RolesService } from 'src/roles/roles.service';
+import { SupportTicket } from 'src/support_ticket/entities/support-ticket.entity';
 import { UserDiscountService } from 'src/user-discount/user-discount.service';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { UpdateUserDto } from 'src/users/dtos/update-user.dto';
@@ -111,25 +113,22 @@ export class UsersService {
     } as any;
   }
 
-  async handleFindUserByEmail(email: string): Promise<User> {
-    return await this.userRepository.findOne({
+  public handleFindUserByField = async (
+    field: 'email' | 'username',
+    value: string,
+  ): Promise<User> => {
+    const user = await this.userRepository.findOne({
       where: {
-        email,
+        [field]: value,
       },
       relations: ['roles'],
     });
-  }
 
-  async handleFindUserByUsername(username: string): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: { username },
-      relations: ['roles'],
-    });
-
-    if (!user) throw new NotFoundException('User Not Found.');
+    if (!user && field !== 'email')
+      throw new NotFoundException('User Not Found.');
 
     return user;
-  }
+  };
 
   async handleCreateUser(createUserDto: CreateUserDto): Promise<User> {
     const { username, password } = createUserDto;
@@ -236,7 +235,7 @@ export class UsersService {
     })) as any;
   }
 
-  async handleFindRequestsOfUser(id: string): Promise<any> {
+  async handleFindRequestsOfUser(id: string): Promise<SupportTicket[]> {
     const user = await this.userRepository.findOne({
       where: { id },
       relations: [
@@ -258,7 +257,13 @@ export class UsersService {
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
-  async handleFindReservationsOfUser(id: string): Promise<any> {
+  async handleFindReservationsOfUser(
+    id: string,
+  ): Promise<Record<string, Partial<Reservation>[]>> {
+    const user = await this.userRepository.findOneBy({ id });
+
+    if (!user) throw new NotFoundException('User Not Found.');
+
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
 
@@ -293,7 +298,9 @@ export class UsersService {
     return user.reviews.sort((a, b) => b.date.getTime() - a.date.getTime());
   }
 
-  async handleFindOrdersOfUsers(id: string): Promise<any> {
+  async handleFindOrdersOfUsers(
+    id: string,
+  ): Promise<Record<string, Partial<Order>[]>> {
     const user = await this.userRepository.findOneBy({ id });
 
     if (!user) throw new NotFoundException('User Not Found.');
@@ -360,7 +367,7 @@ export class UsersService {
   async handleRedeemPoints(
     id: string,
     queries?: Record<string, string>,
-  ): Promise<any> {
+  ): Promise<Record<string, Partial<User> | Discount[]>> {
     const user = await this.userRepository.findOneBy({ id });
 
     if (!user) throw new NotFoundException('User Not Found.');
@@ -394,7 +401,9 @@ export class UsersService {
     }
   }
 
-  public async handleGenerateAdmin(createUserDto: CreateUserDto) {
+  public async handleGenerateAdmin(
+    createUserDto: CreateUserDto,
+  ): Promise<void> {
     const { username, password } = createUserDto;
 
     const user = this.userRepository.create({
@@ -409,11 +418,8 @@ export class UsersService {
     const adminRole = await this.rolesService.findRoleByName('admin');
     const userRole = await this.rolesService.findRoleByName('user');
 
-    await this.userRepository
-      .createQueryBuilder('user')
-      .relation(User, 'roles')
-      .of(user.id)
-      .add([adminRole.id, userRole.id]);
+    await this.rolesService.addRoleToUser(user.id, adminRole.id);
+    await this.rolesService.addRoleToUser(user.id, userRole.id);
   }
 
   public async handleAddReviewToUser(
@@ -442,20 +448,6 @@ export class UsersService {
     if (!user) throw new NotFoundException('User Not Found.');
 
     return user.payments;
-  };
-
-  public handleUpdateProfileUser = async (id: string) => {
-    const user = await this.userRepository.findOneBy({ id });
-
-    if (!user) throw new NotFoundException('User Not Found.');
-
-    await this.userRepository.update(
-      { id },
-      {
-        total_orders: user.total_orders + 1,
-        loyalty_points: user.loyalty_points + 10,
-      },
-    );
   };
 
   public handleFindSocialAccount = async (
@@ -493,11 +485,7 @@ export class UsersService {
 
     const role = await this.rolesService.findRoleByName('user');
 
-    await this.dataSource
-      .createQueryBuilder()
-      .relation(User, 'roles')
-      .of(user.id)
-      .add(role.id);
+    await this.rolesService.addRoleToUser(user.id, role.id);
 
     return await this.userRepository.findOne({
       where: {
@@ -524,7 +512,7 @@ export class UsersService {
   ): Promise<any> {
     const handlers: Record<string, (value?: string) => Promise<any>> = {
       reservations: () => this.handleFindReservationsOfUser(id),
-      email: (value) => this.handleFindUserByEmail(value),
+      email: (value) => this.handleFindUserByField('email', value),
       orders: () => this.handleFindOrdersOfUsers(id),
       carts: () => this.handleFindCartsOfUser(id),
       discounts: () => this.handleFindDiscountsOfUser(id),
@@ -544,37 +532,4 @@ export class UsersService {
 
     throw new Error('Invalid query parameter');
   }
-
-  public handleLoginSocialUser = async (socialLoginDto: SocialLoginDto) => {
-    const { email, name, image, subId, provider } = socialLoginDto;
-
-    const findUser = await this.userRepository.findOneBy({
-      ...(provider === 'google'
-        ? { google_id: subId }
-        : { facebook_id: subId }),
-    });
-
-    if (findUser) return findUser;
-
-    const newUser = this.userRepository.create({
-      name,
-      ...(email && { email }),
-      ...(image && { image }),
-      ...(provider === 'google'
-        ? { google_id: subId }
-        : { facebook_id: subId }),
-    });
-
-    await this.userRepository.save(newUser);
-
-    const role = await this.rolesService.findRoleByName('user');
-
-    await this.userRepository
-      .createQueryBuilder('user')
-      .relation(User, 'roles')
-      .of(newUser.id)
-      .add(role.id);
-
-    return newUser;
-  };
 }
