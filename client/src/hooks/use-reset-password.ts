@@ -9,10 +9,14 @@ export const useResetPassword = () => {
   return useMutation({
     mutationFn: handleResetPassword,
     onSuccess: (data: any) => {
-      showSuccessToast("Your password has been changed!", "top-right", {
-        backgroundColor: "#28a745",
-        color: "#fff",
-      });
+      showSuccessToast(
+        "Your password has been changed! Please login again.",
+        "top-right",
+        {
+          backgroundColor: "#28a745",
+          color: "#fff",
+        }
+      );
     },
     onError: (error: any) => {
       showErrorToast(error.response.data.message, "bottom-right", {

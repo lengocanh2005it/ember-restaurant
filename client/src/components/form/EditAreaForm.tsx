@@ -28,15 +28,11 @@ import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { areaOrTableStatues } from "@/config/constants";
 
 const choices = [
   { key: "true", label: "True" },
   { key: "false", label: "False" },
-];
-
-const statuses = [
-  { key: "running", label: "Running" },
-  { key: "maintenance", label: "Maintenance" },
 ];
 
 const formSchema = z
@@ -343,7 +339,7 @@ const EditAreaForm: React.FC<EditAreaFormProps> = ({ area }) => {
                 <FormControl>
                   <Select
                     key={field.value || ""}
-                    items={statuses}
+                    items={areaOrTableStatues}
                     defaultSelectedKeys={[`${area.status}`]}
                     placeholder="Choose one status..."
                     aria-labelledby="status"

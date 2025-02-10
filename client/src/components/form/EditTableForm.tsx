@@ -15,6 +15,7 @@ import { Button, Input, Select, SelectItem, Textarea } from "@heroui/react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { areaOrTableStatues } from "@/config/constants";
 
 interface EditTableFormProps {
   table: Table;
@@ -25,11 +26,6 @@ interface EditTableFormProps {
 const types = [
   { key: "normal", label: "Normal" },
   { key: "vip", label: "VIP" },
-];
-
-const statuses = [
-  { key: "running", label: "Running" },
-  { key: "maintenance", label: "Maintenance" },
 ];
 
 const availabilities = [
@@ -224,7 +220,7 @@ const EditTableForm: React.FC<EditTableFormProps> = ({
                 <FormControl>
                   <Select
                     key={field.value || ""}
-                    items={statuses}
+                    items={areaOrTableStatues}
                     defaultSelectedKeys={[`${table.status}`]}
                     placeholder="Choose one status..."
                     aria-labelledby="status"

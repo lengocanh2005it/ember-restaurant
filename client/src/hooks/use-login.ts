@@ -14,7 +14,7 @@ export const useLogin = () => {
 
       connectSocket(accessToken);
 
-      router.push("/home");
+      router.replace("/home");
     },
     onError: (err: any) => {
       console.error(err);

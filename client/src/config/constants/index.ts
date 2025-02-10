@@ -28,6 +28,17 @@ export const statuses = [
   { key: "false", label: "In Active" },
 ];
 
+export const stageStatues = [
+  { key: "pending", label: "Pending" },
+  { key: "success", label: "Success" },
+  { key: "error", label: "Error" },
+];
+
+export const areaOrTableStatues = [
+  { key: "running", label: "Running" },
+  { key: "maintenance", label: "Maintenance" },
+];
+
 export const statusOptions = [
   { name: "Success", uid: "success" },
   { name: "Error", uid: "error" },
@@ -36,3 +47,6 @@ export const statusOptions = [
 
 export const MAX_VOUCHER_USAGE = 1;
 export const MIN_ORDER_AMOUNT = 100000;
+export const DEFAULT_STALE_TIME = 20 * 1000 * 60;
+export const DEFAULT_GC_TIME = 60 * 1000 * 15;
+export const CUSTOM_STALE_TIME = 20 * 1000 * 60;

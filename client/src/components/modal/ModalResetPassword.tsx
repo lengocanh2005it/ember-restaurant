@@ -67,12 +67,18 @@ const ModalResetPassword: React.FC = () => {
 
       <Modal
         isOpen={isOpen}
-        backdrop="opaque"
-        onOpenChange={onOpenChange}
+        backdrop="blur"
+        onOpenChange={() => {
+          onOpenChange();
+          setTimeout(() => {
+            form.reset({
+              email: "",
+            });
+          }, 700);
+        }}
         placement="center"
         isDismissable={false}
         isKeyboardDismissDisabled={false}
-        className="bg-primary text-white"
         motionProps={{
           variants: {
             enter: {
@@ -94,10 +100,10 @@ const ModalResetPassword: React.FC = () => {
           },
         }}
       >
-        <ModalContent className="text-white">
+        <ModalContent className="text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
                 Reset Password
               </ModalHeader>
 
@@ -109,31 +115,31 @@ const ModalResetPassword: React.FC = () => {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-white">Email</FormLabel>
+                          <FormLabel className="text-black">Email</FormLabel>
                           <FormControl>
                             <Input
-                              startContent={
-                                <MailIcon className="text-black opacity-70 dark:text-white" />
-                              }
+                              startContent={<MailIcon className="opacity-70" />}
                               placeholder="luke01@gmail.com.uk"
-                              isRequired
-                              className="text-black dark:text-white"
                               {...field}
                             />
                           </FormControl>
-                          <FormDescription className="text-white/70">
+                          <FormDescription className="text-black/70 lg:text-left text-center">
                             Please enter the email associated with your account.
                           </FormDescription>
 
-                          <FormMessage className="dark:text-red-400 text-red-400" />
+                          <FormMessage className="dark:text-red-400 text-red-600" />
                         </FormItem>
                       )}
                     />
 
-                    <div className="flex md:flex-row flex-col md:items-center md:justify-end gap-2">
+                    <div
+                      className="flex flex-row md:items-center md:justify-end gap-2
+                    items-center justify-center"
+                    >
                       <Button
                         type="button"
-                        className="w-fit"
+                        color="primary"
+                        className="w-fit text-white"
                         onPress={() => {
                           onClose();
                           setTimeout(() => {
@@ -148,7 +154,11 @@ const ModalResetPassword: React.FC = () => {
 
                       {isLoading ? (
                         <>
-                          <Button isLoading className="w-fit">
+                          <Button
+                            isLoading
+                            className="w-fit text-white"
+                            color="primary"
+                          >
                             Please wait...
                           </Button>
                         </>
@@ -156,8 +166,9 @@ const ModalResetPassword: React.FC = () => {
                         <>
                           <Button
                             type="button"
-                            className="w-fit"
-                            onClick={handleSendClick}
+                            color="primary"
+                            className="w-fit text-white"
+                            onPress={handleSendClick}
                           >
                             Send
                           </Button>

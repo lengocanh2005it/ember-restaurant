@@ -14,10 +14,22 @@ import {
 } from "react-icons/fa";
 
 const icons = [
-  { icon: <FaFacebook />, path: "/facebook" },
-  { icon: <FaEnvelope />, path: "/email" },
-  { icon: <FaLinkedin />, path: "/linked-in" },
-  { icon: <FaInstagram />, path: "/instagram" },
+  {
+    icon: <FaFacebook />,
+    path: "https://www.facebook.com/lengocanhdeptrai2k5",
+  },
+  {
+    icon: <FaEnvelope />,
+    path: "https://www.facebook.com/lengocanhdeptrai2k5",
+  },
+  {
+    icon: <FaLinkedin />,
+    path: "https://www.facebook.com/lengocanhdeptrai2k5",
+  },
+  {
+    icon: <FaInstagram />,
+    path: "https://www.facebook.com/lengocanhdeptrai2k5",
+  },
 ];
 
 const SocialIcons = () => {
