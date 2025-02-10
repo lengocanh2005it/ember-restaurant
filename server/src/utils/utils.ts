@@ -1,13 +1,14 @@
+import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
-import { config } from 'dotenv';
 import * as signature from 'cookie-signature';
+import { config } from 'dotenv';
+import { CookieOptions, Request, Response } from 'express';
 import { CreateDiscountDto } from 'src/discounts/dtos/create-discount.dto';
 import { CreateProductDto } from 'src/products/dtos/create-product.dto';
 import { RedisService } from 'src/redis/redis.service';
-import { ApiResponseType, SessionData } from 'src/utils';
+import { ApiResponseType, IS_PROD, UserSessionData } from 'src/utils';
 import { Repository } from 'typeorm';
-import { UnauthorizedException, BadRequestException } from '@nestjs/common';
 
 config();
 
@@ -174,10 +175,10 @@ export const getEnvValue = (prodKey: string, devKey: string) => {
 };
 
 export const getDataOfSessionFromRequest = async (
-  request: any,
+  request: Request,
   configService: ConfigService,
   redisService: RedisService,
-): Promise<SessionData> => {
+): Promise<UserSessionData> => {
   const sessionID = request.cookies['user_session'];
 
   if (!sessionID) throw new UnauthorizedException('User Not Authenticated.');
@@ -201,56 +202,30 @@ export const getDataOfSessionFromRequest = async (
 };
 
 export const initializeCookies = (
-  response: any,
-  user: any,
-  role: string,
-  method: string,
-  configService: ConfigService,
-  refreshToken?: string,
-) => {
-  response.cookie('role', role, {
-    httpOnly: configService.get<string>('NODE_ENV') === 'production',
-    secure: configService.get<string>('NODE_ENV') === 'production',
-    maxAge: 1000 * 60 * 30,
-    sameSite:
-      configService.get<string>('NODE_ENV') === 'production' ? 'none' : 'lax',
-  });
-
-  response.cookie('isLoggedIn', 'true', {
-    httpOnly: configService.get<string>('NODE_ENV') === 'production',
-    secure: configService.get<string>('NODE_ENV') === 'production',
-    maxAge: 1000 * 60 * 30,
-    sameSite:
-      configService.get<string>('NODE_ENV') === 'production' ? 'none' : 'lax',
-  });
-
-  response.cookie('theme', user.theme, {
-    httpOnly: configService.get<string>('NODE_ENV') === 'production',
-    secure: configService.get<string>('NODE_ENV') === 'production',
-    maxAge: 1000 * 60 * 30,
-    sameSite:
-      configService.get<string>('NODE_ENV') === 'production' ? 'none' : 'lax',
-  });
+  response: Response,
+  accessToken: string,
+  refreshToken: string,
+): void => {
+  response.cookie('isLoggedIn', 'true', createCookieOptions(1000 * 60 * 45));
 
   response.cookie(
     'refreshToken',
-    method !== 'local' ? user.refreshToken : refreshToken,
-    {
-      httpOnly: configService.get<string>('NODE_ENV') === 'production',
-      secure: configService.get<string>('NODE_ENV') === 'production',
-      maxAge: 1000 * 60 * 30,
-      sameSite:
-        configService.get<string>('NODE_ENV') === 'production' ? 'none' : 'lax',
-    },
+    refreshToken,
+    createCookieOptions(1000 * 60 * 30),
   );
 
-  if (method !== 'local') {
-    response.cookie('accessToken', user.accessToken, {
-      httpOnly: configService.get<string>('NODE_ENV') === 'production',
-      secure: configService.get<string>('NODE_ENV') === 'production',
-      maxAge: 1000 * 60 * 2,
-      sameSite:
-        configService.get<string>('NODE_ENV') === 'production' ? 'none' : 'lax',
-    });
-  }
+  response.cookie(
+    'accessToken',
+    accessToken,
+    createCookieOptions(1000 * 60 * 2),
+  );
+};
+
+export const createCookieOptions = (maxAge: number): Partial<CookieOptions> => {
+  return {
+    httpOnly: IS_PROD,
+    secure: IS_PROD,
+    maxAge,
+    sameSite: IS_PROD ? 'none' : 'lax',
+  };
 };

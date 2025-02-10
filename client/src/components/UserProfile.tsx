@@ -1,20 +1,20 @@
 "use client";
-import React, { useState, useEffect } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useRouter, usePathname } from "next/navigation";
-import Image from "next/image";
-import {
-  UserIcon,
-  LogOutIcon,
-  ShoppingCartIcon,
-  ShieldIcon,
-} from "lucide-react";
 import { useLogout } from "@/hooks/use-logout";
 import { useAppStore, useUserStore } from "@/store";
+import {
+  LogOutIcon,
+  ShieldIcon,
+  ShoppingCartIcon,
+  UserIcon,
+} from "lucide-react";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const UserProfile = () => {
   const { isAdmin } = useAppStore();

@@ -1,17 +1,10 @@
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 
 export const handleFetchReservationOfUser = async (
   userId: string
 ): Promise<any> => {
   try {
-    const accessToken = await getValidAccessToken();
-
-    const response = await axios.get(`/users/${userId}/?reservations=true`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const response = await axios.get(`/users/${userId}/?reservations=true`);
 
     if (!response.data) throw new Error("Internal Server Error!");
 

@@ -15,7 +15,8 @@ import { JwtService } from '@nestjs/jwt';
 import { SkipThrottle } from '@nestjs/throttler';
 import { Request, Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
-import { SocialLoginDto } from 'src/auth/dtos/auth.dto';
+import { FacebookAuthGuard } from 'src/auth/guards/facebook.guard';
+import { GoogleAuthGuard } from 'src/auth/guards/google.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { LocalAuthGuard } from 'src/auth/guards/local.guard';
 import { RoleAuthGuard } from 'src/auth/guards/role.guard';
@@ -23,15 +24,15 @@ import { EmailsService } from 'src/emails/emails.service';
 import { RedisService } from 'src/redis/redis.service';
 import { Roles } from 'src/roles/role.decorator';
 import { Role } from 'src/roles/role.enum';
-import { User } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
 import {
-  SessionData,
+  IS_PROD,
   Theme,
+  createCookieOptions,
   encodePassword,
   generateVerificationCode,
   getDataOfSessionFromRequest,
-  initializeCookies,
+  getEnvValue,
 } from 'src/utils';
 
 @Controller('auth')
@@ -45,88 +46,91 @@ export class AuthController {
     private readonly redisService: RedisService,
   ) {}
 
-  @Get('role')
-  @SkipThrottle()
-  async handleAuthRole(
-    @Req() req: Request,
-    @Res() res: Response,
-  ): Promise<any> {
-    if (req.cookies && req.cookies['role']) {
-      res.setHeader('x-user-role', req.cookies['role']);
-    }
-    if (req.cookies && req.cookies['theme']) {
-      if (req.cookies['theme'] === 'dark') {
-        res.setHeader('theme', 'dark');
-      } else {
-        res.setHeader('theme', 'light');
-      }
-    }
-    return res.sendStatus(200);
+  @Get('google/login')
+  @UseGuards(GoogleAuthGuard)
+  async handleGoogleLogin(): Promise<void> {
+    console.log('Redirecting user to Google for authentication...');
   }
 
-  @Post('social/login')
-  async handleSocialLogin(
-    @Req() req: any,
-    @Body() socialLoginDto: SocialLoginDto,
-  ): Promise<any> {
-    const { accessToken, refreshToken, userId } =
-      await this.authService.handleSocialLogin(socialLoginDto);
+  @Get('google/redirect')
+  @UseGuards(GoogleAuthGuard)
+  async handleGoogleRedirect(
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const user = request.user;
 
-    return { accessToken, userId, refreshToken, sessionID: req.sessionID };
+    await this.authService.createSessionForUser(
+      user,
+      request,
+      'google',
+      response,
+    );
+
+    return response.redirect(
+      `${getEnvValue('ORIGINAL_FE_URL_PROD', 'ORIGINAL_FE_URL_DEV')}/home`,
+    );
+  }
+
+  @Get('facebook/login')
+  @UseGuards(FacebookAuthGuard)
+  async handleFacebookLogin(): Promise<void> {
+    console.log('Redirecting user to Facebook for authentication...');
+  }
+
+  @Get('facebook/redirect')
+  @UseGuards(FacebookAuthGuard)
+  async handleFacebookRedirect(
+    @Req() request: Request,
+    @Res() response: Response,
+  ) {
+    const user = request.user;
+
+    await this.authService.createSessionForUser(
+      user,
+      request,
+      'google',
+      response,
+    );
+
+    return response.redirect(
+      `${getEnvValue('ORIGINAL_FE_URL_PROD', 'ORIGINAL_FE_URL_DEV')}/home`,
+    );
   }
 
   @Post('login')
   @UseGuards(LocalAuthGuard)
-  async login(@Req() req: any, @Res() res: Response): Promise<void> {
-    const { userId, refreshToken, accessToken } = req.user as SessionData;
+  async login(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<Response<any, Record<string, any>>> {
+    const user = req.user;
 
-    if (!refreshToken || !accessToken)
-      throw new UnauthorizedException('Tokens not found.');
+    const { accessToken } = await this.authService.createSessionForUser(
+      user,
+      req,
+      'local',
+      res,
+    );
 
-    req.session.user = {
-      userId,
-      accessToken,
-      refreshToken,
-    };
-
-    const user = await this.usersService.findOne(userId);
-
-    if (user.username === this.configService.get<string>('ADMIN_NAME')) {
-      initializeCookies(
-        res,
-        user,
-        'admin',
-        'local',
-        this.configService,
-        refreshToken,
-      );
-    } else {
-      initializeCookies(
-        res,
-        user,
-        'user',
-        'local',
-        this.configService,
-        refreshToken,
-      );
-    }
-
-    res.status(201).json({
+    return res.status(201).json({
       statusCode: 201,
       message: 'Logged in successfully!',
-      data: { accessToken, userId, refreshToken, sessionID: req.sessionID },
+      data: {
+        accessToken,
+      },
     });
   }
 
   @Post('logout')
-  async logout(@Res() res: Response): Promise<void> {
+  async logout(
+    @Res() res: Response,
+  ): Promise<Response<any, Record<string, any>>> {
     const cookies = [
-      { name: 'isLoggedIn', httpOnly: true, secure: true },
-      { name: 'refreshToken', httpOnly: true, secure: true },
-      { name: 'user_session', httpOnly: true, secure: true },
-      { name: 'role', httpOnly: true, secure: true },
-      { name: 'theme', httpOnly: true, secure: false },
-      { name: 'accessToken', httpOnly: false, secure: false },
+      { name: 'isLoggedIn', httpOnly: IS_PROD, secure: IS_PROD },
+      { name: 'refreshToken', httpOnly: IS_PROD, secure: IS_PROD },
+      { name: 'user_session', httpOnly: IS_PROD, secure: IS_PROD },
+      { name: 'accessToken', httpOnly: IS_PROD, secure: IS_PROD },
     ];
 
     cookies.forEach(({ name, httpOnly, secure }) => {
@@ -134,14 +138,11 @@ export class AuthController {
         httpOnly,
         secure,
         maxAge: 0,
-        sameSite:
-          this.configService.get<string>('NODE_ENV') === 'production'
-            ? 'none'
-            : 'lax',
+        sameSite: IS_PROD ? 'none' : 'lax',
       });
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       statusCode: 200,
       message: 'Logged out successfully!',
     });
@@ -151,8 +152,8 @@ export class AuthController {
   async handleRefreshToken(
     @Req() req: Request,
     @Res() res: Response,
-  ): Promise<void> {
-    const refreshToken = req.cookies.refreshToken;
+  ): Promise<Response<any, Record<string, any>>> {
+    const refreshToken = req.cookies['refreshToken'];
 
     if (!refreshToken)
       throw new UnauthorizedException(
@@ -161,7 +162,9 @@ export class AuthController {
 
     const accessToken = await this.authService.refreshToken(refreshToken);
 
-    res.status(201).json({
+    res.cookie('accessToken', accessToken, createCookieOptions(1000 * 60 * 2));
+
+    return res.status(201).json({
       statusCode: 201,
       message: 'Refresh token successfully!',
       data: { accessToken },
@@ -170,10 +173,11 @@ export class AuthController {
 
   @SkipThrottle()
   @Post('theme')
+  @UseGuards(JwtAuthGuard, RoleAuthGuard)
+  @Roles(Role.ADMIN, Role.USER)
   async handleSwitchTheme(
-    @Res() res: Response,
     @Body() themePayload: Theme,
-    @Req() request: any,
+    @Req() request: Request,
   ): Promise<void> {
     const data = await getDataOfSessionFromRequest(
       request,
@@ -185,78 +189,29 @@ export class AuthController {
 
     const { theme } = themePayload;
 
-    if (theme === 'light') {
-      res.cookie('theme', 'light', {
-        httpOnly: false,
-        secure: true,
-        maxAge: 1000 * 60 * 60,
-      });
-    } else {
-      res.cookie('theme', 'dark', {
-        httpOnly: false,
-        secure: true,
-        maxAge: 1000 * 60 * 60,
-      });
-    }
-
     await this.usersService.handleUpdateThemeOfUser(userId, theme);
-
-    res.json({
-      statusCode: 201,
-      message: 'Updated theme successfully.',
-    });
   }
 
   @Get('profile')
   @SkipThrottle()
-  @UseGuards(JwtAuthGuard, RoleAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async getProfile(
-    @Req() request: any,
+    @Req() request: Request,
     @Res() response: Response,
-  ): Promise<any> {
-    const sessionId = request.cookies['user_session'];
+  ): Promise<Response<any, Record<string, any>>> {
+    const user = request.user;
 
-    if (!sessionId) {
-      const user = request.user as User;
-
-      const { id } = user;
-
-      const accessToken = this.jwtService.sign(
-        { userId: id },
-        {
-          expiresIn: this.configService.get('ACCESS_TOKEN_LIFE'),
-        },
-      );
-
-      const refreshToken = this.jwtService.sign(
-        { userId: id },
-        {
-          expiresIn: this.configService.get('REFRESH_TOKEN_LIFE'),
-        },
-      );
-
-      request.session.user = { userId: id, accessToken, refreshToken };
-
-      const { sessionID } = request;
-
-      this.authService.setSessionCookies(response, sessionID, accessToken);
-
-      return response.status(200).json({ data: user });
-    }
-
-    const data = await getDataOfSessionFromRequest(
-      request,
-      this.configService,
-      this.redisService,
-    );
-
-    const userId = data.userId;
+    if (!user) throw new UnauthorizedException('User Not Authenticated.');
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, createdAt, updatedAt, ...res } =
-      await this.usersService.findOne(userId);
+      await this.usersService.findOne(user.id);
 
-    return response.status(200).json({ data: res });
+    return response.status(200).json({
+      statusCode: 200,
+      message: 'Get profile of user successfully.',
+      data: res,
+    });
   }
 
   @Post('request/reset-password')

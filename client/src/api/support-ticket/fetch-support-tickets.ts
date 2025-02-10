@@ -1,15 +1,8 @@
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 
 export const handleFetchSupportTickets = async (): Promise<any> => {
   try {
-    const accessToken = await getValidAccessToken();
-
-    const response = await axios.get("support-ticket", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const response = await axios.get("support-ticket");
 
     if (!response.data) throw new Error("Internal Server Error!");
 

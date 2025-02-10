@@ -1,14 +1,11 @@
 import { handleUploadFiles } from "@/api/files/upload-files";
 import { CreatePromotionDto } from "@/api/promotions/utils/types";
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 
 export const handleCreatePromotion = async (
   createPromotionDto: CreatePromotionDto
 ): Promise<any> => {
   try {
-    const accessToken = await getValidAccessToken();
-
     const { image, ...res } = createPromotionDto;
 
     const imageUrlResponse = await handleUploadFiles({
@@ -21,11 +18,7 @@ export const handleCreatePromotion = async (
         image: imageUrlResponse.url as string,
       };
 
-      const response = await axios.post("/promotions", data, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axios.post("/promotions", data);
 
       if (!response.data) throw new Error("Internal Server Error!");
 

@@ -2,9 +2,7 @@ import axios from "@/lib/axios";
 
 export const handleLogout = async (): Promise<any> => {
   try {
-    const response = await axios.post("/auth/logout", undefined, {
-      withCredentials: true,
-    });
+    const response = await axios.post("/auth/logout", undefined);
 
     if (!response.data) throw new Error("Internal Server Error!");
 

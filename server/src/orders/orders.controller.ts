@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { RoleAuthGuard } from 'src/auth/guards/role.guard';
-import { ResponseMessage } from 'src/decorators/response-message.decorator';
 import { CreateOrderProductDto } from 'src/order-product/dtos/create-order-product.dto';
 import { UpdateOrderDto } from 'src/orders/dtos/update-order.dto';
 import { Order } from 'src/orders/entities/orders.entity';
@@ -21,6 +20,7 @@ import { OrdersService } from 'src/orders/orders.service';
 import { Roles } from 'src/roles/role.decorator';
 import { Role } from 'src/roles/role.enum';
 import { UsersService } from 'src/users/users.service';
+import { ResponseMessage } from 'src/utils/common/decorators/response-message.decorator';
 
 @Controller('orders')
 @UseInterceptors(ClassSerializerInterceptor)

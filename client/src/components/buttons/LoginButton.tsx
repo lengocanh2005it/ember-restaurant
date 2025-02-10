@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
-import Link from "next/link";
 import { Button } from "@heroui/react";
+import Link from "next/link";
+import React from "react";
 
 const LoginButton: React.FC = () => {
   return (

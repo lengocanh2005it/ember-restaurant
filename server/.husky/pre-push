@@ -1,0 +1,12 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🚀 Running pre-push checks..."
+
+npm run lint && npm run format && npm run build
+if [ $? -ne 0 ]; then
+  echo "❌ Pre-push checks failed. Fix errors before pushing."
+  exit 1
+fi
+
+echo "✅ All checks passed! Proceeding with push."

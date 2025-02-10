@@ -1,9 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { Profile, Strategy } from 'passport-facebook';
+import axios from 'axios';
+import { Strategy } from 'passport-facebook';
 import { AuthService } from 'src/auth/auth.service';
-import { getEnvValue } from 'src/utils';
+import { getEnvValue, UserFacebookData } from 'src/utils';
 
 @Injectable()
 export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
@@ -18,23 +23,38 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
         'FACEBOOK_REDIRECT_URI_PROD',
         'FACEBOOK_REDIRECT_URI_DEV',
       ),
-      scope: ['email', 'public_profile'],
+      profileFields: ['id', 'emails', 'name', 'picture.type(large)'],
+      scope: ['email'],
     });
   }
 
-  async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    const payload = await this.authService.validateUserFacebook({
-      facebookId: profile.id,
-      email:
-        profile?.emails?.map((email) => email.value).join(',') ??
-        'user123@gmail.com',
-      displayName: profile.displayName,
+  async validate(accessToken: string): Promise<any> {
+    const response = await axios.get(
+      `https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${accessToken}`,
+    );
+
+    if (!response.data) throw new BadRequestException('Invalid accessToken.');
+
+    const data = response.data as UserFacebookData;
+
+    const { name, picture, id } = data;
+
+    const facebookAccount = await this.authService.validateFacebookAccount({
+      displayName: name,
+      imageUrl: picture.url,
+      socialId: id,
+      provider: 'facebook',
     });
 
-    return {
-      ...payload.user,
-      accessToken: payload.accessToken,
-      refreshToken: payload.refreshToken,
-    };
+    if (!facebookAccount)
+      throw new UnauthorizedException(
+        'OAuth provider did not return user information.',
+      );
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { username, password, createdAt, updatedAt, ...res } =
+      facebookAccount;
+
+    return res;
   }
 }

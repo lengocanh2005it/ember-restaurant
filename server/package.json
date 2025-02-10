@@ -39,6 +39,7 @@
     "@nestjs/typeorm": "^10.0.2",
     "@nestjs/websockets": "^11.0.5",
     "ajv": "^8.17.1",
+    "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "cache-manager": "^5.7.6",
     "cache-manager-redis-store": "^2.0.0",

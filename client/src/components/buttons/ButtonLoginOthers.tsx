@@ -2,7 +2,7 @@
 import Facebook from "@/components/ui/facebook";
 import Google from "@/components/ui/google";
 import { Button, Tooltip } from "@heroui/react";
-import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const buttons = [
@@ -19,6 +19,17 @@ const buttons = [
 ];
 
 const ButtonLoginOthers: React.FC = () => {
+  const router = useRouter();
+
+  const handleLogin = (provider: string) => {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_NODE_ENV === "production"
+        ? process.env.NEXT_PUBLIC_BASE_PROD_URL
+        : process.env.NEXT_PUBLIC_BASE_DEV_URL;
+
+    router.push(`${baseUrl}/auth/${provider}/login`);
+  };
+
   return (
     <React.Fragment>
       {buttons.map((button, index) => {
@@ -29,7 +40,7 @@ const ButtonLoginOthers: React.FC = () => {
             className="dark:text-white text-black"
           >
             <Button
-              onPress={async () => await signIn(button.provider)}
+              onPress={() => handleLogin(button.provider)}
               isIconOnly
               className="rounded-full bg-white flex items-center justify-center"
             >

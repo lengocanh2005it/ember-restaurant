@@ -50,9 +50,10 @@ const LoginForm: React.FC = () => {
     setIsShow(!isShow);
   };
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
-    setTimeout(() => {
+
+    setTimeout(async () => {
       mutateLogin(values);
       setIsLoading(false);
     }, 2000);

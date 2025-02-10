@@ -29,6 +29,12 @@ import { ReservationsController } from './reservations.controller';
 import { ReservationsService } from './reservations.service';
 import { JwtService } from '@nestjs/jwt';
 import { PromotionsService } from 'src/promotions/promotions.service';
+import { AuthService } from 'src/auth/auth.service';
+import { UsersService } from 'src/users/users.service';
+import { User } from 'src/users/entities/users.entity';
+import { OrdersService } from 'src/orders/orders.service';
+import { RolesModule } from 'src/roles/roles.module';
+import { Role } from 'src/roles/entities/roles.entity';
 
 @Module({
   imports: [
@@ -42,6 +48,8 @@ import { PromotionsService } from 'src/promotions/promotions.service';
       OrderProduct,
       UserDiscount,
       Promotion,
+      User,
+      Role,
     ]),
     TablesModule,
     AreasModule,
@@ -50,6 +58,7 @@ import { PromotionsService } from 'src/promotions/promotions.service';
     OrderProductModule,
     UserDiscountModule,
     PromotionsModule,
+    RolesModule,
   ],
   controllers: [ReservationsController],
   providers: [
@@ -65,6 +74,9 @@ import { PromotionsService } from 'src/promotions/promotions.service';
     ApplePayService,
     PaymentGateway,
     JwtService,
+    AuthService,
+    UsersService,
+    OrdersService,
   ],
   exports: [ReservationsService],
 })

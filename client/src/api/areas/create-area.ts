@@ -1,18 +1,11 @@
 import { CreateAreaDto } from "@/api/areas/utils/types";
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 
 export const handleCreateArea = async (
   createAreaDto: CreateAreaDto
 ): Promise<any> => {
   try {
-    const accessToken = await getValidAccessToken();
-
-    const response = await axios.post("areas", createAreaDto, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const response = await axios.post("areas", createAreaDto);
 
     if (!response.data) throw new Error("Internal Server Error!");
 

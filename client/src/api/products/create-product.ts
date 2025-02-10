@@ -1,7 +1,6 @@
 import { handleUploadFiles } from "@/api/files/upload-files";
 import { CreateProductDto } from "@/api/products/utils/types";
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 
 export const handleAddProduct = async (
   createProductDto: CreateProductDto
@@ -9,8 +8,6 @@ export const handleAddProduct = async (
   const { image, ...res } = createProductDto;
 
   try {
-    const accessToken = await getValidAccessToken();
-
     const imageUrlResponse = await handleUploadFiles({
       file: image,
     });
@@ -19,14 +16,10 @@ export const handleAddProduct = async (
 
     const data = {
       ...res,
-      image: imageUrlResponse?.data?.url,
+      image: imageUrlResponse?.url,
     };
 
-    const response = await axios.post("/products", data, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const response = await axios.post("/products", data);
 
     if (!response.data) throw new Error("Internal Server Error!");
 

@@ -1,17 +1,10 @@
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 
 export const handleDeletePromotion = async (
   promotionId: string
 ): Promise<any> => {
   try {
-    const accessToken = await getValidAccessToken();
-
-    const response = await axios.delete(`/promotions/${promotionId}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const response = await axios.delete(`/promotions/${promotionId}`);
 
     if (!response.data) throw new Error("Internal Server Error!");
 

@@ -1,18 +1,11 @@
 import { CreatePaymentDto } from "@/api/payments/utils/types";
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 
 export const handleCreatePayment = async (
   createPaymentDto: CreatePaymentDto
 ): Promise<any> => {
   try {
-    const accessToken = await getValidAccessToken();
-
-    const response = await axios.post("/payments", createPaymentDto, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const response = await axios.post("/payments", createPaymentDto);
 
     if (!response.data) throw new Error("Internal Server Error!");
 

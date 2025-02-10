@@ -1,6 +1,5 @@
 import { UploadFileDto } from "@/api/files/utils/types";
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 
 export const handleUploadFiles = async (
   uploadFileDto: UploadFileDto
@@ -11,12 +10,9 @@ export const handleUploadFiles = async (
   formData.append("file", file);
 
   try {
-    const accessToken = await getValidAccessToken();
-
     const response = await axios.post(`/uploads`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${accessToken}`,
       },
     });
 

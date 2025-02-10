@@ -19,6 +19,10 @@ export const authOptions: AuthOptions = {
   ],
   pages: {
     error: "/login",
+    signIn: "/login",
+  },
+  session: {
+    strategy: "jwt",
   },
   callbacks: {
     async signIn({ account, profile }) {
@@ -67,26 +71,23 @@ export const authOptions: AuthOptions = {
         return false;
       }
     },
-
     async session({ session, token }) {
-      if (token && token.accessToken) {
+      if (token && token.accessToken && token.userId) {
         session.user.accessToken = token.accessToken as string;
         session.user.userId = token.userId as string;
       }
       return session;
     },
-
     async redirect({ url, baseUrl }) {
       return baseUrl + "/home";
     },
-
     async jwt({ token, account }) {
-      if (account) {
+      if (account && account.userId && account.access_token) {
         token.accessToken = account.access_token;
         token.userId = account.userId;
       }
       return token;
     },
   },
-  secret: process.env.NEXT_PUBLIC_AUTH_SECRET,
+  secret: process.env.AUTH_SECRET,
 };

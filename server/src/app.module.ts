@@ -11,7 +11,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseModule } from 'src/database/database.module';
 import { DatabaseService } from 'src/database/database.service';
-import { FormatResponseApiInterceptor } from 'src/utils/common/interceptors/formatResponseApi.interceptor';
+import { ApiResponseInterceptor } from 'src/utils/common/interceptors/api-response.interceptor';
 import { HttpExceptionFilter } from 'src/utils/common/filters/http-exception.filter';
 import { LoggerMiddleware } from 'src/utils/common/middlewares/logger.middleware';
 import { AppController } from './app.controller';
@@ -107,7 +107,7 @@ import { RedisModule } from './redis/redis.module';
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: FormatResponseApiInterceptor,
+      useClass: ApiResponseInterceptor,
     },
     {
       provide: APP_PIPE,

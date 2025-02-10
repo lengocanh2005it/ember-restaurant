@@ -1,14 +1,11 @@
 import { handleUploadFiles } from "@/api/files/upload-files";
 import { UpdateNotificationDto } from "@/api/notifications/utils/types";
 import axios from "@/lib/axios";
-import { getValidAccessToken } from "@/lib/token";
 
 export const handleUpdateNotification = async (
   updateNotificationDto: UpdateNotificationDto
 ): Promise<any> => {
   try {
-    const accessToken = await getValidAccessToken();
-
     const { notificationId, image, ...res } = updateNotificationDto;
 
     let data = null;
@@ -30,12 +27,7 @@ export const handleUpdateNotification = async (
 
     const response = await axios.patch(
       `/notifications/${notificationId}`,
-      data,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
+      data
     );
 
     if (!response.data) throw new Error("Internal Server Error.");
