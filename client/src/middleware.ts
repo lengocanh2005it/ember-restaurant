@@ -5,6 +5,10 @@ import { UserSessionData } from "@/utils";
 import { PAGE_ROLE } from "@/config/enums/enums";
 
 export async function middleware(req: NextRequest) {
+  console.log(req.cookies);
+  console.log(req.cookies.get("user_session"));
+  console.log(req.cookies.get("isLoggedIn"));
+
   const userSessionCookie = req.cookies.get("user_session");
   const isLoggedInCookie = req.cookies.get("isLoggedIn");
 
