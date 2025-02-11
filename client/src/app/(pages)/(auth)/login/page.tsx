@@ -22,6 +22,24 @@ const LoginPage: React.FC = (props: any) => {
         }
       );
     }
+
+    if (error && error === "InformationMissing") {
+      showErrorToast("Please log in to continue!", "top-right", {
+        backgroundColor: "#dc3545",
+        color: "#fff",
+      });
+    }
+
+    if (error && error === "ExpiredSession") {
+      showErrorToast(
+        "Your session has expired, please log in again!",
+        "top-right",
+        {
+          backgroundColor: "#dc3545",
+          color: "#fff",
+        }
+      );
+    }
   }, [error]);
 
   return (

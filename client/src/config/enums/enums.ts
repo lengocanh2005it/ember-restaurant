@@ -20,3 +20,9 @@ export enum PaymentEnum {
   PAID = "PAID",
   FAILED = "FAILED",
 }
+
+export enum PAGE_ROLE {
+  ADMIN = "admin",
+  MANAGER = "manager",
+  USER = "user",
+}

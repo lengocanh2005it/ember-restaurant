@@ -1,6 +1,7 @@
 "use client";
 import BannerNotFound from "@/components/BannerNotFound";
 import { Button } from "@heroui/react";
+import { HomeIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -13,11 +14,17 @@ const UnauthorizedPage: React.FC = () => {
   };
 
   return (
-    <main className="w-full px-6 py-4 container mx-auto flex items-center justify-center flex-col gap-3">
+    <main
+      className="w-full lg:px-6 lg:py-8 px-2 py-4 container mx-auto flex items-center justify-center
+     flex-col gap-3"
+    >
       <BannerNotFound />
 
-      <div className="relative container gap-4 mx-auto px-5 flex flex-col items-center text-center lg:h-[80vh] justify-center">
-        <div className="relative lg:w-[300px] lg:h-[300px] w-[350px] h-[350px]">
+      <div
+        className="relative container lg:gap-5 gap-2 mx-auto lg:px-5 px-2 flex flex-col items-center 
+        text-center lg:h-[80vh] justify-center"
+      >
+        <div className="relative lg:w-[500px] lg:h-[500px] w-[350px] h-[350px]">
           <Image
             src={"/unauthorized-1.png"}
             alt=""
@@ -30,19 +37,20 @@ const UnauthorizedPage: React.FC = () => {
 
         <div className="flex flex-col gap-2 items-center text-center">
           <h1 className="lg:text-2xl text-xl uppercase font-bold">
-            Unauthorized
+            Access Denied
           </h1>
 
-          <p className="lg:text-[14px] text-[13px] text-white/50">
+          <p className="lg:text-base text-[14px] text-white/70">
             You don&apos;t have permission to access this page!
           </p>
         </div>
 
         <Button
-          className="dark:bg-white dark:text-black uppercase bg-white text-black"
+          className="dark:bg-white dark:text-black bg-white text-black"
           onPress={handleClick}
+          startContent={<HomeIcon />}
         >
-          Home
+          Back to Home
         </Button>
       </div>
     </main>

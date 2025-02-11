@@ -9,6 +9,7 @@ import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { LocalLoginDto } from 'src/auth/dtos/auth.dto';
+import { RedisService } from 'src/redis/redis.service';
 import { User } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
 import {
@@ -16,7 +17,10 @@ import {
   GenerateTokensType,
   initializeCookies,
   SESSION_MAX_AGE,
+  SessionDataRedisType,
+  UserSessionData,
 } from 'src/utils';
+import * as cookieSignature from 'cookie-signature';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +28,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly redisService: RedisService,
   ) {}
 
   async validateLocalAccount(localLoginDto: LocalLoginDto): Promise<User> {
@@ -144,13 +149,31 @@ export class AuthService {
       userId: id,
       accessToken,
       refreshToken,
-      role: user.roles.map((role) => role.name),
+      roles: user.roles.map((role) => role.name),
       login_method,
       expiresAt: new Date(Date.now() + SESSION_MAX_AGE),
+      ...(user.username ? { username: user.username } : {}),
     };
 
     initializeCookies(response, accessToken, refreshToken);
 
     return { accessToken, refreshToken, userId: id };
+  };
+
+  public handleGetSessionFromSessionID = async (
+    decodedSessionID: string,
+  ): Promise<UserSessionData> => {
+    const unsignedSessionID = cookieSignature.unsign(
+      decodedSessionID.slice(2),
+      this.configService.get<string>('SESSION_SECRET_KEY') || '',
+    );
+
+    const cachedData = await this.redisService.getKey(
+      `sess:${unsignedSessionID}`,
+    );
+
+    const data = JSON.parse(cachedData) as SessionDataRedisType;
+
+    return data.user;
   };
 }

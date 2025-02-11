@@ -1,6 +1,7 @@
 import { User } from 'src/users/entities/users.entity';
 import 'express-session';
 import 'express';
+import { Cookie } from 'express-session';
 
 export type CreateSocialAccount = {
   email?: string;
@@ -60,7 +61,7 @@ export type UserSessionData = {
   userId: string;
   accessToken: string;
   refreshToken: string;
-  role: string[];
+  roles: string[];
   username?: string;
   login_method: string;
   expiresAt?: Date;
@@ -95,6 +96,11 @@ export type UserFacebookData = {
     url: string;
     width: number;
   };
+};
+
+export type SessionDataRedisType = {
+  cookie: Cookie;
+  user: UserSessionData;
 };
 
 declare module 'express-session' {
