@@ -103,6 +103,8 @@ const ModalUpdateRequest: React.FC<ModalUpdateRequestProps> = ({
         isOpen={isOpen}
         placement="center"
         size="xl"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         motionProps={{
           variants: {

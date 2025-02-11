@@ -305,6 +305,16 @@ export type Theme = {
   theme: string;
 };
 
+export type UserSessionData = {
+  userId: string;
+  accessToken: string;
+  refreshToken: string;
+  roles: string[];
+  username?: string;
+  login_method: string;
+  expiresAt?: Date;
+};
+
 declare module "next-auth" {
   interface Session {
     user: {

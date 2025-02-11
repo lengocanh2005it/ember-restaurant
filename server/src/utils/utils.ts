@@ -236,3 +236,21 @@ export const createCookieOptions = (maxAge: number): Partial<CookieOptions> => {
     sameSite: IS_PROD ? 'none' : 'lax',
   };
 };
+
+export const resetCookies = (res: Response) => {
+  const cookies = [
+    { name: 'isLoggedIn', httpOnly: IS_PROD, secure: IS_PROD },
+    { name: 'refreshToken', httpOnly: IS_PROD, secure: IS_PROD },
+    { name: 'user_session', httpOnly: IS_PROD, secure: IS_PROD },
+    { name: 'accessToken', httpOnly: IS_PROD, secure: IS_PROD },
+  ];
+
+  cookies.forEach(({ name, httpOnly, secure }) => {
+    res.cookie(name, '', {
+      httpOnly,
+      secure,
+      maxAge: 0,
+      sameSite: IS_PROD ? 'none' : 'lax',
+    });
+  });
+};

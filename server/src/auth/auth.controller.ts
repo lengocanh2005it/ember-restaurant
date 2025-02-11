@@ -27,13 +27,14 @@ import { Role } from 'src/roles/role.enum';
 import { UsersService } from 'src/users/users.service';
 import {
   ACCESS_TOKEN_MAX_AGE,
-  IS_PROD,
   Theme,
+  UserSessionData,
   createCookieOptions,
   encodePassword,
   generateVerificationCode,
   getDataOfSessionFromRequest,
   getEnvValue,
+  resetCookies,
 } from 'src/utils';
 
 @Controller('auth')
@@ -127,21 +128,7 @@ export class AuthController {
   async logout(
     @Res() res: Response,
   ): Promise<Response<any, Record<string, any>>> {
-    const cookies = [
-      { name: 'isLoggedIn', httpOnly: IS_PROD, secure: IS_PROD },
-      { name: 'refreshToken', httpOnly: IS_PROD, secure: IS_PROD },
-      { name: 'user_session', httpOnly: IS_PROD, secure: IS_PROD },
-      { name: 'accessToken', httpOnly: IS_PROD, secure: IS_PROD },
-    ];
-
-    cookies.forEach(({ name, httpOnly, secure }) => {
-      res.cookie(name, '', {
-        httpOnly,
-        secure,
-        maxAge: 0,
-        sameSite: IS_PROD ? 'none' : 'lax',
-      });
-    });
+    resetCookies(res);
 
     return res.status(200).json({
       statusCode: 200,
@@ -217,6 +204,17 @@ export class AuthController {
       message: 'Get profile of user successfully.',
       data: res,
     });
+  }
+
+  @Get('session')
+  async getSessionBySessionID(
+    @Query('sessionId') sessionId: string,
+  ): Promise<UserSessionData> {
+    const decodedSessionID = decodeURIComponent(sessionId);
+
+    return await this.authService.handleGetSessionFromSessionID(
+      decodedSessionID,
+    );
   }
 
   @Post('request/reset-password')
