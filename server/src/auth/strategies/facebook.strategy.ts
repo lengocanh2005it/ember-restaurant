@@ -42,7 +42,7 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
 
     const facebookAccount = await this.authService.validateFacebookAccount({
       displayName: name,
-      imageUrl: picture.url,
+      imageUrl: picture.data.url,
       socialId: id,
       provider: 'facebook',
     });

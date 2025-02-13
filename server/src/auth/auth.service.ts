@@ -5,8 +5,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import * as cookieSignature from 'cookie-signature';
 import { Request, Response } from 'express';
 import { LocalLoginDto } from 'src/auth/dtos/auth.dto';
 import { RedisService } from 'src/redis/redis.service';
@@ -16,11 +17,11 @@ import {
   CreateSocialAccount,
   GenerateTokensType,
   initializeCookies,
+  JwtPayload,
   SESSION_MAX_AGE,
   SessionDataRedisType,
   UserSessionData,
 } from 'src/utils';
-import * as cookieSignature from 'cookie-signature';
 
 @Injectable()
 export class AuthService {
@@ -90,44 +91,46 @@ export class AuthService {
   }
 
   async refreshToken(token: string): Promise<string> {
-    try {
-      const { userId } = this.jwtService.verify(token, {
-        secret: this.configService.get('JWT_SECRET_KEY'),
-      });
+    if (!token) throw new UnauthorizedException('Session is expired.');
 
-      if (!userId)
-        throw new UnauthorizedException('UserId not found in Jwt Payload.');
+    const { userId } = this.jwtService.verify(token, {
+      secret: this.configService.get<string>('JWT_SECRET_KEY'),
+    }) as JwtPayload;
 
-      const user = await this.usersService.findOne(userId);
+    if (!userId)
+      throw new UnauthorizedException('UserId not found in Jwt Payload.');
 
-      if (!user) throw new NotFoundException('User Not Found.');
+    const user = await this.usersService.findOne(userId);
 
-      const payload = {
-        userId: user.id,
-      };
+    if (!user) throw new NotFoundException('User Not Found.');
 
-      return this.jwtService.sign(payload, {
-        expiresIn: this.configService.get('ACCESS_TOKEN_LIFE'),
-      });
-    } catch (err: any) {
-      if (err instanceof JsonWebTokenError) {
-        throw new UnauthorizedException('Refresh token expired.');
-      } else {
-        throw new UnauthorizedException('Invalid refresh token.');
-      }
-    }
+    const payload = {
+      userId: user.id,
+    };
+
+    return this.jwtService.sign(payload, {
+      expiresIn: this.configService.get('ACCESS_TOKEN_LIFE'),
+      secret: this.configService.get<string>('JWT_SECRET_KEY'),
+    });
   }
 
   async generateResetToken(email: string): Promise<string> {
     const payload = { email };
-    return this.jwtService.sign(payload);
+
+    return this.jwtService.sign(payload, {
+      expiresIn: this.configService.get('ACCESS_TOKEN_LIFE'),
+      secret: this.configService.get<string>('JWT_SECRET_KEY'),
+    });
   }
 
   public generateTokens = async (
     userId: string,
   ): Promise<GenerateTokensType> => {
     const createToken = (expiresIn: string) =>
-      this.jwtService.sign({ userId }, { expiresIn });
+      this.jwtService.sign(
+        { userId },
+        { expiresIn, secret: this.configService.get<string>('JWT_SECRET_KEY') },
+      );
 
     return {
       accessToken: createToken(this.configService.get('ACCESS_TOKEN_LIFE')),

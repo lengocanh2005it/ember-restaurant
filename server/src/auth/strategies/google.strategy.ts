@@ -34,10 +34,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`,
     );
 
-    console.log(
-      `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`,
-    );
-
     if (!response.data) throw new BadRequestException('Invalid accessToken.');
 
     const data = response.data as UserGoogleData;

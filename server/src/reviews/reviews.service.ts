@@ -29,7 +29,6 @@ export class ReviewsService {
     private readonly usersService: UsersService,
   ) {}
 
-  // ngoc
   private async getAllReviews(featured?: string): Promise<Review[]> {
     let reviews = await this.reviewRepository.find({
       relations: ['user'],
@@ -224,12 +223,14 @@ export class ReviewsService {
   ): Promise<any> => {
     const { userId, reviewIds } = updateFeaturedReviews;
 
-    const reviews = await this.reviewRepository.find();
+    for (const reviewId of reviewIds) {
+      const review = await this.reviewRepository.findOneBy({ id: reviewId });
 
-    for (const reviewId of reviews.map((r) => r.id)) {
+      if (!review) throw new NotFoundException('Review Not Found.');
+
       await this.reviewRepository.update(
         { id: reviewId },
-        { is_featured: reviewIds.some((r) => r === reviewId) },
+        { is_featured: !review.is_featured },
       );
     }
 

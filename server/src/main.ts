@@ -14,6 +14,10 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: getEnvValue('ORIGINAL_FE_URL_PROD', 'ORIGINAL_FE_URL_DEV'),
+    credentials: true,
+  });
   app.use(cookieParser());
   app.use(
     '/payments/webhook/stripe',
@@ -25,10 +29,6 @@ async function bootstrap() {
   const databaseService = app.get(DatabaseService);
   const redisService = app.get(RedisService);
   const PORT = configService.get<number>('PORT_DEV');
-  app.enableCors({
-    origin: getEnvValue('ORIGINAL_FE_URL_PROD', 'ORIGINAL_FE_URL_DEV'),
-    credentials: true,
-  });
   app.use(
     session({
       name: 'user_session',
