@@ -138,6 +138,7 @@ const DiscountForm: React.FC = () => {
                   </FormLabel>
                   <FormControl>
                     <Select
+                      selectedKeys={field.value ? [field.value] : undefined}
                       items={types}
                       aria-labelledby="type"
                       placeholder="Choose a type of discount"
@@ -245,6 +246,7 @@ const DiscountForm: React.FC = () => {
                 <FormControl>
                   <Select
                     items={currencies}
+                    selectedKeys={field.value ? [field.value] : undefined}
                     aria-labelledby="currency"
                     placeholder="Choose a currency of discount"
                     {...field}

@@ -62,7 +62,7 @@ const ModalViewRequest: React.FC<ModalViewRequestProps> = ({ request }) => {
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="lg:text-xl text-base lg:text-left text-center flex justify-center">
+              <ModalHeader className="lg:text-xl text-[20px] lg:text-left text-center flex justify-center">
                 Request Details
               </ModalHeader>
 

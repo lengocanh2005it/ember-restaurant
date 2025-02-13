@@ -11,6 +11,7 @@ import {
 } from "@heroui/react";
 import { EyeIcon } from "lucide-react";
 import { Promotion } from "@/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ModalViewPromotionProps {
   promotion: Promotion;
@@ -31,7 +32,7 @@ const ModalViewPromotion: React.FC<ModalViewPromotionProps> = ({
             className="flex items-center justify-between gap-1 border
            dark:border-white/30 border-black/20 p-2 rounded-md"
           >
-            <p>Start Date</p>
+            <p className="dark:text-white/70 text-black/70">Start Date</p>
             <p>{promotion.start_date.split("T")[0]}</p>
           </div>
 
@@ -39,7 +40,7 @@ const ModalViewPromotion: React.FC<ModalViewPromotionProps> = ({
             className="flex items-center justify-between gap-1 
           border dark:border-white/30 border-black/20 p-2 rounded-md"
           >
-            <p>End Date</p>
+            <p className="dark:text-white/70 text-black/70">End Date</p>
             <p>{promotion.end_date.split("T")[0]}</p>
           </div>
         </div>
@@ -130,20 +131,27 @@ const ModalViewPromotion: React.FC<ModalViewPromotionProps> = ({
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
                 View Promotion
               </ModalHeader>
 
               <ModalBody>
-                {rows.map((row) => (
-                  <div key={row.key} className={row.className}>
-                    <p>{row.label}</p>
-                    <p>{row.value}</p>
+                <ScrollArea className="h-[450px] lg:px-3 px-4">
+                  <div className="flex flex-col gap-2">
+                    {rows.map((row) => (
+                      <div key={row.key} className={row.className}>
+                        <p className="dark:text-white/70 text-black/70">
+                          {row.label}
+                        </p>
+
+                        <p>{row.value}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </ScrollArea>
               </ModalBody>
 
-              <ModalFooter>
+              <ModalFooter className="relative flex lg:justify-end justify-center">
                 <Button
                   color="primary"
                   className="dark:bg-white dark:text-black text-white"

@@ -1,16 +1,15 @@
 "use client";
 import { MoonIcon } from "@/components/icons/MoonIcon";
 import { SunIcon } from "@/components/icons/SunIcon";
-import { useProfile } from "@/hooks/use-profile";
-import { handleSwitchTheme } from "@/lib/theme";
+import { useSwitchTheme } from "@/hooks/use-switch-theme";
 import { useAppStore } from "@/store";
 import { Switch } from "@heroui/react";
 import { useEffect } from "react";
 
 export default function ButtonSwitch() {
-  const { isDarkMode, setIsDarkMode, setTheme } = useAppStore();
+  const { isDarkMode, setIsDarkMode } = useAppStore();
 
-  const { data: profile, refetch } = useProfile();
+  const { mutate: mutateSwitchTheme } = useSwitchTheme();
 
   useEffect(() => {
     if (isDarkMode) {
@@ -20,41 +19,30 @@ export default function ButtonSwitch() {
     }
   }, [isDarkMode]);
 
-  useEffect(() => {
-    if (profile) {
-      setIsDarkMode(profile.theme === "light" ? false : true);
-    }
-  }, [setIsDarkMode, profile]);
-
-  const handleToggle = async () => {
+  const handleToggle = () => {
     setIsDarkMode(!isDarkMode);
 
-    if (isDarkMode && localStorage.getItem("accessToken")) {
-      setTheme("light");
-      await handleSwitchTheme({ theme: "light" });
+    if (isDarkMode) {
+      mutateSwitchTheme({ theme: "light" });
     } else {
-      setTheme("dark");
-      await handleSwitchTheme({ theme: "dark" });
+      mutateSwitchTheme({ theme: "dark" });
     }
-    refetch();
   };
 
   return (
-    <>
-      <Switch
-        isSelected={isDarkMode}
-        defaultSelected
-        onChange={handleToggle}
-        size="lg"
-        color="secondary"
-        thumbIcon={({ isSelected, className }) =>
-          isSelected ? (
-            <MoonIcon className={className} />
-          ) : (
-            <SunIcon className={className} />
-          )
-        }
-      />
-    </>
+    <Switch
+      isSelected={isDarkMode}
+      defaultSelected
+      onChange={handleToggle}
+      size="lg"
+      color="secondary"
+      thumbIcon={({ isSelected, className }) =>
+        isSelected ? (
+          <MoonIcon className={className} />
+        ) : (
+          <SunIcon className={className} />
+        )
+      }
+    />
   );
 }

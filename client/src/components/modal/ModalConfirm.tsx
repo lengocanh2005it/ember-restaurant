@@ -42,6 +42,7 @@ const ModalConfirm: React.FC<ModalConfirmProps> = ({ id }) => {
         backdrop="opaque"
         isOpen={isOpen}
         placement="center"
+        size="lg"
         isDismissable={false}
         isKeyboardDismissDisabled={false}
         motionProps={{
@@ -73,23 +74,21 @@ const ModalConfirm: React.FC<ModalConfirmProps> = ({ id }) => {
                 Confirm Delete
               </ModalHeader>
 
-              <ModalBody>
-                <div className="flex-col gap-3 rounded-md flex">
-                  <h1 className="lg:text-base text-[14px] font-bold">
-                    Are you sure you want to delete this dish?
-                  </h1>
+              <ModalBody className="relative flex flex-col lg:text-left text-center">
+                <h1 className="lg:text-xl text-[16px] font-bold">
+                  Are you sure you want to delete this dish?
+                </h1>
 
-                  <p className="lg:text-[14px] text-[12px] dark:text-white/70 text-black/70">
-                    If you confirm the deletion, that dish will be permanently
-                    removed from the restaurant&apos;s menu.
-                  </p>
-                </div>
+                <p className="lg:text-[15px] text-[14px] dark:text-white/80 text-black/80">
+                  If you confirm the deletion, that dish will be permanently
+                  removed from the restaurant&apos;s menu.
+                </p>
               </ModalBody>
 
               <ModalFooter>
                 <Button
                   color="primary"
-                  className="dark:bg-white dark:text-black"
+                  className="dark:bg-white dark:text-black text-white"
                   onPress={onClose}
                 >
                   Cancel
@@ -100,19 +99,14 @@ const ModalConfirm: React.FC<ModalConfirmProps> = ({ id }) => {
                     <Button
                       isLoading
                       color="primary"
-                      className="dark:bg-white dark:text-black"
+                      className="dark:bg-white dark:text-black text-white"
                     >
                       Please wait...
                     </Button>
                   </>
                 ) : (
                   <>
-                    <Button
-                      color="danger"
-                      onClick={() => {
-                        handleClick();
-                      }}
-                    >
+                    <Button color="danger" onPress={handleClick}>
                       Delete
                     </Button>
                   </>

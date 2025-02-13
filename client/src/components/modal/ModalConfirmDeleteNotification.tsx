@@ -12,6 +12,7 @@ import {
 } from "@heroui/react";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
 import { useDeleteNotification } from "@/hooks/use-delete-notification";
+import { Trash2Icon } from "lucide-react";
 
 interface ModalConfirmDeleteNotificationProps {
   notificationId: string;
@@ -50,7 +51,7 @@ const ModalConfirmDeleteNotification: React.FC<
       </Tooltip>
 
       <Modal
-        backdrop="blur"
+        backdrop="opaque"
         isOpen={isOpen}
         placement="center"
         size="lg"
@@ -82,19 +83,19 @@ const ModalConfirmDeleteNotification: React.FC<
           {(onClose) => (
             <>
               <ModalHeader className="lg:text-left text-center flex lg:justify-start justify-center">
-                Notification Delete Confirm
+                Delete Notification
               </ModalHeader>
 
-              <ModalBody>
+              <ModalBody className="relative flex flex-col lg:text-left text-center">
                 <div
                   className="flex flex-col gap-2 lg:text-left text-center 
                 lg:justify-start justify-center"
                 >
-                  <h1 className="lg:text-xl text-base uppercase font-bold">
+                  <h1 className="lg:text-xl text-[16px] font-bold">
                     Do you want to delete this notification?
                   </h1>
 
-                  <p className="lg:text-base text-[15px] dark:text-white/80 text-black/80">
+                  <p className="lg:text-[15px] text-[14px] dark:text-white/80 text-black/80">
                     If you delete this notification, it will be disappeared from
                     restaurant&apos;s notifications.
                   </p>
@@ -107,7 +108,7 @@ const ModalConfirmDeleteNotification: React.FC<
               >
                 <Button
                   color="primary"
-                  className="dark:bg-white dark:text-black"
+                  className="dark:bg-white dark:text-black text-white"
                   onPress={onClose}
                 >
                   Cancel
@@ -117,7 +118,7 @@ const ModalConfirmDeleteNotification: React.FC<
                   <>
                     <Button
                       color="primary"
-                      className="dark:bg-white dark:text-black"
+                      className="dark:bg-white dark:text-black text-white"
                       isLoading
                       onPress={onClose}
                     >
@@ -128,6 +129,7 @@ const ModalConfirmDeleteNotification: React.FC<
                   <>
                     <Button
                       color="danger"
+                      startContent={<Trash2Icon />}
                       onPress={() => {
                         handleClick(notificationId);
                       }}

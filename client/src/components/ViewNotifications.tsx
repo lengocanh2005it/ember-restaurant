@@ -39,7 +39,7 @@ const ViewNotifications: React.FC<ViewNotificationsProp> = ({
             <p>
               {format(
                 notification?.createdAt ? notification.createdAt : new Date(),
-                "dd/MM/yyyy"
+                "EEEE, dd/MM/yyyy"
               )}
             </p>
           );
@@ -51,7 +51,7 @@ const ViewNotifications: React.FC<ViewNotificationsProp> = ({
         }
         case "content": {
           return (
-            <p className="truncate max-w-[400px]">{cellValue as string}</p>
+            <p className="max-w-[500px] truncate">{cellValue as string}</p>
           );
         }
         case "number": {

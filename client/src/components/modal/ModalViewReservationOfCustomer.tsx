@@ -1,5 +1,6 @@
 "use client";
 import ModalViewFeedbackReservations from "@/components/modal/ModalViewFeedbackReservations";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { methodMap, statusMap, typeMap } from "@/utils/maps";
 import { Reservation } from "@/utils/types";
 import {
@@ -104,7 +105,7 @@ const ModalViewReservationOfCustomer: React.FC<
                 "$ USD)"
               : "Null",
             icon: <GiftIcon />,
-            name: "Discount",
+            title: "Discount",
           },
         ]
       : []),
@@ -174,24 +175,32 @@ const ModalViewReservationOfCustomer: React.FC<
               </ModalHeader>
 
               <ModalBody>
-                {details.map((detail) => (
-                  <div
-                    key={detail.key}
-                    className={`flex ${
-                      detail.key !== 3 ? "sm:justify-between" : ""
-                    } ${
-                      detail.key === 8
-                        ? "sm:flex-col sm:items-start"
-                        : "sm:flex-row sm:items-center"
-                    } flex-col`}
-                  >
-                    <h1 className="lg:text-[15[px] text-[14px] dark:text-white/70 text-black/70">
-                      {detail.title}
-                    </h1>
+                <ScrollArea className="h-[300px] lg:pr-4 pr-3">
+                  <div className="flex flex-col gap-2">
+                    {details.map((detail) => (
+                      <div
+                        key={detail.key}
+                        className={`flex p-2 border dark:border-white/20 border-black/20 rounded-lg ${
+                          detail.key !== 3 ? "sm:justify-between" : ""
+                        } ${
+                          detail.key === 8
+                            ? "sm:flex-col sm:items-start"
+                            : "sm:flex-row sm:items-center"
+                        } flex-col`}
+                      >
+                        <h1 className="lg:text-[15[px] text-[14px] dark:text-white/70 text-black/70">
+                          {detail.title}
+                        </h1>
 
-                    {detail.key !== 3 ? <p>{detail.value}</p> : detail.value}
+                        {detail.key !== 3 ? (
+                          <p>{detail.value}</p>
+                        ) : (
+                          detail.value
+                        )}
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </ScrollArea>
               </ModalBody>
 
               <ModalFooter

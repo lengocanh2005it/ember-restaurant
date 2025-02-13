@@ -38,18 +38,12 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     if (data) {
-      setUser(data as User);
+      const user = data as User;
 
-      if (data) {
-        const isAdminRole = (data as User).roles.some(
-          (role) => role === "admin"
-        );
-
-        setIsAdmin(isAdminRole);
-      }
-      setIsDarkMode((data as User).theme === "light" ? false : true);
-      setTheme((data as User).theme);
-      setIsAdmin((data as User).roles.some((role) => role === "admin"));
+      setUser(user);
+      setIsAdmin(user.roles.some((role) => role === "admin"));
+      setIsDarkMode(user.theme === "light" ? false : true);
+      setTheme(user.theme);
     }
 
     if (window.location.hash && window.location.hash === "#_=_") {

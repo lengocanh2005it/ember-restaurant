@@ -191,6 +191,7 @@ const EditTableForm: React.FC<EditTableFormProps> = ({
                     aria-labelledby="type"
                     defaultSelectedKeys={[`${table.type}`]}
                     isDisabled={types.length === 0}
+                    selectedKeys={field.value ? [field.value] : undefined}
                     {...field}
                   >
                     {(type) => (

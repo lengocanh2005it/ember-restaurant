@@ -103,7 +103,7 @@ const EditOrderOfCustomer: React.FC = () => {
   }
 
   if (isError) {
-    return <div>Error...</div>;
+    return <div className="lg:text-left text-center">Error...</div>;
   }
 
   return (
@@ -227,15 +227,13 @@ const EditOrderOfCustomer: React.FC = () => {
           <Separator className="mx-2" />
 
           <div className="flex flex-col gap-1">
-            <div
-              className="flex flex-col gap-2 lg:items-start lg:justify-start
-             items-center justify-center"
-            >
-              <h1>Payment Status</h1>
+            <div className="flex gap-2 lg:flex-row flex-col lg:items-center">
+              <h1 className="dark:text-white/80 text-black/80">
+                Payment Status:
+              </h1>
 
               <Chip
                 color={order?.is_paid === true ? "success" : "danger"}
-                variant="dot"
                 startContent={
                   order?.is_paid === true ? <CheckIcon /> : <XIcon />
                 }
@@ -262,6 +260,10 @@ const EditOrderOfCustomer: React.FC = () => {
                           items={stageStatues}
                           placeholder="Choose status"
                           aria-labelledby="status"
+                          defaultSelectedKeys={[`${order?.status}`]}
+                          selectedKeys={
+                            field.value !== undefined ? [field.value] : []
+                          }
                           {...field}
                         >
                           {stageStatues.map((sta) => (

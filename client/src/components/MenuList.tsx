@@ -78,7 +78,7 @@ const MenuList: React.FC = () => {
     <>
       {products.length !== 0 ? (
         <>
-          <div className="container mx-auto lg:px-3 py-6 flex flex-col lg:gap-8 gap-4">
+          <div className="lg:container mx-auto lg:px-3 py-6 flex flex-col lg:gap-8 gap-4">
             <div className="flex md:flex-row flex-col items-center justify-between md:gap-6 gap-4">
               <div
                 className="relative flex flex-col lg:items-start lg:justify-start lg:text-left

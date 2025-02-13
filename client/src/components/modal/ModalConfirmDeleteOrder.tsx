@@ -14,6 +14,7 @@ import { DeleteIcon } from "@/components/icons/DeleteIcon";
 import { useDeleteOrder } from "@/hooks/use-delete-order";
 import { DeleteOrderOptionsDto } from "@/api/orders/utils/types";
 import { useUserStore } from "@/store";
+import { Trash2Icon } from "lucide-react";
 
 interface ModalConfirmDeleteOrderProps {
   orderId: string;
@@ -38,7 +39,7 @@ const ModalConfirmDeleteOrder: React.FC<ModalConfirmDeleteOrderProps> = ({
 
     setTimeout(() => {
       setIsLoading(false);
-      onClose;
+      onClose();
       mutateDeleteOrder(data);
     }, 2500);
   };
@@ -59,7 +60,7 @@ const ModalConfirmDeleteOrder: React.FC<ModalConfirmDeleteOrderProps> = ({
       </Tooltip>
 
       <Modal
-        backdrop="blur"
+        backdrop="opaque"
         placement="center"
         isOpen={isOpen}
         isDismissable={false}
@@ -90,27 +91,25 @@ const ModalConfirmDeleteOrder: React.FC<ModalConfirmDeleteOrderProps> = ({
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
                 Delete Order
               </ModalHeader>
 
-              <ModalBody>
-                <div className="flex flex-col gap-2">
-                  <h1 className="lg:text-xl text-[16px]">
-                    Do you want to delete this order?
-                  </h1>
+              <ModalBody className="relative flex flex-col lg:text-left text-center">
+                <h1 className="lg:text-xl text-[16px] font-bold">
+                  Do you want to delete this order?
+                </h1>
 
-                  <p className="lg:text-[14px] text-[12px] dark:text-gray-300 text-black/60">
-                    If you delete, this order will be disappeared in
-                    restaurant&apos;s database.
-                  </p>
-                </div>
+                <p className="lg:text-[15px] text-[14px] dark:text-white/80 text-black/80">
+                  If you delete, this order will be disappeared in
+                  restaurant&apos;s database.
+                </p>
               </ModalBody>
 
-              <ModalFooter>
+              <ModalFooter className="flex lg:justify-end justify-center items-center">
                 <Button
                   color="primary"
-                  className="dark:bg-white dark:text-black"
+                  className="dark:bg-white dark:text-black text-white"
                   onPress={onClose}
                 >
                   Cancel
@@ -118,14 +117,22 @@ const ModalConfirmDeleteOrder: React.FC<ModalConfirmDeleteOrderProps> = ({
 
                 {isLoading ? (
                   <>
-                    <Button isLoading className="dark:bg-white dark:text-black">
+                    <Button
+                      isLoading
+                      color="primary"
+                      className="dark:bg-white dark:text-black text-white"
+                    >
                       Please wait...
                     </Button>
                   </>
                 ) : (
                   <>
-                    <Button color="danger" onPress={handleClick}>
-                      Submit
+                    <Button
+                      color="danger"
+                      onPress={handleClick}
+                      startContent={<Trash2Icon />}
+                    >
+                      Delete
                     </Button>
                   </>
                 )}

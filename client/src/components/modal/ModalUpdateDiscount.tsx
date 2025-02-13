@@ -31,6 +31,8 @@ const ModalUpdateDiscount: React.FC<ModalUpdateDiscountProps> = ({
         backdrop="opaque"
         isOpen={isOpen}
         placement="center"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         motionProps={{
           variants: {
@@ -56,7 +58,9 @@ const ModalUpdateDiscount: React.FC<ModalUpdateDiscountProps> = ({
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader>Update Discount</ModalHeader>
+              <ModalHeader className="lg:text-left text-center flex flex-col">
+                Update Discount
+              </ModalHeader>
 
               <ModalBody>
                 <UpdateDiscountForm onClose={onClose} discount={discount} />

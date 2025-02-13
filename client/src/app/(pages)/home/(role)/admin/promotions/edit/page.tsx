@@ -135,7 +135,7 @@ const EditPromotionPage: React.FC = () => {
   });
 
   return (
-    <section className="relative container mx-auto px-6 py-4 flex flex-col lg:gap-4 gap-2">
+    <section className="relative container mx-auto px-6 py-4 flex flex-col lg:gap-4 gap-3">
       <div className="flex flex-col lg:items-start items-center lg:text-left text-center">
         <h1 className="lg:text-xl text-base font-bold uppercase">
           Edit Promotion
@@ -150,7 +150,7 @@ const EditPromotionPage: React.FC = () => {
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-2 lg:w-[45%] w-full relative mx-auto flex flex-col gap-2
-        border dark:border-white/30 border-black/20 p-4 rounded-xl"
+        border dark:border-white/20 shadow-custom p-4 rounded-xl"
         >
           <FormField
             control={form.control}
@@ -280,21 +280,12 @@ const EditPromotionPage: React.FC = () => {
             )}
           />
 
-          <div className="flex sm:flex-row flex-col gap-2 items-center justify-center w-fit mx-auto">
-            <Button
-              type="button"
-              color="primary"
-              className="w-fit mx-auto dark:bg-white dark:text-black"
-              onPress={handleClickCancel}
-            >
-              Cancel
-            </Button>
-
+          <div className="flex gap-2 items-center justify-center">
             {isLoading ? (
               <>
                 <Button
                   color="primary"
-                  className="w-fit mx-auto dark:bg-white dark:text-black"
+                  className="dark:bg-white dark:text-black"
                   isLoading
                 >
                   Please wait...
@@ -305,7 +296,7 @@ const EditPromotionPage: React.FC = () => {
                 <Button
                   type="submit"
                   color="primary"
-                  className="w-fit mx-auto dark:bg-white dark:text-black text-white"
+                  className="dark:bg-white dark:text-black text-white"
                 >
                   Submit
                 </Button>

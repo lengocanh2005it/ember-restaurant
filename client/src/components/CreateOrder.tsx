@@ -345,6 +345,9 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
                               placeholder="Select a delivery method"
                               aria-labelledby="delivery_method"
                               items={payments}
+                              selectedKeys={
+                                field.value !== undefined ? [field.value] : []
+                              }
                               {...field}
                             >
                               {deliveries.map((delivery) => (
@@ -379,6 +382,9 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
                             <FormControl>
                               <Select
                                 items={payments}
+                                selectedKeys={
+                                  field.value !== undefined ? [field.value] : []
+                                }
                                 id="payment_method"
                                 placeholder="Select a payment method"
                                 aria-labelledby="delivery_method"

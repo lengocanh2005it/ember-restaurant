@@ -15,6 +15,7 @@ import {
   TableRow,
   Tooltip,
 } from "@heroui/react";
+import { format } from "date-fns";
 import { TrashIcon } from "lucide-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -65,6 +66,14 @@ const TableOfDiscounts: React.FC = () => {
       const cellValue = discount[columnKey as keyof Discount];
 
       switch (columnKey) {
+        case "start_date": {
+          return <p>{format(discount.start_date, "dd/MM/yyyy")}</p>;
+        }
+
+        case "end_date": {
+          return <p>{format(discount.end_date, "dd/MM/yyyy")}</p>;
+        }
+
         case "is_active": {
           return (
             <Chip

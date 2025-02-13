@@ -15,6 +15,7 @@ import {
 import { EyeIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { Product } from "@/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ModalViewDishProps {
   dish: Product;
@@ -76,27 +77,31 @@ const ModalViewDish: React.FC<ModalViewDishProps> = ({ dish }) => {
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
                 View Details
               </ModalHeader>
 
               <ModalBody>
-                {rows.map((row) => (
-                  <div
-                    key={row.key}
-                    className={`flex ${
-                      row.key === 3 || row.key === 5
-                        ? "flex-col items-start justify-start"
-                        : "lg:flex-row lg:items-center lg:justify-between flex-col"
-                    } lg:gap-2 p-1 border dark:border-white/20 border-black/10 rounded-lg px-2`}
-                  >
-                    <h1 className="dark:text-white/80 text-black/70">
-                      {row.title}
-                    </h1>
+                <ScrollArea className="h-[360px] lg:pr-3 pr-4">
+                  <div className="flex flex-col lg:gap-3 gap-2">
+                    {rows.map((row) => (
+                      <div
+                        key={row.key}
+                        className={`flex ${
+                          row.key === 3 || row.key === 5
+                            ? "flex-col items-start justify-start"
+                            : "lg:flex-row lg:items-center lg:justify-between flex-col"
+                        } lg:gap-2 p-1 border dark:border-white/20 border-black/10 rounded-lg px-2`}
+                      >
+                        <h1 className="dark:text-white/80 text-black/70">
+                          {row.title}
+                        </h1>
 
-                    <p>{row.value}</p>
+                        <p>{row.value}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </ScrollArea>
               </ModalBody>
 
               <ModalFooter className="flex lg:flex-row flex-col items-center lg:justify-between">

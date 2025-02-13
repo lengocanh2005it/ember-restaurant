@@ -47,33 +47,53 @@ const ModalConfirmUpdateProfile: React.FC<ModalConfirmUpdateProfileProps> = ({
         isOpen={isOpen}
         onClose={onClose}
         size="lg"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         placement="center"
         className="border dark:border-white/20 border-black/20"
+        motionProps={{
+          variants: {
+            enter: {
+              y: 0,
+              opacity: 1,
+              transition: {
+                duration: 0.3,
+                ease: "easeOut",
+              },
+            },
+            exit: {
+              y: -20,
+              opacity: 0,
+              transition: {
+                duration: 0.2,
+                ease: "easeIn",
+              },
+            },
+          },
+        }}
       >
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                Confirm Update Profile
+              <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
+                Update Profile Confirm
               </ModalHeader>
 
-              <ModalBody>
-                <div className="flex flex-col lg:gap-2 gap-1">
-                  <h1 className="lg:text-[16px] text-[14px] font-bold">
-                    Do you want to change this customer&apos;s profile?
-                  </h1>
+              <ModalBody className="relative flex flex-col lg:text-left text-center">
+                <h1 className="lg:text-xl text-[16px] font-bold">
+                  Do you want to change this customer&apos;s profile?
+                </h1>
 
-                  <p className="lg:text-[13px] text-[12px] dark:text-white/70 text-black/50">
-                    If you change, this customer&apos;s profile will be changed
-                    in the restaurant&apos;s databases.
-                  </p>
-                </div>
+                <p className="lg:text-[15px] text-[14px] dark:text-white/80 text-black/80">
+                  If you change, this customer&apos;s profile will be changed in
+                  the restaurant&apos;s databases.
+                </p>
               </ModalBody>
 
-              <ModalFooter>
+              <ModalFooter className="flex lg:justify-end justify-center items-center">
                 <Button
                   color="primary"
-                  className="dark:bg-white dark:text-black"
+                  className="dark:bg-white dark:text-black text-white"
                   onPress={onClose}
                 >
                   Cancel
@@ -84,7 +104,7 @@ const ModalConfirmUpdateProfile: React.FC<ModalConfirmUpdateProfileProps> = ({
                     <Button
                       isLoading
                       color="primary"
-                      className="dark:bg-white dark:text-black"
+                      className="dark:bg-white dark:text-black text-white"
                     >
                       Please wait
                     </Button>

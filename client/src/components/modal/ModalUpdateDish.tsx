@@ -28,6 +28,7 @@ import { PencilLineIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const is_featured_array = [
   { key: "true", value: "True" },
@@ -187,7 +188,9 @@ const ModalUpdateDish: React.FC<ModalUpdateDishProps> = ({ dish }) => {
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader>Update Dish</ModalHeader>
+              <ModalHeader className="flex flex-col lg:text-left text-center">
+                Update Dish
+              </ModalHeader>
 
               <ModalBody>
                 <Form {...form}>
@@ -195,201 +198,211 @@ const ModalUpdateDish: React.FC<ModalUpdateDishProps> = ({ dish }) => {
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="flex flex-col gap-2 relative"
                   >
-                    <div className="grid lg:grid-cols-2 grid-cols-1 lg:gap-4">
-                      <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Name</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Name..." {...field} />
-                            </FormControl>
-                            <FormMessage className="dark:text-red-300 text-red-500" />
-                          </FormItem>
-                        )}
-                      />
+                    <ScrollArea className="h-[450px] lg:pr-4 pr-3">
+                      <div className="flex flex-col">
+                        <div className="grid lg:grid-cols-2 grid-cols-1 lg:gap-4">
+                          <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Name</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Name..." {...field} />
+                                </FormControl>
+                                <FormMessage className="dark:text-red-300 text-red-500" />
+                              </FormItem>
+                            )}
+                          />
 
-                      <FormField
-                        control={form.control}
-                        name="price"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Price</FormLabel>
-                            <FormControl>
-                              <Input
-                                endContent="USD"
-                                placeholder="Price..."
-                                {...field}
-                                value={String(field.value)}
-                              />
-                            </FormControl>
-                            <FormMessage className="dark:text-red-300 text-red-500" />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                          <FormField
+                            control={form.control}
+                            name="price"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Price</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    endContent="USD"
+                                    placeholder="Price..."
+                                    {...field}
+                                    value={String(field.value)}
+                                  />
+                                </FormControl>
+                                <FormMessage className="dark:text-red-300 text-red-500" />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
 
-                    <div className="relative grid lg:grid-cols-2 grid-cols-1 flex-1 lg:gap-4">
-                      <FormField
-                        control={form.control}
-                        name="category"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="dark:text-white ">
-                              Category
-                            </FormLabel>
-                            <FormControl>
-                              <Select
-                                items={categories}
-                                placeholder="Choose one category"
-                                aria-labelledby="category"
-                                defaultSelectedKeys={new Set([dish.category])}
-                                {...field}
-                              >
-                                {(category) => (
-                                  <SelectItem
-                                    key={category.key}
-                                    className="text-black dark:text-white"
+                        <div className="relative grid lg:grid-cols-2 grid-cols-1 flex-1 lg:gap-4">
+                          <FormField
+                            control={form.control}
+                            name="category"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="dark:text-white ">
+                                  Category
+                                </FormLabel>
+                                <FormControl>
+                                  <Select
+                                    items={categories}
+                                    placeholder="Choose one category"
                                     aria-labelledby="category"
+                                    defaultSelectedKeys={
+                                      new Set([dish.category])
+                                    }
+                                    {...field}
                                   >
-                                    {category.label}
-                                  </SelectItem>
-                                )}
-                              </Select>
-                            </FormControl>
-                            <FormMessage className="dark:text-red-300 text-red-500" />
-                          </FormItem>
-                        )}
-                      />
+                                    {(category) => (
+                                      <SelectItem
+                                        key={category.key}
+                                        className="text-black dark:text-white"
+                                        aria-labelledby="category"
+                                      >
+                                        {category.label}
+                                      </SelectItem>
+                                    )}
+                                  </Select>
+                                </FormControl>
+                                <FormMessage className="dark:text-red-300 text-red-500" />
+                              </FormItem>
+                            )}
+                          />
 
-                      <FormField
-                        control={form.control}
-                        name="stock"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="dark:text-white text-black">
-                              Stock Number
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                {...field}
-                                type="number"
-                                value={String(field.value)}
-                                placeholder="100"
-                              />
-                            </FormControl>
-                            <FormMessage className="dark:text-red-300 text-red-400" />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                          <FormField
+                            control={form.control}
+                            name="stock"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="dark:text-white text-black">
+                                  Stock Number
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    type="number"
+                                    value={String(field.value)}
+                                    placeholder="100"
+                                  />
+                                </FormControl>
+                                <FormMessage className="dark:text-red-300 text-red-400" />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
 
-                    <div className="relative grid lg:grid-cols-2 grid-cols-1 lg:gap-4">
-                      <FormField
-                        control={form.control}
-                        name="is_featured"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="dark:text-white ">
-                              Is Featured
-                            </FormLabel>
-                            <FormControl>
-                              <Select
-                                items={is_featured_array}
-                                placeholder="Whether dish is featured or not?"
-                                aria-labelledby="isFeatured"
-                                defaultSelectedKeys={[`${dish.is_featured}`]}
-                                {...field}
-                              >
-                                {(featured) => (
-                                  <SelectItem
-                                    key={featured.key}
-                                    className="text-black dark:text-white"
+                        <div className="relative grid lg:grid-cols-2 grid-cols-1 lg:gap-4">
+                          <FormField
+                            control={form.control}
+                            name="is_featured"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="dark:text-white ">
+                                  Is Featured
+                                </FormLabel>
+                                <FormControl>
+                                  <Select
+                                    items={is_featured_array}
+                                    placeholder="Whether dish is featured or not?"
                                     aria-labelledby="isFeatured"
+                                    defaultSelectedKeys={[
+                                      `${dish.is_featured}`,
+                                    ]}
+                                    {...field}
                                   >
-                                    {featured.value}
-                                  </SelectItem>
-                                )}
-                              </Select>
-                            </FormControl>
-                            <FormMessage className="dark:text-red-300 text-red-500" />
-                          </FormItem>
-                        )}
-                      />
+                                    {(featured) => (
+                                      <SelectItem
+                                        key={featured.key}
+                                        className="text-black dark:text-white"
+                                        aria-labelledby="isFeatured"
+                                      >
+                                        {featured.value}
+                                      </SelectItem>
+                                    )}
+                                  </Select>
+                                </FormControl>
+                                <FormMessage className="dark:text-red-300 text-red-500" />
+                              </FormItem>
+                            )}
+                          />
 
-                      <FormField
-                        control={form.control}
-                        name="is_available"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="dark:text-white ">
-                              Availability
-                            </FormLabel>
-                            <FormControl>
-                              <Select
-                                items={availabilities}
-                                placeholder="Whether dish is featured or not?"
-                                aria-labelledby="isFeatured"
-                                defaultSelectedKeys={[`${dish.is_available}`]}
-                                {...field}
-                              >
-                                {(availability) => (
-                                  <SelectItem
-                                    key={availability.key}
-                                    className="text-black dark:text-white"
+                          <FormField
+                            control={form.control}
+                            name="is_available"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="dark:text-white ">
+                                  Availability
+                                </FormLabel>
+                                <FormControl>
+                                  <Select
+                                    items={availabilities}
+                                    placeholder="Whether dish is featured or not?"
                                     aria-labelledby="isFeatured"
+                                    defaultSelectedKeys={[
+                                      `${dish.is_available}`,
+                                    ]}
+                                    {...field}
                                   >
-                                    {availability.label}
-                                  </SelectItem>
-                                )}
-                              </Select>
-                            </FormControl>
-                            <FormMessage className="dark:text-red-300 text-red-500" />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                                    {(availability) => (
+                                      <SelectItem
+                                        key={availability.key}
+                                        className="text-black dark:text-white"
+                                        aria-labelledby="isFeatured"
+                                      >
+                                        {availability.label}
+                                      </SelectItem>
+                                    )}
+                                  </Select>
+                                </FormControl>
+                                <FormMessage className="dark:text-red-300 text-red-500" />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
 
-                    <FormField
-                      control={form.control}
-                      name="ingredients"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="dark:text-white text-black">
-                            Ingredients
-                          </FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="About the ingredients of dish..."
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage className="dark:text-red-300 text-red-500" />
-                        </FormItem>
-                      )}
-                    />
+                        <FormField
+                          control={form.control}
+                          name="ingredients"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="dark:text-white text-black">
+                                Ingredients
+                              </FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  placeholder="About the ingredients of dish..."
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage className="dark:text-red-300 text-red-500" />
+                            </FormItem>
+                          )}
+                        />
 
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Description</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="About the description..."
-                              aria-labelledby="description"
-                              aria-label="description"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                        <FormField
+                          control={form.control}
+                          name="description"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Description</FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  placeholder="About the description..."
+                                  aria-labelledby="description"
+                                  aria-label="description"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </ScrollArea>
 
-                    <div className="flex items-center justify-end gap-3">
+                    <div className="flex lg:items-center lg:justify-end justify-center gap-3">
                       <Button
                         color="primary"
                         className="dark:bg-white dark:text-black"

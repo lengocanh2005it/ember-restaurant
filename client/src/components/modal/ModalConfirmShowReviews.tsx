@@ -12,7 +12,7 @@ import {
   Selection,
   useDisclosure,
 } from "@heroui/react";
-import { HomeIcon } from "lucide-react";
+import { HomeIcon, SaveIcon } from "lucide-react";
 import React, { Dispatch, SetStateAction, useState } from "react";
 
 interface ModalConfirmShowReviewsProps {
@@ -48,15 +48,15 @@ const ModalConfirmShowReviews: React.FC<ModalConfirmShowReviewsProps> = ({
 
   return (
     <>
-      <Chip
-        onClick={onOpen}
+      <Button
+        onPress={onOpen}
         color="primary"
-        startContent={<HomeIcon size={20} />}
+        startContent={<SaveIcon />}
         className="dark:bg-white dark:text-black cursor-pointer transition-opacity px-2 
         opacity-70 hover:opacity-100 duration-250"
       >
-        Display in Home Page
-      </Chip>
+        Save
+      </Button>
 
       <Modal
         backdrop="opaque"
@@ -91,20 +91,17 @@ const ModalConfirmShowReviews: React.FC<ModalConfirmShowReviewsProps> = ({
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
-                Confirmation
+                Toggle Reviews
               </ModalHeader>
 
-              <ModalBody className="relative flex flex-col gap-1">
-                <h1 className="lg:text-base text-[15px] font-bold uppercase lg:text-left text-center">
-                  Display all reviews on the home page?
+              <ModalBody className="relative flex flex-col lg:text-left text-center">
+                <h1 className="lg:text-xl text-[16px] font-bold">
+                  Toggle all current state reviews on the home page?
                 </h1>
 
-                <p
-                  className="lg:text-[15px] text-[13px] dark:text-white/60 text-black/60 
-                lg:text-left text-center"
-                >
+                <p className="lg:text-[15px] text-[14px] dark:text-white/80 text-black/80">
                   If you choose &apos;Yes&apos;, all of these reviews will be
-                  displayed on the restaurant&apos;s home page.
+                  toggle displayed on the restaurant&apos;s home page.
                 </p>
               </ModalBody>
 

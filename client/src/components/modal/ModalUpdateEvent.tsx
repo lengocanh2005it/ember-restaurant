@@ -411,7 +411,7 @@ const ModalUpdateEvent: React.FC<ModalUpdateEventProps> = ({ event }) => {
                       />
                     </ScrollArea>
 
-                    <div className="flex items-center justify-end gap-4">
+                    <div className="flex items-center lg:justify-end justify-center gap-4">
                       <Button
                         color="primary"
                         className="dark:bg-white dark:text-black text-white"

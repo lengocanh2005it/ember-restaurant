@@ -86,10 +86,6 @@ const ModalConfirmPayment: React.FC<ModalConfirmPaymentProps> = ({
   return (
     <Modal
       backdrop="opaque"
-      classNames={{
-        backdrop:
-          "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
-      }}
       isDismissable={false}
       isKeyboardDismissDisabled={false}
       placement="center"
@@ -124,7 +120,7 @@ const ModalConfirmPayment: React.FC<ModalConfirmPaymentProps> = ({
               Credit Card Payment
             </ModalHeader>
 
-            <ModalBody className="relative flex flex-col gap-2 items-center">
+            <ModalBody className="relative flex flex-col lg:text-left text-center">
               <p className="lg:text-[14px] text-[13px] text-center">
                 Would you like to pay for this order now? If yes, please click
                 the Payment button below. If not, you can click the No Payment
@@ -140,7 +136,7 @@ const ModalConfirmPayment: React.FC<ModalConfirmPaymentProps> = ({
                 <>
                   <Button
                     color="primary"
-                    className="dark:bg-white dark:text-black"
+                    className="dark:bg-white dark:text-black text-white"
                     isLoading
                   >
                     Please wait...
@@ -150,7 +146,7 @@ const ModalConfirmPayment: React.FC<ModalConfirmPaymentProps> = ({
                 <>
                   <Button
                     color="primary"
-                    className="dark:bg-white dark:text-black"
+                    className="dark:bg-white dark:text-black text-white"
                     onPress={handlePayment}
                   >
                     No Payment

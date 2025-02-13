@@ -47,10 +47,12 @@ const ModalConfirmUpdateNotification: React.FC<
       </Button>
 
       <Modal
-        backdrop="blur"
+        backdrop="opaque"
         isOpen={isOpen}
         placement="center"
         size="lg"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         motionProps={{
           variants: {
@@ -76,30 +78,22 @@ const ModalConfirmUpdateNotification: React.FC<
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
+              <ModalHeader className="flex flex-col lg:text-left text-center">
                 Notification Update Confirm
               </ModalHeader>
 
-              <ModalBody>
-                <div
-                  className="flex flex-col gap-2 lg:text-left text-center 
-                lg:justify-start justify-center"
-                >
-                  <h1 className="lg:text-xl text-base uppercase font-bold">
-                    Do you want to update this notification?
-                  </h1>
+              <ModalBody className="relative flex flex-col lg:text-left text-center">
+                <h1 className="lg:text-xl text-[16px] font-bold">
+                  Do you want to update this notification?
+                </h1>
 
-                  <p className="lg:text-base text-[15px] dark:text-white/80 text-black/80">
-                    If you update this notification, it will be updated on
-                    restaurant&apos;s system.
-                  </p>
-                </div>
+                <p className="lg:text-[15px] text-[14px] dark:text-white/80 text-black/80">
+                  If you update this notification, it will be updated on
+                  restaurant&apos;s system.
+                </p>
               </ModalBody>
 
-              <ModalFooter
-                className="relative flex lg:items-end lg:justify-end 
-              items-center justify-center"
-              >
+              <ModalFooter className="flex lg:justify-end justify-center items-center">
                 <Button
                   color="primary"
                   className="dark:bg-white dark:text-black text-white"

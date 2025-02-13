@@ -43,7 +43,7 @@ const ModalConfirmEditReservation: React.FC<
   return (
     <>
       <Modal
-        backdrop="blur"
+        backdrop="opaque"
         isOpen={isComplete}
         placement="center"
         size="lg"
@@ -78,19 +78,18 @@ const ModalConfirmEditReservation: React.FC<
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Confirm Edit Reservation
+                Edit Reservation Confirm
               </ModalHeader>
 
-              <ModalBody className="relative">
-                <div className="flex flex-col gap-2">
-                  <h1 className="lg:text-base text-[14px]">
-                    Do you want to change this reservation?
-                  </h1>
-                  <p className="lg:text-[14px] text-[12px] dark:text-white/60 text-black/70">
-                    If you change, this reservation will be updated in
-                    restaurant&apos;s database.
-                  </p>
-                </div>
+              <ModalBody className="relative flex flex-col lg:text-left text-center">
+                <h1 className="lg:text-xl text-[16px] font-bold">
+                  Do you want to change this reservation?
+                </h1>
+
+                <p className="lg:text-[15px] text-[14px] dark:text-white/80 text-black/80">
+                  If you change, this reservation will be updated in
+                  restaurant&apos;s database.
+                </p>
               </ModalBody>
 
               <ModalFooter>
@@ -102,14 +101,18 @@ const ModalConfirmEditReservation: React.FC<
                     onClose();
                   }}
                   color="primary"
-                  className="dark:bg-white dark:text-black"
+                  className="dark:bg-white dark:text-black text-white"
                 >
                   Cancel
                 </Button>
 
                 {isLoading ? (
                   <>
-                    <Button isLoading className="dark:bg-white dark:text-black">
+                    <Button
+                      isLoading
+                      color="primary"
+                      className="dark:bg-white dark:text-black text-white"
+                    >
                       Please wait...
                     </Button>
                   </>

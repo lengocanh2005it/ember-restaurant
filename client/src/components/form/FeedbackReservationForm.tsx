@@ -92,6 +92,7 @@ const FeedbackReservationForm: React.FC<FeedbackReservationFormProps> = ({
                   placeholder="Select your reservationId"
                   className="dark:text-white text-black"
                   selectionMode="multiple"
+                  selectedKeys={field.value ? field.value.split(",") : []}
                   aria-labelledby="reservations-id"
                   {...field}
                 >

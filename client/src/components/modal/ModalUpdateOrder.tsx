@@ -319,6 +319,7 @@ const ModalUpdateOrder: React.FC<ModalUpdateOrderProps> = ({ onCloseFC }) => {
                                 defaultSelectedKeys={[
                                   `${orderUpdate?.payment?.payment_method}`,
                                 ]}
+                                selectedKeys={field.value ? [field.value] : []}
                                 {...field}
                               >
                                 {payments.map((payment) => (
@@ -359,6 +360,7 @@ const ModalUpdateOrder: React.FC<ModalUpdateOrderProps> = ({ onCloseFC }) => {
                                 defaultSelectedKeys={[
                                   `${orderUpdate?.delivery_method}`,
                                 ]}
+                                selectedKeys={field.value ? [field.value] : []}
                                 {...field}
                               >
                                 {deliveries.map((delivery) => (

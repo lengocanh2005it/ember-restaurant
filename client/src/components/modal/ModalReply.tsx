@@ -123,10 +123,7 @@ const ModalReply: React.FC<ModalReplyProps> = ({ request }) => {
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader
-                className="lg:text-xl text-base text-center
-              flex justify-center"
-              >
+              <ModalHeader className="lg:text-xl text-[20px] text-center flex justify-center">
                 Customer Request Response
               </ModalHeader>
 

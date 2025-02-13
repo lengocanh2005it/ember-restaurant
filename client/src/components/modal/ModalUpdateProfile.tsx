@@ -35,6 +35,7 @@ import {
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ModalUpdateProfileProps {
   user: User;
@@ -202,21 +203,67 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="flex flex-col lg:gap-4 gap-2"
                   >
-                    <div className="grid lg:grid-cols-2 grid-cols-1 lg:gap-3 gap-1">
+                    <ScrollArea className="h-[300px] lg:pr-4 pr-3">
+                      <div className="grid grid-cols-1 lg:gap-2 gap-1">
+                        <FormField
+                          control={form.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="dark:text-white text-black">
+                                Name
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  startContent={<SignatureIcon />}
+                                  {...field}
+                                  placeholder="user123"
+                                  aria-labelledby="username"
+                                />
+                              </FormControl>
+                              <FormMessage className="dark:text-red-400 text-red-500" />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="job"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="dark:text-white text-black">
+                                Job
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  startContent={<BriefcaseIcon />}
+                                  {...field}
+                                  placeholder="Fullstack Developer"
+                                  aria-label="job"
+                                  aria-labelledby="job"
+                                />
+                              </FormControl>
+                              <FormMessage className="dark:text-red-400 text-red-500" />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
                       <FormField
                         control={form.control}
-                        name="name"
+                        name="address"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="dark:text-white text-black">
-                              Name
+                              Address
                             </FormLabel>
                             <FormControl>
                               <Input
-                                startContent={<SignatureIcon />}
+                                startContent={<MapPinIcon />}
                                 {...field}
-                                placeholder="user123"
-                                aria-labelledby="username"
+                                placeholder="England"
+                                aria-label="address"
+                                aria-labelledby="address"
                               />
                             </FormControl>
                             <FormMessage className="dark:text-red-400 text-red-500" />
@@ -224,123 +271,79 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({ user }) => {
                         )}
                       />
 
-                      <FormField
-                        control={form.control}
-                        name="job"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="dark:text-white text-black">
-                              Job
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                startContent={<BriefcaseIcon />}
-                                {...field}
-                                placeholder="Fullstack Developer"
-                                aria-label="job"
-                                aria-labelledby="job"
-                              />
-                            </FormControl>
-                            <FormMessage className="dark:text-red-400 text-red-500" />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                      <div className="grid lg:grid-cols-3 grid-cols-1 lg:gap-4 gap-2">
+                        <FormField
+                          control={form.control}
+                          name="total_orders"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="dark:text-white text-black">
+                                Total Orders
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  startContent={<ShoppingCartIcon />}
+                                  {...field}
+                                  value={String(field.value)}
+                                  placeholder="10"
+                                  aria-label="total_orders"
+                                  aria-labelledby="total_orders"
+                                />
+                              </FormControl>
+                              <FormMessage className="dark:text-red-400 text-red-500" />
+                            </FormItem>
+                          )}
+                        />
 
-                    <FormField
-                      control={form.control}
-                      name="address"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="dark:text-white text-black">
-                            Address
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              startContent={<MapPinIcon />}
-                              {...field}
-                              placeholder="England"
-                              aria-label="address"
-                              aria-labelledby="address"
-                            />
-                          </FormControl>
-                          <FormMessage className="dark:text-red-400 text-red-500" />
-                        </FormItem>
-                      )}
-                    />
+                        <FormField
+                          control={form.control}
+                          name="total_reservations"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="dark:text-white text-black">
+                                Total Reservations
+                              </FormLabel>
 
-                    <div className="grid lg:grid-cols-3 grid-cols-1 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="total_orders"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="dark:text-white text-black">
-                              Total Orders
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                startContent={<ShoppingCartIcon />}
-                                {...field}
-                                value={String(field.value)}
-                                placeholder="10"
-                                aria-label="total_orders"
-                                aria-labelledby="total_orders"
-                              />
-                            </FormControl>
-                            <FormMessage className="dark:text-red-400 text-red-500" />
-                          </FormItem>
-                        )}
-                      />
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  startContent={<HandPlatterIcon />}
+                                  value={String(field.value)}
+                                  placeholder="10"
+                                  aria-label="total_reservations"
+                                  aria-labelledby="total_reservations"
+                                />
+                              </FormControl>
+                              <FormMessage className="dark:text-red-400 text-red-500" />
+                            </FormItem>
+                          )}
+                        />
 
-                      <FormField
-                        control={form.control}
-                        name="total_reservations"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="dark:text-white text-black">
-                              Total Reservations
-                            </FormLabel>
+                        <FormField
+                          control={form.control}
+                          name="loyalty_points"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="dark:text-white text-black">
+                                Loyalty Points
+                              </FormLabel>
 
-                            <FormControl>
-                              <Input
-                                {...field}
-                                startContent={<HandPlatterIcon />}
-                                value={String(field.value)}
-                                placeholder="10"
-                                aria-label="total_reservations"
-                                aria-labelledby="total_reservations"
-                              />
-                            </FormControl>
-                            <FormMessage className="dark:text-red-400 text-red-500" />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="loyalty_points"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="dark:text-white text-black">
-                              Loyalty Points
-                            </FormLabel>
-
-                            <FormControl>
-                              <Input
-                                startContent={<AwardIcon />}
-                                {...field}
-                                value={String(field.value)}
-                                placeholder="10"
-                                aria-label="loyalty_points"
-                                aria-labelledby="loyalty_points"
-                              />
-                            </FormControl>
-                            <FormMessage className="dark:text-red-400 text-red-500" />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                              <FormControl>
+                                <Input
+                                  startContent={<AwardIcon />}
+                                  {...field}
+                                  value={String(field.value)}
+                                  placeholder="10"
+                                  aria-label="loyalty_points"
+                                  aria-labelledby="loyalty_points"
+                                />
+                              </FormControl>
+                              <FormMessage className="dark:text-red-400 text-red-500" />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </ScrollArea>
 
                     <div className="flex items-center md:justify-end justify-center md:gap-3 gap-2">
                       <Button
