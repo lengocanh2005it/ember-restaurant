@@ -87,7 +87,9 @@ const ReviewDetailsOfCustomer: React.FC<ReviewDetailsOfCustomerProps> = ({
 
       case "comment": {
         return (
-          <p className="max-w-[600px] break-words">{cellValue as string}</p>
+          <p className="lg:max-w-[600px] max-w-[800px] break-words">
+            {cellValue as string}
+          </p>
         );
       }
 
@@ -184,7 +186,17 @@ const ReviewDetailsOfCustomer: React.FC<ReviewDetailsOfCustomerProps> = ({
       </Table>
 
       {(selectedKeys === "all" || selectedKeys.size > 0) && (
-        <div className="relative lg:items-end lg:justify-end items-center justify-center flex flex-col">
+        <div
+          className="relative flex flex-col-reverse lg:text-right lg:justify-end lg:items-end items-center 
+        justify-center text-center lg:gap-2 gap-1"
+        >
+          <p className="lg:text-[15px] text-[14px] dark:text-white/70 text-black/70 md:w-1/2 w-full">
+            The selected rows (with light gray background) will toggle their
+            display status on the current homepage when you click the
+            &apos;Save&apos; button on top, while the other rows will maintain
+            their current status.
+          </p>
+
           <ModalConfirmShowReviews
             reviewsId={
               selectedKeys === "all"

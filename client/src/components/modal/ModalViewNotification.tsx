@@ -1,4 +1,5 @@
 import { EyeIcon } from "@/components/icons/EyeIcon";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Notification } from "@/utils";
 import {
   Button,
@@ -68,69 +69,75 @@ const ModalViewNotification: React.FC<ModalViewNotificationProps> = ({
               </ModalHeader>
 
               <ModalBody>
-                <div
-                  className="flex lg:flex-row flex-col lg:items-center 
+                <div className="flex flex-col lg:gap-3 gap-2">
+                  <div
+                    className="flex lg:flex-row flex-col lg:items-center 
                   lg:justify-between p-1 px-3 border dark:border-white/20 border-black/20
                   rounded-lg"
-                >
-                  <h1 className="dark:text-white/80 text-black/80">Date</h1>
+                  >
+                    <h1 className="dark:text-white/80 text-black/80">Date</h1>
 
-                  <p>
-                    {format(
-                      notification?.createdAt
-                        ? notification.createdAt
-                        : new Date(),
-                      "dd/MM/yyyy"
-                    )}
-                  </p>
-                </div>
+                    <p>
+                      {format(
+                        notification?.createdAt
+                          ? notification.createdAt
+                          : new Date(),
+                        "dd/MM/yyyy"
+                      )}
+                    </p>
+                  </div>
 
-                <div
-                  className="flex flex-col p-1 px-3 border dark:border-white/20 border-black/20
+                  <div
+                    className="flex flex-col p-1 px-3 border dark:border-white/20 border-black/20
                   rounded-lg"
-                >
-                  <h1 className="dark:text-white/80 text-black/80">Title</h1>
+                  >
+                    <h1 className="dark:text-white/80 text-black/80">Title</h1>
 
-                  <p className="truncate max-w-[400px]">{notification.title}</p>
-                </div>
+                    <ScrollArea className="h-[30px] lg:pr-2 pr-1">
+                      <p>{notification.title}</p>
+                    </ScrollArea>
+                  </div>
 
-                <div
-                  className="flex flex-col p-1 px-3 border dark:border-white/20 border-black/20
+                  <div
+                    className="flex flex-col p-1 px-3 border dark:border-white/20 border-black/20
                   rounded-lg"
-                >
-                  <h1 className="dark:text-white/80 text-black/80">Content</h1>
+                  >
+                    <h1 className="dark:text-white/80 text-black/80">
+                      Content
+                    </h1>
 
-                  <p className="truncate max-w-[500px] break-words">
-                    {notification.content}
-                  </p>
-                </div>
+                    <ScrollArea className="h-[50px] lg:pr-2 pr-1">
+                      <p>{notification.content}</p>
+                    </ScrollArea>
+                  </div>
 
-                <div
-                  className="flex lg:flex-row flex-col lg:items-center 
+                  <div
+                    className="flex lg:flex-row flex-col lg:items-center 
                   lg:justify-between p-1 px-3 border dark:border-white/20 border-black/20
                   rounded-lg"
-                >
-                  <h1 className="dark:text-white/80 text-black/80">
-                    Number Views
-                  </h1>
+                  >
+                    <h1 className="dark:text-white/80 text-black/80">
+                      Number Views
+                    </h1>
 
-                  <p className="flex items-center gap-2">
-                    <EyeIcon />
-                    {notification.number}
-                  </p>
-                </div>
+                    <p className="flex items-center gap-2">
+                      <EyeIcon />
+                      {notification.number}
+                    </p>
+                  </div>
 
-                <div
-                  className="flex flex-col p-1 px-3 border dark:border-white/20 border-black/20
+                  <div
+                    className="flex flex-col p-1 px-3 border dark:border-white/20 border-black/20
                   rounded-lg"
-                >
-                  <h1 className="dark:text-white/80 text-black/80">
-                    Image URL
-                  </h1>
+                  >
+                    <h1 className="dark:text-white/80 text-black/80">
+                      Image URL
+                    </h1>
 
-                  <p className="break-words lg:text-[14px] text-[13px]">
-                    {notification.image}
-                  </p>
+                    <p className="break-words lg:text-[14px] text-[13px]">
+                      {notification.image}
+                    </p>
+                  </div>
                 </div>
               </ModalBody>
 

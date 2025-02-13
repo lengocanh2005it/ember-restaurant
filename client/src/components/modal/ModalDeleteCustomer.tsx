@@ -12,6 +12,7 @@ import {
   Tooltip,
 } from "@heroui/react";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
+import { Trash2Icon } from "lucide-react";
 
 interface ModalDeleteCustomerProps {
   userId: string;
@@ -45,7 +46,7 @@ const ModalDeleteCustomer: React.FC<ModalDeleteCustomerProps> = ({
       </Tooltip>
 
       <Modal
-        backdrop="blur"
+        backdrop="opaque"
         isOpen={isOpen}
         placement="center"
         size="lg"
@@ -77,15 +78,15 @@ const ModalDeleteCustomer: React.FC<ModalDeleteCustomerProps> = ({
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
-                Confirm Delete
+                Delete Customer
               </ModalHeader>
 
-              <ModalBody className="flex flex-col gap-2">
-                <h1 className="lg:text-xl text-base">
+              <ModalBody className="relative flex flex-col lg:text-left text-center">
+                <h1 className="lg:text-xl text-[16px] font-bold">
                   Are you sure you want to delete this customer?
                 </h1>
 
-                <p className="lg:text-[14px] text-[12px] dark:text-white/50 text-black/60">
+                <p className="lg:text-[15px] text-[14px] dark:text-white/80 text-black/80">
                   If you delete the customer, their information will be
                   permanently removed from the restaurant&apos;s database.
                 </p>
@@ -105,13 +106,21 @@ const ModalDeleteCustomer: React.FC<ModalDeleteCustomerProps> = ({
 
                 {isLoading ? (
                   <>
-                    <Button isLoading color="danger">
+                    <Button
+                      isLoading
+                      color="primary"
+                      className="dark:bg-white dark:text-black text-white"
+                    >
                       Please wait...
                     </Button>
                   </>
                 ) : (
                   <>
-                    <Button color="danger" onPress={handleClick}>
+                    <Button
+                      color="danger"
+                      onPress={handleClick}
+                      startContent={<Trash2Icon />}
+                    >
                       Delete
                     </Button>
                   </>

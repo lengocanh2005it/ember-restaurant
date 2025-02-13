@@ -189,6 +189,7 @@ const CreatePromotionForm: React.FC = () => {
     setTimeout(() => {
       setIsLoading(false);
       mutateAddPromotion(data);
+      handleClickCancel();
     }, 2500);
   }
 
@@ -348,6 +349,7 @@ const CreatePromotionForm: React.FC = () => {
                 <FormControl>
                   <Select
                     items={types}
+                    selectedKeys={field.value ? [field.value] : undefined}
                     placeholder="Choose a valid type of discount..."
                     aria-labelledby="type"
                     defaultSelectedKeys={field.value || []}
@@ -384,6 +386,7 @@ const CreatePromotionForm: React.FC = () => {
                   <FormControl>
                     <Select
                       items={discounts}
+                      selectedKeys={field.value ? [field.value] : undefined}
                       placeholder="Choose a valid discount..."
                       aria-labelledby="discount"
                       isDisabled={discounts.length === 0}

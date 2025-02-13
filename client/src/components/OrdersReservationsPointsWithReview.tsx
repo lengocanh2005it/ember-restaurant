@@ -70,7 +70,7 @@ const OrdersReservationsPointsWithReview: React.FC = () => {
       mutateAddReview(data);
       form.reset({
         comment: "",
-        ratingNumber: 0,
+        ratingNumber: undefined,
       });
     }, 2500);
   }
@@ -134,9 +134,7 @@ const OrdersReservationsPointsWithReview: React.FC = () => {
                             className="dark:text-white"
                             aria-labelledby="rating"
                             selectedKeys={
-                              field.value === 0
-                                ? undefined
-                                : [String(field.value)]
+                              field.value !== undefined ? [field.value] : []
                             }
                             onSelectionChange={(keys) => {
                               const selectedKey = Array.from(keys)[0];

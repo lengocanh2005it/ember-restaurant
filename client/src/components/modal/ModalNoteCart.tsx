@@ -30,6 +30,7 @@ const ModalNoteCart: React.FC<ModalNoteCartProps> = ({ note }) => {
         backdrop="opaque"
         isOpen={isOpen}
         placement="center"
+        size="lg"
         motionProps={{
           variants: {
             enter: {
@@ -55,12 +56,15 @@ const ModalNoteCart: React.FC<ModalNoteCartProps> = ({ note }) => {
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col text-center">
+              <ModalHeader className="flex flex-col text-center lg:text-left">
                 Note About Cart
               </ModalHeader>
 
               <ModalBody>
-                <p className="lg:text-base text-[15px] dark:text-white/90 text-black/90">
+                <p
+                  className="lg:text-base text-[15px] dark:text-white/90
+                 text-black/90 lg:text-left text-center"
+                >
                   {note}
                 </p>
               </ModalBody>

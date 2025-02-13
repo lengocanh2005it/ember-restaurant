@@ -72,7 +72,10 @@ const ModalMessageOrder: React.FC<ModalMessageOrderProps> = ({ message }) => {
               </ModalHeader>
 
               <ModalBody>
-                <p className="lg:text-base text-[14px] dark:text-white/80 text-black/80">
+                <p
+                  className="lg:text-base text-[14px] dark:text-white/80
+                 text-black/80 lg:text-left text-center"
+                >
                   {message}
                 </p>
               </ModalBody>
@@ -80,7 +83,7 @@ const ModalMessageOrder: React.FC<ModalMessageOrderProps> = ({ message }) => {
               <ModalFooter className="relative flex lg:justify-end lg:items-end justify-center items-center">
                 <Button
                   color="primary"
-                  className="dark:bg-white dark:text-black"
+                  className="dark:bg-white dark:text-black text-white"
                   onPress={onClose}
                 >
                   Close

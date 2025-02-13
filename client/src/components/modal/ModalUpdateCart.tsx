@@ -77,6 +77,7 @@ const ModalUpdateCart: React.FC<ModalUpdateCartProps> = ({ cart }) => {
       <Modal
         backdrop="opaque"
         placement="center"
+        size="lg"
         isDismissable={false}
         isKeyboardDismissDisabled={false}
         isOpen={isOpen}

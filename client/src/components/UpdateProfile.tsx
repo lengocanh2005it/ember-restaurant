@@ -144,8 +144,12 @@ const UpdateProfile: React.FC = () => {
     };
 
     if (originalEmail === email) {
-      profileMutate(data);
-      setIsOpen(false);
+      setIsChange(true);
+      setTimeout(() => {
+        profileMutate(data);
+        setIsOpen(false);
+        setIsChange(false);
+      }, 2200);
       return;
     }
 

@@ -26,8 +26,8 @@ const EditReservationPage: React.FC = () => {
             className="flex flex-col lg:items-start items-center lg:justify-start justify-center
           lg:text-left text-center"
           >
-            <h1 className="lg:text-xl text-base uppercase font-bold">
-              Edit Reservation Of Customer
+            <h1 className="lg:text-xl text-[18px] uppercase font-bold">
+              Edit Reservation
             </h1>
 
             <p className="lg:text-base text-[14px] dark:text-white/70 text-black/70">

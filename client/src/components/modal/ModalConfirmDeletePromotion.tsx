@@ -10,7 +10,7 @@ import {
   useDisclosure,
   Tooltip,
 } from "@heroui/react";
-import { TrashIcon } from "lucide-react";
+import { Trash2Icon, TrashIcon } from "lucide-react";
 import { useDeletePromotion } from "@/hooks/use-delete-promotion";
 
 interface ModalConfirmDeletePromotionProps {
@@ -47,6 +47,7 @@ const ModalConfirmDeletePromotion: React.FC<
       <Modal
         backdrop="opaque"
         placement="center"
+        size="lg"
         isOpen={isOpen}
         isDismissable={false}
         isKeyboardDismissDisabled={false}
@@ -75,22 +76,22 @@ const ModalConfirmDeletePromotion: React.FC<
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                Confirmation
+              <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
+                Delete Promotion
               </ModalHeader>
 
-              <ModalBody>
-                <h1 className="lg:text-base text-[14px] font-bold">
+              <ModalBody className="relative flex flex-col lg:text-left text-center">
+                <h1 className="lg:text-xl text-[16px] font-bold">
                   Do you want to delete this promotions?
                 </h1>
 
-                <p className="lg:text-[14px] text-[12px] dark:text-white/50 text-black/50">
+                <p className="lg:text-[15px] text-[14px] dark:text-white/80 text-black/80">
                   If you click &quot;Yes&quot;, this promotion will be deleted
                   permanently in system&apos;database.
                 </p>
               </ModalBody>
 
-              <ModalFooter>
+              <ModalFooter className="flex lg:justify-end justify-center items-center">
                 <Button
                   color="primary"
                   className="dark:bg-white dark:text-black"
@@ -112,9 +113,9 @@ const ModalConfirmDeletePromotion: React.FC<
                 ) : (
                   <>
                     <Button
-                      color="primary"
-                      className="dark:bg-white dark:text-black text-white"
+                      color="danger"
                       onPress={handleClick}
+                      startContent={<Trash2Icon />}
                     >
                       Delete
                     </Button>

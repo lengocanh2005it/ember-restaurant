@@ -1,5 +1,6 @@
 "use client";
 import { EyeIcon } from "@/components/icons/EyeIcon";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Order } from "@/utils/types";
 import {
   Button,
@@ -156,27 +157,33 @@ const ModalViewOrdersOfCustomer: React.FC<ModalViewOrdersOfCustomerProps> = ({
               </ModalHeader>
 
               <ModalBody>
-                {details.map((detail) => (
-                  <div
-                    key={detail.key}
-                    className={`flex ${
-                      detail.key === 6 ||
-                      detail.key === 3 ||
-                      detail.key === 5 ||
-                      detail.key === 1 ||
-                      detail.key === 7 ||
-                      detail.key === 11
-                        ? "flex-row items-center justify-between"
-                        : "flex-col"
-                    } p-2 border dark:border-white/20
+                <ScrollArea className="h-[250px] lg:pr-4 pr-3">
+                  <div className="flex flex-col gap-2">
+                    {details.map((detail) => (
+                      <div
+                        key={detail.key}
+                        className={`flex ${
+                          detail.key === 6 ||
+                          detail.key === 3 ||
+                          detail.key === 5 ||
+                          detail.key === 1 ||
+                          detail.key === 7 ||
+                          detail.key === 11
+                            ? "flex-row items-center justify-between"
+                            : "flex-col"
+                        } p-2 border dark:border-white/20
                  border-black/20 rounded-lg`}
-                  >
-                    <h1 className="lg:text-[15px] text-[14px] dark:text-white/70 text-black/70">
-                      {detail.name}
-                    </h1>
-                    <p className="lg:text-base text-[13px]">{detail.value}</p>
+                      >
+                        <h1 className="lg:text-[15px] text-[14px] dark:text-white/70 text-black/70">
+                          {detail.name}
+                        </h1>
+                        <p className="lg:text-base text-[13px]">
+                          {detail.value}
+                        </p>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </ScrollArea>
               </ModalBody>
 
               <ModalFooter

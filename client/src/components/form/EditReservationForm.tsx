@@ -156,7 +156,7 @@ const EditReservationForm: React.FC<EditReservationFromProp> = ({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-2 lg:w-[90%] w-full mx-auto"
+          className="flex flex-col gap-2 lg:px-4 px-2"
         >
           <div className="grid md:grid-cols-2 grid-cols-1 lg:gap-4 gap-2">
             <FormField
@@ -258,6 +258,7 @@ const EditReservationForm: React.FC<EditReservationFromProp> = ({
                         `${reservation?.tables[0]?.area?.id}`,
                       ]}
                       items={areas}
+                      selectedKeys={field.value ? [field.value] : undefined}
                       aria-labelledby="areas"
                       isDisabled
                       {...field}

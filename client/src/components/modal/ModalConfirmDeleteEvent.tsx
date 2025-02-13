@@ -10,7 +10,7 @@ import {
   useDisclosure,
   Tooltip,
 } from "@heroui/react";
-import { TrashIcon } from "lucide-react";
+import { Trash2Icon, TrashIcon } from "lucide-react";
 import { useDeleteEvent } from "@/hooks/use-delete-event";
 
 interface ModalConfirmDeleteEventProps {
@@ -53,6 +53,7 @@ const ModalConfirmDeleteEvent: React.FC<ModalConfirmDeleteEventProps> = ({
         isOpen={isOpen}
         placement="center"
         isDismissable={false}
+        size="lg"
         isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
         motionProps={{
@@ -80,11 +81,11 @@ const ModalConfirmDeleteEvent: React.FC<ModalConfirmDeleteEventProps> = ({
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
-                Confirmation
+                Delete Event
               </ModalHeader>
 
-              <ModalBody className="flex flex-col lg:text-left text-center">
-                <h1 className="lg:text-base text-[15px] uppercase font-bold">
+              <ModalBody className="relative flex flex-col lg:text-left text-center">
+                <h1 className="lg:text-xl text-[16px] font-bold">
                   Do you want to delete this event?
                 </h1>
 
@@ -97,7 +98,7 @@ const ModalConfirmDeleteEvent: React.FC<ModalConfirmDeleteEventProps> = ({
               <ModalFooter className="flex lg:items-end lg:justify-end justify-center items-center">
                 <Button
                   color="primary"
-                  className="dark:bg-white dark:text-black"
+                  className="dark:bg-white dark:text-black text-white"
                   onPress={onClose}
                 >
                   Cancel
@@ -107,7 +108,7 @@ const ModalConfirmDeleteEvent: React.FC<ModalConfirmDeleteEventProps> = ({
                   <>
                     <Button
                       color="primary"
-                      className="dark:bg-white dark:text-black"
+                      className="dark:bg-white dark:text-black text-white"
                       isLoading
                     >
                       Please wait...
@@ -116,11 +117,11 @@ const ModalConfirmDeleteEvent: React.FC<ModalConfirmDeleteEventProps> = ({
                 ) : (
                   <>
                     <Button
-                      color="primary"
-                      className="dark:bg-white dark:text-black text-white"
+                      color="danger"
                       onPress={handleClick}
+                      startContent={<Trash2Icon />}
                     >
-                      Submit
+                      Delete
                     </Button>
                   </>
                 )}

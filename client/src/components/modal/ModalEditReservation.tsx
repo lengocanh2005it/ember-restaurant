@@ -76,7 +76,10 @@ const ModalEditReservation: React.FC<ModalEditReservationProps> = ({
               </ModalHeader>
 
               <ModalBody>
-                <p className="lg:text-base text-[15px] dark:text-white/80 text-black/80">
+                <p
+                  className="lg:text-base text-[15px] dark:text-white/80
+                 text-black/80 lg:text-left text-center"
+                >
                   {message}
                 </p>
               </ModalBody>

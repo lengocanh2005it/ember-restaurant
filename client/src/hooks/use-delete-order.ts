@@ -9,11 +9,10 @@ export const useDeleteOrder = (userId: string) => {
     mutationFn: handleDeleteOrder,
     onSuccess: (data: any) => {
       query.setQueryData(["orders", userId], data);
-      showSuccessToast(
-        "Your order has been deleted successfully!",
-        "bottom-right",
-        { backgroundColor: "#28a745", color: "#fff" }
-      );
+      showSuccessToast("Order has been deleted successfully!", "bottom-right", {
+        backgroundColor: "#28a745",
+        color: "#fff",
+      });
     },
     onError: (err) => {
       console.error(err);

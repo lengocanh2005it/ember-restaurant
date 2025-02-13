@@ -149,7 +149,7 @@ const AddDishToMenuPage: React.FC = () => {
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-2 lg:w-1/2 w-full px-6 py-3 mx-auto flex flex-col gap-2
-           border dark:border-white/40 shadow-custom rounded-xl"
+           border dark:border-white/20 shadow-custom rounded-xl"
         >
           <div className="grid lg:grid-cols-2 grid-cols-1 gap-4 dark:text-white text-black">
             <FormField
@@ -203,6 +203,9 @@ const AddDishToMenuPage: React.FC = () => {
                       items={categories}
                       aria-labelledby="category"
                       placeholder="Select categories"
+                      selectedKeys={
+                        field.value !== undefined ? [field.value] : []
+                      }
                       {...field}
                     >
                       {(category) => (

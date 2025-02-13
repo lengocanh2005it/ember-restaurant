@@ -75,7 +75,7 @@ const DishesList: React.FC = () => {
                           priority
                           sizes="(max-width:600px) 100vw, 50vw"
                           fill
-                          className="object-cover select-none cursor-pointer"
+                          className="select-none cursor-pointer"
                         />
                       )}
                     </div>
@@ -89,19 +89,28 @@ const DishesList: React.FC = () => {
                  lg:gap-10 gap-2 lg:justify-between lg:w-[50%] w-full"
                       >
                         <div className="flex flex-col gap-2 flex-1 items-center justify-center">
-                          <h1>Name</h1>
+                          <h1 className="dark:text-white/80 text-black/80">
+                            Name
+                          </h1>
+
                           <p className="lg:text-2xl text-xl text-nowrap">
                             {dish?.name}
                           </p>
                         </div>
 
                         <div className="flex flex-col gap-2 flex-1 items-center justify-center">
-                          <h1>Price</h1>
+                          <h1 className="dark:text-white/80 text-black/80">
+                            Price
+                          </h1>
+
                           <p className="lg:text-2xl text-xl">{dish.price}$</p>
                         </div>
 
                         <div className="flex flex-col gap-2 flex-1 items-center justify-center">
-                          <h1>Rate Star</h1>
+                          <h1 className="dark:text-white/80 text-black/80">
+                            Rate Star
+                          </h1>
+
                           <p className="lg:text-2xl text-xl">
                             {dish.average_rating}⭐
                           </p>
@@ -109,12 +118,18 @@ const DishesList: React.FC = () => {
                       </div>
 
                       <div className="flex flex-col items-center flex-1 justify-center gap-2">
-                        <h1>View</h1>
+                        <h1 className="dark:text-white/80 text-black/80">
+                          View
+                        </h1>
+
                         <ModalViewDish dish={dish} />
                       </div>
 
                       <div className="flex flex-col items-center flex-1 justify-center gap-4">
-                        <h1>Options</h1>
+                        <h1 className="dark:text-white/80 text-black/80">
+                          Options
+                        </h1>
+
                         <div className="flex items-center gap-4">
                           <ModalUpdateDish dish={dish} />
 

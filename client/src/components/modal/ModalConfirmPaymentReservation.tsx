@@ -75,7 +75,7 @@ const ModalConfirmPaymentReservation: React.FC<
               Credit Card Payment
             </ModalHeader>
 
-            <ModalBody className="relative flex flex-col gap-2 items-center">
+            <ModalBody className="relative flex flex-col lg:text-left text-center">
               <p className="lg:text-[14px] text-[13px] text-center">
                 Would you like to pay for this reservation now? If yes, please
                 click the Payment button below. If not, you can click the No
@@ -91,7 +91,7 @@ const ModalConfirmPaymentReservation: React.FC<
                 <>
                   <Button
                     color="primary"
-                    className="dark:bg-white dark:text-black"
+                    className="dark:bg-white dark:text-black text-white"
                     isLoading
                   >
                     Please wait...
@@ -101,7 +101,7 @@ const ModalConfirmPaymentReservation: React.FC<
                 <>
                   <Button
                     color="primary"
-                    className="dark:bg-white dark:text-black"
+                    className="dark:bg-white dark:text-black text-white"
                     onPress={handleClickNoPayment}
                   >
                     No Payment

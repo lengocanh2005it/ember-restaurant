@@ -82,6 +82,7 @@ const ModalPayment: React.FC<ModalPaymentProps> = ({ order }) => {
         backdrop="opaque"
         isOpen={isOpen}
         placement="center"
+        size="lg"
         isDismissable={false}
         isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}

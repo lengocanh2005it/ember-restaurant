@@ -50,3 +50,4 @@ export const MIN_ORDER_AMOUNT = 100000;
 export const DEFAULT_STALE_TIME = 20 * 1000 * 60;
 export const DEFAULT_GC_TIME = 60 * 1000 * 15;
 export const CUSTOM_STALE_TIME = 20 * 1000 * 60;
+export const SESSION_EXPIRED = "Session is expired.";

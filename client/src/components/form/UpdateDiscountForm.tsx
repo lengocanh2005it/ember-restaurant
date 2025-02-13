@@ -24,6 +24,7 @@ import { UpdateDiscountDto } from "@/api/discounts/utils/types";
 import { dateToCalendarDate, calendarDateToDate } from "@/utils";
 import { Discount } from "@/utils/types";
 import { currencies, statuses, types } from "@/config/constants";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const formSchema = z
   .object({
@@ -123,58 +124,169 @@ const UpdateDiscountForm: React.FC<UpdateDiscountFormProps> = ({
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col lg:gap-3"
       >
-        <div className="grid lg:grid-cols-2 grid-cols-1 gap-2 relative">
+        <ScrollArea className="h-[400px] lg:pr-4 pr-3">
+          <div className="grid lg:grid-cols-2 grid-cols-1 gap-2 relative">
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="dark:text-white text-black">
+                    Type Discount
+                  </FormLabel>
+                  <FormControl>
+                    <Select
+                      items={types}
+                      aria-labelledby="type"
+                      placeholder="Choose a type of discount"
+                      defaultSelectedKeys={[`${discount.type}`]}
+                      {...field}
+                    >
+                      {types.map((type) => (
+                        <SelectItem
+                          key={type.key}
+                          aria-labelledby="type"
+                          className="dark:text-white text-black"
+                        >
+                          {type.label}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormMessage className="dark:text-red-300 text-red-400" />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="dark:text-white text-black">
+                    Status
+                  </FormLabel>
+                  <FormControl>
+                    <Select
+                      items={statuses}
+                      aria-labelledby="status"
+                      placeholder="Choose status of discount"
+                      defaultSelectedKeys={[
+                        `${discount.is_active}` === "true" ? "true" : "false",
+                      ]}
+                      {...field}
+                    >
+                      {statuses.map((type) => (
+                        <SelectItem
+                          key={type.key}
+                          aria-labelledby="status"
+                          className="dark:text-white text-black"
+                        >
+                          {type.label}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormMessage className="dark:text-red-300 text-red-400" />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <FormField
             control={form.control}
-            name="type"
+            name="value"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="dark:text-white text-black">
-                  Type Discount
+                  Value ({(form.getValues("currency") as string).toUpperCase()})
                 </FormLabel>
                 <FormControl>
-                  <Select
-                    items={types}
-                    aria-labelledby="type"
-                    placeholder="Choose a type of discount"
-                    defaultSelectedKeys={[`${discount.type}`]}
+                  <Input
+                    aria-labelledby="value"
+                    isRequired
                     {...field}
-                  >
-                    {types.map((type) => (
-                      <SelectItem
-                        key={type.key}
-                        aria-labelledby="type"
-                        className="dark:text-white text-black"
-                      >
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </Select>
+                    value={String(field.value)}
+                  />
                 </FormControl>
                 <FormMessage className="dark:text-red-300 text-red-400" />
               </FormItem>
             )}
           />
 
+          <div className="flex lg:flex-row flex-col lg:items-center gap-2 relative">
+            <FormField
+              control={form.control}
+              name="start_date"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormLabel className="dark:text-white text-black">
+                    Start Date
+                  </FormLabel>
+                  <FormControl>
+                    <DatePicker
+                      isRequired
+                      aria-labelledby="start_date"
+                      value={
+                        field.value ? dateToCalendarDate(field.value) : null
+                      }
+                      onChange={(dateValue) => {
+                        field.onChange(
+                          dateValue ? calendarDateToDate(dateValue) : null
+                        );
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage className="dark:text-red-300 text-red-400" />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="end_date"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormLabel className="dark:text-white text-black">
+                    End Date
+                  </FormLabel>
+                  <FormControl>
+                    <DatePicker
+                      isRequired
+                      aria-labelledby="end_date"
+                      value={
+                        field.value ? dateToCalendarDate(field.value) : null
+                      }
+                      onChange={(dateValue) => {
+                        field.onChange(
+                          dateValue ? calendarDateToDate(dateValue) : null
+                        );
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage className="dark:text-red-300 text-red-400" />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <FormField
             control={form.control}
-            name="status"
+            name="currency"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="dark:text-white text-black">
-                  Status
+                  Currency
                 </FormLabel>
                 <FormControl>
                   <Select
-                    items={statuses}
-                    aria-labelledby="status"
-                    placeholder="Choose status of discount"
-                    defaultSelectedKeys={[
-                      `${discount.is_active}` === "true" ? "true" : "false",
-                    ]}
+                    items={currencies}
+                    aria-labelledby="currency"
+                    placeholder="Choose a currency of discount"
+                    defaultSelectedKeys={new Set([discount.currency])}
                     {...field}
                   >
-                    {statuses.map((type) => (
+                    {currencies.map((type) => (
                       <SelectItem
                         key={type.key}
                         aria-labelledby="status"
@@ -189,140 +301,35 @@ const UpdateDiscountForm: React.FC<UpdateDiscountFormProps> = ({
               </FormItem>
             )}
           />
-        </div>
 
-        <FormField
-          control={form.control}
-          name="value"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="dark:text-white text-black">
-                Value ({(form.getValues("currency") as string).toUpperCase()})
-              </FormLabel>
-              <FormControl>
-                <Input
-                  aria-labelledby="value"
-                  isRequired
-                  {...field}
-                  value={String(field.value)}
-                />
-              </FormControl>
-              <FormMessage className="dark:text-red-300 text-red-400" />
-            </FormItem>
-          )}
-        />
-
-        <div className="flex lg:flex-row flex-col lg:items-center gap-2 relative">
           <FormField
             control={form.control}
-            name="start_date"
+            name="description"
             render={({ field }) => (
-              <FormItem className="flex-1">
+              <FormItem>
                 <FormLabel className="dark:text-white text-black">
-                  Start Date
+                  Description
                 </FormLabel>
                 <FormControl>
-                  <DatePicker
-                    isRequired
-                    aria-labelledby="start_date"
-                    value={field.value ? dateToCalendarDate(field.value) : null}
-                    onChange={(dateValue) => {
-                      field.onChange(
-                        dateValue ? calendarDateToDate(dateValue) : null
-                      );
-                    }}
+                  <Textarea
+                    placeholder="Description..."
+                    {...field}
+                    aria-labelledby="description"
                   />
                 </FormControl>
                 <FormMessage className="dark:text-red-300 text-red-400" />
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="end_date"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel className="dark:text-white text-black">
-                  End Date
-                </FormLabel>
-                <FormControl>
-                  <DatePicker
-                    isRequired
-                    aria-labelledby="end_date"
-                    value={field.value ? dateToCalendarDate(field.value) : null}
-                    onChange={(dateValue) => {
-                      field.onChange(
-                        dateValue ? calendarDateToDate(dateValue) : null
-                      );
-                    }}
-                  />
-                </FormControl>
-                <FormMessage className="dark:text-red-300 text-red-400" />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <FormField
-          control={form.control}
-          name="currency"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="dark:text-white text-black">
-                Currency
-              </FormLabel>
-              <FormControl>
-                <Select
-                  items={currencies}
-                  aria-labelledby="currency"
-                  placeholder="Choose a currency of discount"
-                  defaultSelectedKeys={new Set([discount.currency])}
-                  {...field}
-                >
-                  {currencies.map((type) => (
-                    <SelectItem
-                      key={type.key}
-                      aria-labelledby="status"
-                      className="dark:text-white text-black"
-                    >
-                      {type.label}
-                    </SelectItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormMessage className="dark:text-red-300 text-red-400" />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="dark:text-white text-black">
-                Description
-              </FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Description..."
-                  {...field}
-                  aria-labelledby="description"
-                />
-              </FormControl>
-              <FormMessage className="dark:text-red-300 text-red-400" />
-            </FormItem>
-          )}
-        />
+        </ScrollArea>
 
         <div
-          className="flex lg:flex-row flex-col lg:items-center 
-        lg:justify-end lg:gap-3 gap-1 lg:mt-0 mt-2"
+          className="flex flex-row items-center 
+        lg:justify-end justify-center lg:gap-3 gap-2 lg:mt-0 mt-2"
         >
           <Button
             color="primary"
-            className="dark:bg-white dark:text-black w-fit lg:mx-0 mx-auto"
+            className="dark:bg-white dark:text-black"
             onPress={onClose}
           >
             Cancel
@@ -343,7 +350,7 @@ const UpdateDiscountForm: React.FC<UpdateDiscountFormProps> = ({
               <Button
                 type="submit"
                 color="primary"
-                className="dark:bg-white dark:text-black w-fit lg:mx-0 mx-auto"
+                className="dark:bg-white dark:text-black"
               >
                 Update
               </Button>

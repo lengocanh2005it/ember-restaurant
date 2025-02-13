@@ -101,8 +101,8 @@ const ModalViewEvent: React.FC<ModalViewEventProps> = ({ event }) => {
                 <ScrollArea className="h-[400px] pr-3 w-full">
                   <div className="flex flex-col gap-2">
                     <div
-                      className={`flex flex-col lg:gap-1 lg:items-start items-center justify-between p-2
-               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
+                      className="flex flex-col lg:gap-1 lg:items-start justify-between p-2
+               border dark:border-white/20 border-black/60 rounded-md"
                     >
                       <h1
                         className="lg:text-[14px] text-[13px]
@@ -115,8 +115,8 @@ const ModalViewEvent: React.FC<ModalViewEventProps> = ({ event }) => {
 
                     <div className="grid lg:grid-cols-2 grid-cols-1 gap-2">
                       <div
-                        className={`flex lg:flex-row flex-col lg:gap-2 items-center justify-between p-2
-               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
+                        className={`flex lg:flex-row flex-col lg:gap-2 justify-between p-2
+               border dark:border-white/20 border-black/60 rounded-md`}
                       >
                         <h1
                           className="lg:text-[14px] text-[13px]
@@ -132,8 +132,8 @@ const ModalViewEvent: React.FC<ModalViewEventProps> = ({ event }) => {
                       </div>
 
                       <div
-                        className={`flex lg:flex-row flex-col lg:gap-2 items-center justify-between p-2
-               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
+                        className={`flex lg:flex-row flex-col lg:gap-2 justify-between p-2
+               border dark:border-white/20 border-black/60 rounded-md `}
                       >
                         <h1
                           className="lg:text-[14px] text-[13px]
@@ -151,8 +151,8 @@ const ModalViewEvent: React.FC<ModalViewEventProps> = ({ event }) => {
 
                     <div className="grid lg:grid-cols-2 grid-cols-1 gap-2">
                       <div
-                        className={`flex lg:flex-row flex-col lg:gap-2 items-center justify-between p-2
-               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
+                        className={`flex lg:flex-row flex-col lg:gap-2 justify-between p-2
+               border dark:border-white/20 border-black/60 rounded-md `}
                       >
                         <h1
                           className="lg:text-[14px] text-[13px]
@@ -166,8 +166,8 @@ const ModalViewEvent: React.FC<ModalViewEventProps> = ({ event }) => {
                       </div>
 
                       <div
-                        className={`flex lg:flex-row flex-col lg:gap-2 items-center justify-between p-2
-               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
+                        className={`flex lg:flex-row flex-col lg:gap-2 justify-between p-2
+               border dark:border-white/20 border-black/60 rounded-md `}
                       >
                         <h1
                           className="lg:text-[14px] text-[13px]
@@ -184,8 +184,8 @@ const ModalViewEvent: React.FC<ModalViewEventProps> = ({ event }) => {
                     </div>
 
                     <div
-                      className={`flex lg:flex-row flex-col lg:gap-2 items-center justify-between p-2
-               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
+                      className={`flex lg:flex-row flex-col lg:gap-2 justify-between p-2
+               border dark:border-white/20 border-black/60 rounded-md `}
                     >
                       <h1
                         className="lg:text-[14px] text-[13px]
@@ -201,8 +201,8 @@ const ModalViewEvent: React.FC<ModalViewEventProps> = ({ event }) => {
                     </div>
 
                     <div
-                      className={`flex flex-col lg:gap-1 lg:items-start items-center justify-between p-2
-               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
+                      className={`flex flex-col lg:gap-1 lg:items-start justify-between p-2
+               border dark:border-white/20 border-black/60 rounded-md `}
                     >
                       <h1
                         className="lg:text-[14px] text-[13px]
@@ -215,8 +215,8 @@ const ModalViewEvent: React.FC<ModalViewEventProps> = ({ event }) => {
 
                     {event.note !== "" && (
                       <div
-                        className={`flex flex-col lg:gap-1 lg:items-start items-center justify-between p-2
-               border dark:border-white/20 border-black/60 rounded-md lg:text-left text-center`}
+                        className={`flex flex-col lg:gap-1 lg:items-start justify-between p-2
+               border dark:border-white/20 border-black/60 rounded-md `}
                       >
                         <h1
                           className="lg:text-[14px] text-[13px]

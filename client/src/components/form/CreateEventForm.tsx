@@ -285,6 +285,9 @@ const CreateEventForm: React.FC = () => {
                     items={types}
                     placeholder="Choose one type of this event..."
                     aria-labelledby="method"
+                    selectedKeys={
+                      field.value !== undefined ? [field.value] : []
+                    }
                     defaultSelectedKeys={field.value || []}
                     {...field}
                   >

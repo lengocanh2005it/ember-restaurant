@@ -198,6 +198,7 @@ const CreateTableForm: React.FC<CreateTableFormProps> = ({ onClose }) => {
               <FormControl>
                 <Select
                   items={types}
+                  selectedKeys={field.value ? [field.value] : undefined}
                   placeholder="Choose one type of table..."
                   aria-labelledby="type"
                   defaultSelectedKeys={field.value || []}
@@ -229,6 +230,7 @@ const CreateTableForm: React.FC<CreateTableFormProps> = ({ onClose }) => {
               <FormControl>
                 <Select
                   items={areas}
+                  selectedKeys={field.value ? [field.value] : undefined}
                   placeholder="Choose one area..."
                   aria-labelledby="area"
                   defaultSelectedKeys={field.value || []}
