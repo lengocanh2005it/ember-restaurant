@@ -38,7 +38,7 @@ export class PaymentGateway
 
     try {
       const decoded = this.jwtService.verify(token, {
-        secret: this.configService.get<string>('JWT_SECRET_KEY') as string,
+        secret: this.configService.get<string>('JWT_SECRET_KEY'),
       }) as JwtPayload;
 
       const user = await this.dataSource

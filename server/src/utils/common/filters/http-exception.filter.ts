@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Response, Request } from 'express';
+import { Request, Response } from 'express';
 import { getEnvValue, resetCookies } from 'src/utils/utils';
 
 @Catch(HttpException)
@@ -40,17 +40,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
         );
       }
     } else if (exception instanceof UnauthorizedException) {
-      if (
-        message.includes(
-          'Both accessToken and refreshToken are invalid or expired.',
-        )
-      ) {
-        resetCookies(ctx.getResponse<Response>());
-
-        return response.redirect(
-          getEnvValue('LOGIN_PAGE_URL_PROD', 'LOGIN_PAGE_URL_DEV') +
-            '/?error=ExpiredSession',
-        );
+      if (message.includes('Session is expired.')) {
+        resetCookies(response);
       }
     }
 

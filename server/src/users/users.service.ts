@@ -461,8 +461,6 @@ export class UsersService {
       relations: ['roles'],
     });
 
-    if (!user) throw new NotFoundException('User Not Found.');
-
     return user;
   };
 

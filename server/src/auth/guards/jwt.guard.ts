@@ -1,67 +1,39 @@
-import {
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
+import { ACCESS_TOKEN_MAX_AGE, createCookieOptions } from 'src/utils';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
-    private readonly authService: AuthService,
-  ) {
+  constructor(private readonly authService: AuthService) {
     super();
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
+    const response = context.switchToHttp().getResponse<Response>();
 
     const accessToken = request.cookies['accessToken'];
 
     const refreshToken = request.cookies['refreshToken'];
 
-    if (!accessToken && !refreshToken)
-      throw new UnauthorizedException('Tokens are missing...');
+    if (!accessToken) {
+      const newAccessToken = await this.authService.refreshToken(refreshToken);
 
-    try {
-      this.jwtService.verify(accessToken, {
-        secret: this.configService.get<string>('JWT_SECRET_KEY'),
-      });
+      request.cookies['accessToken'] = newAccessToken;
 
-      request.headers.authorization = `Bearer ${accessToken}`;
+      response.cookie(
+        'accessToken',
+        newAccessToken,
+        createCookieOptions(ACCESS_TOKEN_MAX_AGE),
+      );
+
+      request.headers.authorization = `Bearer ${newAccessToken}`;
 
       return super.canActivate(context) as boolean;
-    } catch (err: any) {
-      if (refreshToken) {
-        try {
-          const newAccessToken =
-            await this.authService.refreshToken(refreshToken);
-
-          request.headers.authorization = `Bearer ${newAccessToken}`;
-
-          request.cookies['accessToken'] = newAccessToken;
-
-          return super.canActivate(context) as boolean;
-        } catch (err) {
-          console.error(err);
-
-          throw new UnauthorizedException(
-            'Both accessToken and refreshToken are invalid or expired.',
-          );
-        }
-      }
-
-      console.error(err);
-
-      throw new UnauthorizedException(
-        'Access token expired and no refresh token provided.',
-      );
     }
+    request.headers.authorization = `Bearer ${accessToken}`;
+    return super.canActivate(context) as boolean;
   }
 }

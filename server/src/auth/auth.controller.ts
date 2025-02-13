@@ -24,6 +24,7 @@ import { EmailsService } from 'src/emails/emails.service';
 import { RedisService } from 'src/redis/redis.service';
 import { Roles } from 'src/roles/role.decorator';
 import { Role } from 'src/roles/role.enum';
+import { User } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
 import {
   ACCESS_TOKEN_MAX_AGE,
@@ -32,10 +33,10 @@ import {
   createCookieOptions,
   encodePassword,
   generateVerificationCode,
-  getDataOfSessionFromRequest,
   getEnvValue,
   resetCookies,
 } from 'src/utils';
+import { UserSession } from 'src/utils/common/decorators/user-session.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -163,25 +164,27 @@ export class AuthController {
     });
   }
 
-  @SkipThrottle()
   @Post('theme')
+  @SkipThrottle()
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN, Role.USER)
   async handleSwitchTheme(
     @Body() themePayload: Theme,
-    @Req() request: Request,
-  ): Promise<void> {
-    const data = await getDataOfSessionFromRequest(
-      request,
-      this.configService,
-      this.redisService,
-    );
+    @UserSession() session: UserSessionData,
+  ): Promise<Partial<User>> {
+    if (!session) throw new UnauthorizedException('User Not Authenticated.');
 
-    const userId = data.userId;
+    const { userId } = session;
 
     const { theme } = themePayload;
 
     await this.usersService.handleUpdateThemeOfUser(userId, theme);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, createdAt, updatedAt, ...res } =
+      await this.usersService.findOne(userId);
+
+    return res;
   }
 
   @Get('profile')
@@ -231,7 +234,9 @@ export class AuthController {
     @Body('token') token: string,
     @Body('newPassword') newPassword: string,
   ): Promise<void> {
-    const decoded = await this.jwtService.verify(token);
+    const decoded = await this.jwtService.verify(token, {
+      secret: this.configService.get<string>('JWT_SECRET_KEY'),
+    });
 
     const hashedPassword = encodePassword(newPassword);
 

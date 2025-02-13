@@ -91,10 +91,12 @@ export type UserFacebookData = {
   id: string;
   name: string;
   picture: {
-    heigh: number;
-    is_silhouette: boolean;
-    url: string;
-    width: number;
+    data: {
+      heigh: number;
+      is_silhouette: boolean;
+      url: string;
+      width: number;
+    };
   };
 };
 
