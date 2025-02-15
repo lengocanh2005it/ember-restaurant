@@ -58,3 +58,8 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# seeds folder, mocks folder
+src/database/mocks
+src/database/seeds
+src/database/migrations

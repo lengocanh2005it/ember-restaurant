@@ -2,26 +2,20 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  OnModuleInit,
 } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { CreateProductDto } from 'src/products/dtos/create-product.dto';
 import { UpdateProductDto } from 'src/products/dtos/update-product.dto';
 import { Product } from 'src/products/entities/products.entity';
-import { generateProducts } from 'src/utils/utils';
 import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
-export class ProductsService implements OnModuleInit {
+export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
     @InjectDataSource() private readonly dataSource: DataSource,
   ) {}
-
-  async onModuleInit() {
-    await this.initializeProducts();
-  }
 
   async findAll(): Promise<Product[]> {
     return await this.productRepository.find();
@@ -150,20 +144,6 @@ export class ProductsService implements OnModuleInit {
     }
 
     return products as Array<{ product: Product; quantity: number }>;
-  };
-
-  public initializeProducts = async (): Promise<void> => {
-    const products = generateProducts();
-
-    for (const product of products) {
-      const existingProduct = await this.productRepository.findOneBy({
-        name: product.name,
-      });
-
-      if (!existingProduct) {
-        await this.productRepository.save(product);
-      }
-    }
   };
 
   public updateAverageRatingNumber = async (

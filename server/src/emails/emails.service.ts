@@ -33,9 +33,9 @@ export class EmailsService implements OnModuleInit {
   }
 
   async onModuleInit(): Promise<void> {
-    await this.emailRepository.delete({
-      expired_at: LessThan(new Date()),
-    });
+    // await this.emailRepository.delete({
+    //   expired_at: LessThan(new Date()),
+    // });
   }
 
   public findOneByCode = async (

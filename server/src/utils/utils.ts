@@ -4,9 +4,16 @@ import * as bcrypt from 'bcrypt';
 import * as signature from 'cookie-signature';
 import { config } from 'dotenv';
 import { CookieOptions, Request, Response } from 'express';
-import { CreateDiscountDto } from 'src/discounts/dtos/create-discount.dto';
-import { CreateProductDto } from 'src/products/dtos/create-product.dto';
+import { Discount } from 'src/discounts/entities/discounts.entity';
+import { Event } from 'src/events/entities/events.entity';
+import { Notification } from 'src/notifications/entities/notifications.entity';
+import { Permission } from 'src/permissions/entities/permissions.entity';
+import { Product } from 'src/products/entities/products.entity';
+import { Promotion } from 'src/promotions/entities/promotions.entity';
 import { RedisService } from 'src/redis/redis.service';
+import { Review } from 'src/reviews/entities/reviews.entity';
+import { Role } from 'src/roles/entities/roles.entity';
+import { User } from 'src/users/entities/users.entity';
 import {
   ACCESS_TOKEN_MAX_AGE,
   ApiResponseType,
@@ -15,7 +22,8 @@ import {
   SESSION_MAX_AGE,
   UserSessionData,
 } from 'src/utils';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
+import { SeederFactory, SeederFactoryManager } from 'typeorm-extension';
 
 config();
 
@@ -75,83 +83,6 @@ export const setRelation = async (
   } else {
     throw new Error(`Unsupported action: ${action}`);
   }
-};
-
-export const generateDiscount = (
-  value: number,
-  description?: string,
-): CreateDiscountDto => {
-  const start_date = new Date();
-  const end_date = new Date(start_date);
-  end_date.setDate(start_date.getDate() + 7);
-
-  return {
-    type: 'percentage',
-    value,
-    description,
-    start_date,
-    end_date,
-    is_active: true,
-    currency: 'usd',
-  };
-};
-
-export const generateProducts = (): CreateProductDto[] => {
-  return [
-    {
-      name: 'Tasty Navajo Bread',
-      description:
-        'Soft and fluffy Navajo bread, perfectly fried to golden brown and served with a variety of toppings.',
-      price: 12.2,
-      stock: 100,
-      image:
-        'https://res.cloudinary.com/daiqcjyk9/image/upload/v1735439862/specialty_dish-5_kfdfrw.png',
-      category: 'snack',
-      ingredients: 'Flour, baking powder, salt, water, vegetable oil',
-      is_featured: true,
-    },
-
-    {
-      name: 'Grilled Salmon',
-      description:
-        'A perfectly grilled salmon filet served with lemon butter sauce.',
-      price: 12.56,
-      stock: 150,
-      image:
-        'https://res.cloudinary.com/daiqcjyk9/image/upload/v1735464360/grill_salmon_jxheqk.png',
-      category: 'main_course',
-      ingredients: 'Salmon, olive oil, lemon, garlic, salt, pepper, parsley',
-      is_featured: true,
-    },
-
-    {
-      name: 'Stir-Fried Noodles',
-      description:
-        'Delicious stir-fried noodles with fresh vegetables and assorted meats, full of flavor.',
-      price: 15.6,
-      stock: 50,
-      image:
-        'https://res.cloudinary.com/daiqcjyk9/image/upload/v1735464427/main_courses-6_el1ii7.png',
-      category: 'main_course',
-      ingredients:
-        'Noodles, chicken, beef, shrimp, bell peppers, carrots, soy sauce',
-      is_featured: true,
-    },
-
-    {
-      name: 'Fried Chicken',
-      description:
-        'Crispy and juicy fried chicken, seasoned with a blend of spices.',
-      price: 15.24,
-      stock: 100,
-      image:
-        'https://res.cloudinary.com/daiqcjyk9/image/upload/v1735464578/fried_chicken_o5h7si.png',
-      category: 'appetizer',
-      ingredients:
-        'Chicken, flour, eggs, breadcrumbs, garlic powder, paprika, salt, pepper, oil',
-      is_featured: true,
-    },
-  ];
 };
 
 export const encodePassword = (password: string) => {
@@ -253,4 +184,46 @@ export const resetCookies = (res: Response) => {
       sameSite: IS_PROD ? 'none' : 'lax',
     });
   });
+};
+
+interface Repositories {
+  permissionRepository: Repository<Permission>;
+  roleRepository: Repository<Role>;
+  userRepository: Repository<User>;
+  productRepository: Repository<Product>;
+  eventRepository: Repository<Event>;
+  notificationRepository: Repository<Notification>;
+  discountRepository: Repository<Discount>;
+  promotionRepository: Repository<Promotion>;
+  reviewRepository: Repository<Review>;
+}
+
+export function getRepositories(dataSource: EntityManager): Repositories {
+  return {
+    permissionRepository: dataSource.getRepository(Permission),
+    roleRepository: dataSource.getRepository(Role),
+    userRepository: dataSource.getRepository(User),
+    productRepository: dataSource.getRepository(Product),
+    eventRepository: dataSource.getRepository(Event),
+    notificationRepository: dataSource.getRepository(Notification),
+    discountRepository: dataSource.getRepository(Discount),
+    promotionRepository: dataSource.getRepository(Promotion),
+    reviewRepository: dataSource.getRepository(Review),
+  };
+}
+
+export const getFactories = (
+  factoryManager: SeederFactoryManager,
+): Record<string, SeederFactory<any, unknown>> => {
+  return {
+    permissionFactory: factoryManager.get(Permission),
+    roleFactory: factoryManager.get(Role),
+    userFactory: factoryManager.get(User),
+    productFactory: factoryManager.get(Product),
+    eventFactory: factoryManager.get(Event),
+    notificationFactory: factoryManager.get(Notification),
+    discountFactory: factoryManager.get(Discount),
+    promotionFactory: factoryManager.get(Promotion),
+    reviewFactory: factoryManager.get(Review),
+  };
 };

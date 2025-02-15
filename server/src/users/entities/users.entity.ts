@@ -26,55 +26,55 @@ export class User {
   readonly id!: string;
 
   @Column({ nullable: true, unique: true })
-  readonly username?: string;
+  username?: string;
 
   @Exclude()
   @Column({ nullable: true })
-  readonly password?: string;
+  password?: string;
 
   @Column({ nullable: true, unique: true })
-  readonly google_id?: string;
+  google_id?: string;
 
   @Column({ nullable: true, unique: true })
-  readonly facebook_id?: string;
+  facebook_id?: string;
 
   @Column({ nullable: true })
-  readonly name?: string;
+  name?: string;
 
   @Column({ nullable: true })
-  readonly job?: string;
+  job?: string;
 
   @Column({ nullable: true, unique: true })
-  readonly email?: string;
+  email?: string;
 
   @Column({ nullable: true })
-  readonly phone?: string;
+  phone?: string;
 
   @Column({ nullable: true })
-  readonly address?: string;
+  address?: string;
 
   @Column({ type: 'enum', enum: ['dark', 'light'], default: 'dark' })
-  readonly theme!: string;
+  theme!: string;
 
   @Column({ default: 0 })
-  readonly total_orders!: number;
+  total_orders!: number;
 
   @Column({ default: 0 })
-  readonly total_reservations!: number;
+  total_reservations!: number;
 
   @Column({ default: 0 })
-  readonly loyalty_points!: number;
+  loyalty_points!: number;
 
   @Column({
     type: 'text',
   })
-  readonly image?: string;
+  image?: string;
 
   @CreateDateColumn({ type: 'timestamp' })
-  readonly createdAt!: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  readonly updatedAt!: Date;
+  updatedAt!: Date;
 
   @ManyToMany(() => Role, (role) => role.users, { cascade: true })
   @JoinTable({

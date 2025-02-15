@@ -13,7 +13,7 @@ export class EventsService implements OnModuleInit {
   ) {}
 
   async onModuleInit(): Promise<void> {
-    await this.checkStatusOfEvents();
+    // await this.checkStatusOfEvents();
   }
 
   async getEvents(): Promise<Event[]> {

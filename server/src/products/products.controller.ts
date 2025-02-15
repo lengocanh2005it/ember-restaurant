@@ -1,4 +1,3 @@
-import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import {
   Body,
   Controller,
@@ -9,7 +8,6 @@ import {
   Post,
   Query,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { RoleAuthGuard } from 'src/auth/guards/role.guard';
@@ -28,9 +26,6 @@ export class ProductsController {
   @Get()
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN, Role.USER)
-  @UseInterceptors(CacheInterceptor)
-  @CacheKey('products')
-  @CacheTTL(60)
   @ResponseMessage('Get products successfully!')
   async findAll(): Promise<Product[]> {
     return await this.productService.findAll();

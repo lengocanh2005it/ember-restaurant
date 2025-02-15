@@ -21,7 +21,7 @@ export class PromotionsService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    await this.updateExpirationPromotions();
+    // await this.updateExpirationPromotions();
   }
 
   async getPromotions(queries?: Record<string, string>): Promise<Promotion[]> {
