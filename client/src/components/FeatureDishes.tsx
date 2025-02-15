@@ -124,9 +124,8 @@ const FeatureDishes: React.FC = () => {
                          justify-center relative"
                         >
                           <div
-                            className="w-full h-[30vh] relative select-none opacity-90
-                             group-hover:opacity-100
-                    ease-in-out duration-250 transition-all"
+                            className="lg:w-[70%] w-full lg:h-[25vh] h-[30vh] relative select-none opacity-90
+                             group-hover:opacity-100 ease-in-out duration-250 transition-all"
                           >
                             {dish.image && (
                               <Image
@@ -135,15 +134,13 @@ const FeatureDishes: React.FC = () => {
                                 sizes="(max-width: 600px) 100vw, 50vw"
                                 priority
                                 fill
-                                className="object-contain"
                               />
                             )}
                           </div>
 
                           <div
                             className="w-full px-12 space-y-2 relative opacity-90
-                             group-hover:opacity-100
-                    ease-in-out duration-250 transition-all"
+                             group-hover:opacity-100 ease-in-out duration-250 transition-all"
                           >
                             <h1
                               className="text-center lg:text-xl text-base font-medium text-black
@@ -162,7 +159,7 @@ const FeatureDishes: React.FC = () => {
                              }`}
                             >
                               <div className="flex flex-col-reverse gap-2 items-center">
-                                <div className="flex gap-2 items-center">
+                                <div className="flex gap-2 items-center justify-center">
                                   <CircleDollarSignIcon
                                     size={20}
                                     className="opacity-90"

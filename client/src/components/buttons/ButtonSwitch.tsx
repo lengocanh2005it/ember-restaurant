@@ -7,7 +7,7 @@ import { Switch } from "@heroui/react";
 import { useEffect } from "react";
 
 export default function ButtonSwitch() {
-  const { isDarkMode, setIsDarkMode } = useAppStore();
+  const { isDarkMode, setIsDarkMode, setTheme } = useAppStore();
 
   const { mutate: mutateSwitchTheme } = useSwitchTheme();
 
@@ -21,6 +21,8 @@ export default function ButtonSwitch() {
 
   const handleToggle = () => {
     setIsDarkMode(!isDarkMode);
+
+    setTheme(isDarkMode === true ? "dark" : "light");
 
     if (isDarkMode) {
       mutateSwitchTheme({ theme: "light" });
