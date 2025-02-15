@@ -16,7 +16,7 @@ export class RolesService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    await this.initializeRolesAndPermissions();
+    // await this.initializeRolesAndPermissions();
   }
 
   async findAll(): Promise<Role[]> {

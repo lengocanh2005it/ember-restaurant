@@ -4,8 +4,7 @@ import { DiscountContext } from 'src/discounts/discount.context';
 import { CreateDiscountDto } from 'src/discounts/dtos/create-discount.dto';
 import { UpdateDiscountDto } from 'src/discounts/dtos/update-discount.dto';
 import { Discount } from 'src/discounts/entities/discounts.entity';
-import { generateDiscount } from 'src/utils/utils';
-import { LessThan, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class DiscountsService implements OnModuleInit {
@@ -16,8 +15,6 @@ export class DiscountsService implements OnModuleInit {
   ) {}
 
   async onModuleInit(): Promise<void> {
-    await this.updateExpirationDiscounts();
-    await this.initialDiscounts();
     await this.updateEndDateOfDiscount();
   }
 
@@ -66,40 +63,6 @@ export class DiscountsService implements OnModuleInit {
     await this.discountRepository.delete({ id });
     return await this.findAll();
   }
-
-  async updateExpirationDiscounts() {
-    const today = new Date();
-
-    await this.discountRepository.update(
-      { is_active: true, end_date: LessThan(today) },
-      { is_active: false },
-    );
-  }
-
-  public initialDiscounts = async (): Promise<void> => {
-    const discounts = [
-      generateDiscount(5),
-      generateDiscount(10),
-      generateDiscount(15),
-      generateDiscount(20),
-      generateDiscount(50),
-    ];
-
-    for (const discount of discounts) {
-      const { value, type } = discount;
-
-      const existingDiscount = await this.discountRepository.findOne({
-        where: {
-          value,
-          type,
-        },
-      });
-
-      if (!existingDiscount) {
-        await this.discountRepository.save(discount);
-      }
-    }
-  };
 
   public updateEndDateOfDiscount = async (): Promise<void> => {
     const discounts = await this.discountRepository.find();

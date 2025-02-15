@@ -1,7 +1,7 @@
-import { User } from 'src/users/entities/users.entity';
-import 'express-session';
 import 'express';
+import 'express-session';
 import { Cookie } from 'express-session';
+import { User } from 'src/users/entities/users.entity';
 
 export type CreateSocialAccount = {
   email?: string;
