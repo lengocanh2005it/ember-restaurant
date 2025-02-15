@@ -24,7 +24,7 @@ const ModalViewItemMenu: React.FC<ModalViewItemMenuProps> = ({ product }) => {
     <>
       <div
         onClick={onOpen}
-        className={`relative md:w-[65%] w-[60%] md:h-[230px] h-[150px]
+        className={`relative md:w-[60%] w-[60%] md:h-[200px] h-[150px]
        flex items-center mx-auto ${
          product.stock === 0 && "opacity-50 pointer-events-none cursor-default"
        }`}
@@ -44,7 +44,7 @@ const ModalViewItemMenu: React.FC<ModalViewItemMenuProps> = ({ product }) => {
               priority
               sizes="(max-width:600px) 100vw, 50vw"
               fill
-              className={`object-cover select-none
+              className={`select-none
           opacity-75 group-hover:opacity-100 ease-in-out duration-250 transition-all ${
             product.stock === 0 &&
             "opacity-50 pointer-events-none cursor-default"
@@ -105,8 +105,8 @@ const ModalViewItemMenu: React.FC<ModalViewItemMenuProps> = ({ product }) => {
                         priority
                         sizes="(max-width:600px) 100vw, 50vw"
                         fill
-                        className="object-cover select-none
-          opacity-75 group-hover:opacity-100 ease-in-out duration-250 transition-all"
+                        className="select-none opacity-75 group-hover:opacity-100 ease-in-out 
+                        duration-250 transition-all"
                       />
                     )}
                   </div>

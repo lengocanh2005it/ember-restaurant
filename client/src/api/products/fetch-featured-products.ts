@@ -2,7 +2,7 @@ import axios from "@/lib/axios";
 
 export const handleFetchFeaturedProducts = async (): Promise<any> => {
   try {
-    const response = await axios.get("/products/?featured=true");
+    const response = await axios.get("/products/featured");
 
     if (!response.data) throw new Error("Internal Server Error!");
 

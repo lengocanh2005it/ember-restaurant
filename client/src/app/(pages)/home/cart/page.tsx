@@ -127,7 +127,7 @@ const CartPage: React.FC = () => {
                   onValueChange={() => handleCheckboxChange(item)}
                 >
                   <div
-                    className="lg:w-[10vw] lg:h-[20vh] md:h-[30vh] md:w-[35vw]
+                    className="lg:w-[10vw] lg:h-[15vh] md:h-[30vh] md:w-[35vw]
                    w-[50vw] h-[25vh] relative flex lg:items-start items-center select-none"
                   >
                     {item.product.image && (
@@ -136,7 +136,7 @@ const CartPage: React.FC = () => {
                         alt="image"
                         priority
                         sizes="(max-width:600px) 100vw, 50vw"
-                        className="object-cover select-none"
+                        className="select-none"
                         fill
                       />
                     )}

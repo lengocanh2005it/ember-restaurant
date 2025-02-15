@@ -1,11 +1,12 @@
 import { handleSwitchTheme } from "@/lib/theme";
 import { useAppStore, useUserStore } from "@/store";
 import { User } from "@/utils";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useSwitchTheme = () => {
   const { setUser } = useUserStore();
   const { setIsDarkMode, setTheme } = useAppStore();
+  const query = useQueryClient();
 
   return useMutation({
     mutationFn: handleSwitchTheme,
@@ -13,6 +14,7 @@ export const useSwitchTheme = () => {
       if (data) {
         const user = data as User;
 
+        query.setQueryData(["profile"], user);
         setUser(user);
         setIsDarkMode(user.theme === "light" ? false : true);
         setTheme(user.theme);
