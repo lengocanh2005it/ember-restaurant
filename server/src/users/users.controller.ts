@@ -12,6 +12,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { GoogleRecaptchaGuard } from '@nestlab/google-recaptcha';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { RoleAuthGuard } from 'src/auth/guards/role.guard';
 import { Roles } from 'src/roles/role.decorator';
@@ -21,6 +22,7 @@ import { UpdateUserDto } from 'src/users/dtos/update-user.dto';
 import { User } from 'src/users/entities/users.entity';
 import { UsersInterceptor } from 'src/users/users.interceptor';
 import { UsersService } from 'src/users/users.service';
+import { ResponseMessage } from 'src/utils/common/decorators/response-message.decorator';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -51,6 +53,8 @@ export class UsersController {
   }
 
   @Post()
+  @UseGuards(GoogleRecaptchaGuard)
+  @ResponseMessage('User created successfully.')
   @UseInterceptors(UsersInterceptor)
   async handleCreateUser(@Body() createUserDto: CreateUserDto): Promise<User> {
     return await this.usersService.handleCreateUser(createUserDto);
