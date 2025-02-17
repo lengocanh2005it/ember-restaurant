@@ -5,7 +5,7 @@ import {
   NestModule,
   ValidationPipe,
 } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -40,9 +40,19 @@ import { UserDiscountModule } from './user-discount/user-discount.module';
 import { UsersModule } from './users/users.module';
 import { RedisModule } from './redis/redis.module';
 import { UserNotificationModule } from './user-notification/user-notification.module';
+import { GoogleRecaptchaModule } from '@nestlab/google-recaptcha';
 
 @Module({
   imports: [
+    GoogleRecaptchaModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secretKey: configService.get<string>('RECAPTCHA_SECRET_KEY'),
+        response: (req) => req.body.gRecaptchaToken,
+        skipIf: configService.get<string>('NODE_ENV') !== 'production',
+      }),
+    }),
     CacheModule.register({
       max: 100,
       ttl: 20,
