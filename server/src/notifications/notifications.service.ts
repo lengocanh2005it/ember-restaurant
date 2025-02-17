@@ -7,6 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateNotificationDto } from 'src/notifications/dtos/create-notification.dto';
 import { UpdateNotificationDto } from 'src/notifications/dtos/update-notification.dto';
 import { Notification } from 'src/notifications/entities/notifications.entity';
+import { UserNotificationService } from 'src/user-notification/user-notification.service';
+import { User } from 'src/users/entities/users.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -14,29 +16,51 @@ export class NotificationsService {
   constructor(
     @InjectRepository(Notification)
     private readonly notificationRepository: Repository<Notification>,
+    private readonly userNotificationService: UserNotificationService,
   ) {}
 
   async findAll(): Promise<Notification[]> {
     const notifications = await this.notificationRepository.find({
-      relations: ['user'],
+      relations: ['user', 'userNotifications', 'userNotifications.user'],
     });
 
-    return notifications.map((notification) => {
-      const { id, image, title, createdAt, views, content, user } =
-        notification;
-      return {
-        id,
-        image,
-        title,
-        date: createdAt.toISOString().split('T')[0],
-        number: views,
-        content,
-        name: user?.name ? user.name : user.username,
-      };
-    }) as any;
+    return notifications
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .map((notification) => {
+        const {
+          id,
+          image,
+          title,
+          createdAt,
+          views,
+          content,
+          user,
+          userNotifications,
+        } = notification;
+
+        return {
+          id,
+          image,
+          title,
+          date: createdAt.toISOString().split('T')[0],
+          number: views,
+          content,
+          name: user?.name ? user.name : user.username,
+          userNotifications: userNotifications.map((un) => {
+            const { user } = un;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { password, ...res } = user;
+
+            return {
+              ...un,
+              user: res,
+            };
+          }),
+        };
+      }) as any;
   }
 
-  async findOne(id: string): Promise<Notification> {
+  async findOne(id: string, user: User): Promise<Notification> {
     const notification = await this.notificationRepository.findOne({
       where: {
         id,
@@ -46,7 +70,33 @@ export class NotificationsService {
 
     if (!notification) throw new NotFoundException('Notification Not Found.');
 
-    const { image, title, createdAt, views, content, user } = notification;
+    const {
+      image,
+      title,
+      createdAt,
+      views,
+      content,
+      user: adminUser,
+    } = notification;
+
+    if (!user.roles.some((role) => role.name === 'admin')) {
+      const { viewCount } =
+        await this.userNotificationService.handleCreateOrUpdateUserNotificationRepository(
+          user.id,
+          id,
+        );
+
+      if (viewCount === 1) {
+        await this.notificationRepository.update(
+          {
+            id,
+          },
+          {
+            views: views + 1,
+          },
+        );
+      }
+    }
 
     return {
       id,
@@ -55,7 +105,7 @@ export class NotificationsService {
       date: createdAt.toISOString().split('T')[0],
       number: views,
       content,
-      name: user?.name ? user.name : user.username,
+      name: adminUser?.name ? adminUser.name : adminUser.username,
     } as any;
   }
 

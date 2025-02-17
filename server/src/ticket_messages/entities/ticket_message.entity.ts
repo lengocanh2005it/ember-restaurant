@@ -3,6 +3,7 @@ import { User } from 'src/users/entities/users.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -43,4 +44,7 @@ export class TicketMessage {
 
   @UpdateDateColumn({ type: 'timestamp' })
   readonly updatedAt!: Date;
+
+  @DeleteDateColumn({ type: 'timestamp' })
+  readonly deletedAt?: Date;
 }

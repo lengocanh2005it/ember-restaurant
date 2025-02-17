@@ -57,7 +57,7 @@ export class CartsController {
     @Param('id') id: string,
     @Body() updateCartDto: UpdateCartDto,
     @Query() queries: Record<string, string>,
-  ): Promise<Cart[]> {
+  ): Promise<Record<string, Cart[] | Product[]>> {
     return await this.cartService.updateOne(id, updateCartDto, queries);
   }
 
@@ -67,8 +67,12 @@ export class CartsController {
   async deleteOne(
     @Param('id') id: string,
     @Query() queries: Record<string, string>,
-  ): Promise<Cart[]> {
-    await this.cartService.deleteOne(id);
-    return await this.usersService.handleFindCartsOfUser(queries.userId);
+  ): Promise<Record<string, Cart[] | Product[]>> {
+    const products = await this.cartService.deleteOne(id);
+
+    return {
+      carts: await this.usersService.handleFindCartsOfUser(queries.userId),
+      products,
+    };
   }
 }

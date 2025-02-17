@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class UpdateNotificationDto {
   @IsString()
@@ -9,7 +9,6 @@ export class UpdateNotificationDto {
   @IsNotEmpty()
   readonly content!: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   readonly image!: string;
 }

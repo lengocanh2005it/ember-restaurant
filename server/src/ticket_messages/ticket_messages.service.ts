@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateTicketMessageDto } from 'src/ticket_messages/dtos/create-ticket_message.dto';
 import { TicketMessage } from 'src/ticket_messages/entities/ticket_message.entity';
@@ -33,5 +33,20 @@ export class TicketMessagesService {
         .of(newTicketMessage.id)
         .set(supportTicketId);
     }
+  };
+
+  public handleDeleteTicketMessage = async (id: string): Promise<void> => {
+    const ticketMessage = await this.ticketMessageRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!ticketMessage)
+      throw new NotFoundException('Ticket Message Not Found.');
+
+    await this.ticketMessageRepository.softDelete({
+      id,
+    });
   };
 }

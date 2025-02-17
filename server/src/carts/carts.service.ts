@@ -29,7 +29,12 @@ export class CartsService {
   }
 
   async findOne(id: string): Promise<Cart> {
-    return await this.cartRepository.findOneBy({ id });
+    return await this.cartRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ['product'],
+    });
   }
 
   async createOne(
@@ -98,21 +103,47 @@ export class CartsService {
     id: string,
     updateCartDto: UpdateCartDto,
     queries?: Record<string, string>,
-  ): Promise<Cart[]> {
+  ): Promise<Record<string, Cart[] | Product[]>> {
+    const { quantity, note } = updateCartDto;
+
     const cart = await this.findOne(id);
 
     if (!cart) throw new BadRequestException('Cart Not Found.');
 
-    await this.cartRepository.update({ id }, updateCartDto);
+    await this.productsService.handleUpdateStockNumberOfProduct(
+      cart.product.id,
+      cart.quantity - quantity,
+    );
 
-    return await this.usersService.handleFindCartsOfUser(queries.userId);
+    await this.cartRepository.update(
+      { id },
+      {
+        quantity,
+        ...(note && { note }),
+      },
+    );
+
+    return {
+      carts: await this.usersService.handleFindCartsOfUser(queries.userId),
+      products: await this.productsService.findAll(),
+    };
   }
 
-  async deleteOne(id: string): Promise<void> {
-    const cart = await this.cartRepository.findOneBy({ id });
+  async deleteOne(id: string): Promise<Product[]> {
+    const cart = await this.cartRepository.findOne({
+      where: { id },
+      relations: ['product'],
+    });
 
     if (!cart) throw new NotFoundException('Cart Not Found.');
 
+    const { quantity, product } = cart;
+
     await this.cartRepository.delete({ id });
+
+    return await this.productsService.handleResetStockOfProduct(
+      product.id,
+      quantity,
+    );
   }
 }

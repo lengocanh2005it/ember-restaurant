@@ -24,30 +24,33 @@ export class SupportTicketService {
         'ticket_messages.sender',
         'ticket_messages.support_ticket',
       ],
+      withDeleted: true,
     });
 
-    return supportTickets.map((sp) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { user, ...res } = sp;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...res_1 } = sp.user;
+    return supportTickets
+      .map((sp) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { user, ...res } = sp;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...res_1 } = sp.user;
 
-      return {
-        ...res,
-        ticket_messages: res.ticket_messages
-          .map((tm) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { password, ...res } = tm.sender;
+        return {
+          ...res,
+          ticket_messages: res.ticket_messages
+            .map((tm) => {
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              const { password, ...res } = tm.sender;
 
-            return {
-              ...tm,
-              sender: res,
-            };
-          })
-          .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()),
-        user: res_1,
-      };
-    });
+              return {
+                ...tm,
+                sender: res,
+              };
+            })
+            .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()),
+          user: res_1,
+        };
+      })
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
   async getOne(id: string): Promise<SupportTicket> {
@@ -124,22 +127,19 @@ export class SupportTicketService {
     }
   }
 
-  public async deleteOne(
-    id: string,
-    queries?: Record<string, string>,
-  ): Promise<void> {
-    if (queries && queries.userId) {
-      const supportTicket = await this.supportTicketRepository.findOneBy({
-        id,
-      });
+  public async deleteOne(id: string): Promise<void> {
+    const supportTicket = await this.supportTicketRepository.findOneBy({
+      id,
+    });
 
-      if (!supportTicket)
-        throw new NotFoundException('Support Ticket Not Found.');
+    if (!supportTicket)
+      throw new NotFoundException('Support Ticket Not Found.');
 
-      await this.supportTicketRepository.delete({ id });
-    } else {
-      throw new Error('Internal Server Error!');
-    }
+    await this.supportTicketRepository.delete({ id });
+
+    // return {
+    //   support_tickets: isAdmin ? await this.getAll() : await
+    // }
   }
 
   public async deleteOneByAdmin(id: string): Promise<void> {
