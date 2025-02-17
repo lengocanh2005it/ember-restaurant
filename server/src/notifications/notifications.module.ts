@@ -18,6 +18,8 @@ import { ReservationsModule } from 'src/reservations/reservations.module';
 import { Reservation } from 'src/reservations/entities/reservations.entity';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
+import { UserNotificationModule } from 'src/user-notification/user-notification.module';
+import { UserNotification } from 'src/user-notification/entities/user-notification.entity';
 
 @Module({
   imports: [
@@ -29,6 +31,7 @@ import { JwtService } from '@nestjs/jwt';
       Discount,
       UserDiscount,
       Reservation,
+      UserNotification,
     ]),
     UsersModule,
     OrdersModule,
@@ -36,6 +39,7 @@ import { JwtService } from '@nestjs/jwt';
     DiscountsModule,
     UserDiscountModule,
     ReservationsModule,
+    UserNotificationModule,
   ],
   controllers: [NotificationsController],
   providers: [NotificationsService, UsersService, AuthService, JwtService],

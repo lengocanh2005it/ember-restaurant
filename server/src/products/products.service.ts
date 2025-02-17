@@ -212,4 +212,62 @@ export class ProductsService {
 
     return results;
   };
+
+  public handleUpdateStockNumberOfProduct = async (
+    productId: string,
+    quantity: number,
+  ): Promise<void> => {
+    const product = await this.productRepository.findOneBy({ id: productId });
+
+    if (!product) throw new NotFoundException('Product Not Found.');
+
+    const { stock } = product;
+
+    if (quantity > 0) {
+      await this.productRepository.update(
+        {
+          id: productId,
+        },
+        {
+          stock: stock + quantity,
+        },
+      );
+    } else if (quantity < 0) {
+      if (stock < -1 * quantity)
+        throw new BadRequestException(
+          `The available stock for this dish is lower than the 
+          additional quantity you requested! Please select an appropriate quantity.`,
+        );
+
+      const distance = stock + quantity;
+
+      await this.productRepository.update(
+        {
+          id: productId,
+        },
+        {
+          stock: distance,
+          ...(!distance && { is_available: false }),
+        },
+      );
+    }
+  };
+
+  public handleResetStockOfProduct = async (
+    productId: string,
+    quantity: number,
+  ): Promise<Product[]> => {
+    const product = await this.findOne(productId);
+
+    await this.productRepository.update(
+      {
+        id: productId,
+      },
+      {
+        stock: product.stock + quantity,
+      },
+    );
+
+    return await this.findAll();
+  };
 }

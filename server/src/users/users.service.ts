@@ -245,6 +245,7 @@ export class UsersService {
         'support_tickets.ticket_messages.sender',
         'support_tickets.ticket_messages.support_ticket',
       ],
+      withDeleted: true,
     });
 
     return user.support_tickets

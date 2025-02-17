@@ -1,3 +1,4 @@
+import { UserNotification } from 'src/user-notification/entities/user-notification.entity';
 import { User } from 'src/users/entities/users.entity';
 import {
   Column,
@@ -5,6 +6,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -32,6 +34,15 @@ export class Notification {
   })
   @JoinColumn({ name: 'created_by' })
   readonly user!: User;
+
+  @OneToMany(
+    () => UserNotification,
+    (userNotification) => userNotification.notification,
+    {
+      cascade: true,
+    },
+  )
+  readonly userNotifications!: UserNotification[];
 
   @CreateDateColumn({ type: 'timestamp' })
   readonly createdAt!: Date;

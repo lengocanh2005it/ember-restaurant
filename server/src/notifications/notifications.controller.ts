@@ -6,8 +6,10 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { RoleAuthGuard } from 'src/auth/guards/role.guard';
 import { CreateNotificationDto } from 'src/notifications/dtos/create-notification.dto';
@@ -31,8 +33,16 @@ export class NotificationsController {
   @Get(':id')
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN, Role.USER)
-  async findOne(@Param('id') id: string): Promise<Notification> {
-    return await this.notificationsService.findOne(id);
+  async findOne(
+    @Param('id') id: string,
+    @Req() req: Request,
+  ): Promise<Record<string, Notification[] | Notification>> {
+    const notification = await this.notificationsService.findOne(id, req.user);
+
+    return {
+      notification,
+      notifications: await this.findAll(),
+    };
   }
 
   @Post()

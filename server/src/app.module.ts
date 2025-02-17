@@ -39,6 +39,7 @@ import { UploadsModule } from './uploads/uploads.module';
 import { UserDiscountModule } from './user-discount/user-discount.module';
 import { UsersModule } from './users/users.module';
 import { RedisModule } from './redis/redis.module';
+import { UserNotificationModule } from './user-notification/user-notification.module';
 
 @Module({
   imports: [
@@ -93,6 +94,7 @@ import { RedisModule } from './redis/redis.module';
     DatabaseModule,
     TicketMessagesModule,
     RedisModule,
+    UserNotificationModule,
   ],
   controllers: [AppController],
   providers: [

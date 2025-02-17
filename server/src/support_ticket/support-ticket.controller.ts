@@ -6,7 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  Query,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
@@ -45,14 +44,12 @@ export class SupportTicketController {
   @Roles(Role.ADMIN, Role.USER)
   async createOne(
     @Body() createSupportTicketDto: CreateSupportTicketDto,
-  ): Promise<any> {
+  ): Promise<Record<string, SupportTicket[]>> {
     await this.supportTicketService.createOne(createSupportTicketDto);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, createdAt, updatedAt, ...res } =
-      await this.usersService.findOne(createSupportTicketDto.userId);
-
-    return res;
+    return {
+      support_tickets: await this.supportTicketService.getAll(),
+    };
   }
 
   @Patch(':id')
@@ -61,7 +58,6 @@ export class SupportTicketController {
   async updateOne(
     @Body() updateSupportTicketDto: UpdateSupportTicketDto,
     @Param('id') id: string,
-    @Query() queries: Record<string, string>,
   ): Promise<any> {
     const { userId } = updateSupportTicketDto;
 
@@ -72,10 +68,7 @@ export class SupportTicketController {
       await this.usersService.findOne(userId);
 
     return {
-      support_tickets:
-        queries.type === 'admin'
-          ? await this.supportTicketService.getAll()
-          : await this.usersService.findOne(userId),
+      support_tickets: await this.supportTicketService.getAll(),
       profile: res,
     };
   }
@@ -85,16 +78,10 @@ export class SupportTicketController {
   @Roles(Role.ADMIN, Role.USER)
   async deleteOne(
     @Param('id') id: string,
-    @Query() queries: Record<string, string>,
-  ): Promise<any> {
-    await this.supportTicketService.deleteOne(id, queries);
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, createdAt, updatedAt, ...res } =
-      await this.usersService.findOne(queries.userId);
+  ): Promise<Record<string, SupportTicket[]>> {
+    await this.supportTicketService.deleteOne(id);
 
     return {
-      support_tickets_user: res,
       support_tickets: await this.getAll(),
     };
   }

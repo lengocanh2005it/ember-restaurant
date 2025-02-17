@@ -9,6 +9,7 @@ import { Role } from 'src/roles/entities/roles.entity';
 import { SupportTicket } from 'src/support_ticket/entities/support-ticket.entity';
 import { TicketMessage } from 'src/ticket_messages/entities/ticket_message.entity';
 import { UserDiscount } from 'src/user-discount/entities/user-discount.entity';
+import { UserNotification } from 'src/user-notification/entities/user-notification.entity';
 import {
   Column,
   CreateDateColumn,
@@ -132,4 +133,13 @@ export class User {
     cascade: true,
   })
   readonly ticket_messages: TicketMessage[];
+
+  @OneToMany(
+    () => UserNotification,
+    (userNotification) => userNotification.user,
+    {
+      cascade: true,
+    },
+  )
+  readonly userNotifications?: UserNotification[];
 }

@@ -41,7 +41,7 @@ export class ProductsController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
-  @Roles(Role.USER)
+  @Roles(Role.ADMIN)
   @ResponseMessage('Get product successfully!')
   async findOne(
     @Param('id') id: string,
