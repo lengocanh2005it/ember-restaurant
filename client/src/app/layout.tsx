@@ -7,6 +7,7 @@ import { Rubik } from "next/font/google";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 import "./globals.css";
+import GoogleCaptchaWrapper from "@/components/GoogleCaptchaProvider";
 
 const rubik = Rubik({
   subsets: ["latin"],
@@ -28,27 +29,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ReactQueryProvider>
-      <html lang="en">
-        <body className={`${rubik.className}`}>
-          <NextUIWrapper>
-            {children}
-            <Footer />
-            <ButtonScroll />
+    <GoogleCaptchaWrapper>
+      <ReactQueryProvider>
+        <html lang="en">
+          <body className={`${rubik.className}`}>
+            <NextUIWrapper>
+              {children}
+              <Footer />
+              <ButtonScroll />
 
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              pauseOnFocusLoss={false}
-              pauseOnHover={false}
-              rtl={false}
-              theme="colored"
-              className="text-base rounded-lg cursor-pointer"
-              toastStyle={{ backgroundColor: "#28a745", color: "#fff" }}
-            />
-          </NextUIWrapper>
-        </body>
-      </html>
-    </ReactQueryProvider>
+              <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                pauseOnFocusLoss={false}
+                pauseOnHover={false}
+                rtl={false}
+                theme="colored"
+                className="text-base rounded-lg cursor-pointer"
+                toastStyle={{ backgroundColor: "#28a745", color: "#fff" }}
+              />
+            </NextUIWrapper>
+          </body>
+        </html>
+      </ReactQueryProvider>
+    </GoogleCaptchaWrapper>
   );
 }

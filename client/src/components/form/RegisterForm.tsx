@@ -1,10 +1,4 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import ButtonLoginOthers from "@/components/buttons/ButtonLoginOthers";
 import {
   Form,
@@ -16,6 +10,8 @@ import {
 } from "@/components/ui/form";
 import { useRegister } from "@/hooks/use-register";
 import { Button, Input } from "@heroui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
 import {
   EyeIcon,
   EyeOffIcon,
@@ -23,7 +19,11 @@ import {
   UserIcon,
   UserRoundPlusIcon,
 } from "lucide-react";
-import { CreateUserDto } from "@/api/register/utils/types";
+import Link from "next/link";
+import React, { useState } from "react";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const formSchema = z
   .object({
@@ -68,18 +68,30 @@ const RegisterForm: React.FC = () => {
     },
   });
 
+  const { executeRecaptcha } = useGoogleReCaptcha();
+
   const { mutate: mutateRegister } = useRegister();
 
   const handleClick = () => {
     setIsShow(!isShow);
   };
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const { username, password } = values;
+
+    if (!executeRecaptcha) return;
+
+    const gRecaptchaToken = await executeRecaptcha("register");
+
     setIsLoading(true);
 
     setTimeout(() => {
       setIsLoading(false);
-      mutateRegister(values as CreateUserDto);
+      mutateRegister({
+        username,
+        password,
+        gRecaptchaToken,
+      });
       form.reset({
         username: "",
         password: "",
