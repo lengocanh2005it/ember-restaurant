@@ -1,14 +1,31 @@
+"use client";
 import { format } from "date-fns";
-import React from "react";
-import { Tooltip } from "@heroui/react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { Request } from "@/utils";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Tooltip,
+} from "@heroui/react";
+import { TrashIcon } from "lucide-react";
+import { useDeleteTicketMessage } from "@/hooks/use-delete-ticket-messages";
+import { useAppStore, useUserStore } from "@/store";
 
 interface RequestDetailsProps {
   request: Request;
+  method: "update" | "view";
 }
 
-const RequestDetails: React.FC<RequestDetailsProps> = ({ request }) => {
+const RequestDetails: React.FC<RequestDetailsProps> = ({ request, method }) => {
+  const { user } = useUserStore();
+  const { mutate: mutateDeleteTicketMessage } = useDeleteTicketMessage(
+    user?.id!
+  );
+  const { isAdmin } = useAppStore();
+
   return (
     <>
       {request?.ticket_messages &&
@@ -26,7 +43,10 @@ const RequestDetails: React.FC<RequestDetailsProps> = ({ request }) => {
                 >
                   <Tooltip
                     content={
-                      tm?.sender?.name ? tm?.sender?.name : tm?.sender?.username
+                      (tm?.sender?.name
+                        ? tm.sender.name
+                        : tm?.sender?.username) +
+                      (tm?.sender?.id === user?.id ? " (You)" : " (Customer)")
                     }
                     placement="left-start"
                     className="dark:text-black dark:bg-white text-white bg-black"
@@ -49,12 +69,55 @@ const RequestDetails: React.FC<RequestDetailsProps> = ({ request }) => {
     border-black/20 hover:dark:border-white/30 hover:border-black/40 w-fit
     ease-in-out transition-opacity duration-250 rounded-3xl max-w-full break-words sm:mb-0 mb-2"
                 >
-                  <Tooltip
-                    content={format(tm?.createdAt, "EEEE, dd/MM/yyyy HH:mm")}
-                    className="dark:text-black dark:bg-white text-white bg-black"
-                  >
-                    {tm?.message}
-                  </Tooltip>
+                  {tm.deletedAt ? (
+                    <Tooltip
+                      content={format(tm?.createdAt, "EEEE, dd/MM/yyyy HH:mm")}
+                      className="dark:text-black dark:bg-white text-white bg-black"
+                    >
+                      <p
+                        className={`lg:text-[14px] text-[13px] italic dark:text-white/50
+             text-black/50 select-none`}
+                      >
+                        This message has been removed.
+                      </p>
+                    </Tooltip>
+                  ) : method === "update" && !isAdmin ? (
+                    <Dropdown>
+                      <DropdownTrigger>
+                        <div>
+                          <Tooltip
+                            content={format(
+                              tm?.createdAt,
+                              "EEEE, dd/MM/yyyy HH:mm"
+                            )}
+                            className="dark:text-black dark:bg-white text-white bg-black"
+                          >
+                            <p className={`lg:text-[14px] text-[13px]`}>
+                              {tm?.message}
+                            </p>
+                          </Tooltip>
+                        </div>
+                      </DropdownTrigger>
+                      <DropdownMenu aria-label="options">
+                        <DropdownItem
+                          key="delete"
+                          endContent={<TrashIcon />}
+                          onPress={() => mutateDeleteTicketMessage(tm.id)}
+                        >
+                          Delete
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </Dropdown>
+                  ) : (
+                    <Tooltip
+                      content={format(tm?.createdAt, "EEEE, dd/MM/yyyy HH:mm")}
+                      className="dark:text-black dark:bg-white text-white bg-black"
+                    >
+                      <p className="lg:text-[14px] text-[13px]">
+                        {tm?.message}
+                      </p>
+                    </Tooltip>
+                  )}
                 </div>
               </div>
             );
@@ -71,7 +134,10 @@ const RequestDetails: React.FC<RequestDetailsProps> = ({ request }) => {
                 >
                   <Tooltip
                     content={
-                      tm?.sender?.name ? tm?.sender?.name : tm.sender?.username
+                      (tm?.sender?.name
+                        ? tm.sender.name
+                        : tm?.sender?.username) +
+                      (tm?.sender?.id === user?.id ? " (You)" : " (Admin)")
                     }
                     placement="right-end"
                     className="dark:text-black dark:bg-white text-white bg-black"
@@ -94,12 +160,55 @@ const RequestDetails: React.FC<RequestDetailsProps> = ({ request }) => {
 border-black/20 hover:dark:border-white/30 hover:border-black/40
 ease-in-out transition-opacity duration-250 rounded-3xl w-fit break-words sm:mb-0 mb-2"
                 >
-                  <Tooltip
-                    content={format(tm?.createdAt, "EEEE, dd/MM/yyyy HH:mm")}
-                    className="dark:text-black dark:bg-white text-white bg-black"
-                  >
-                    {tm?.message}
-                  </Tooltip>
+                  {tm.deletedAt ? (
+                    <Tooltip
+                      content={format(tm?.createdAt, "EEEE, dd/MM/yyyy HH:mm")}
+                      className="dark:text-black dark:bg-white text-white bg-black"
+                    >
+                      <p
+                        className={`lg:text-[14px] text-[13px] italic dark:text-white/50
+             text-black/50 select-none`}
+                      >
+                        This message has been removed.
+                      </p>
+                    </Tooltip>
+                  ) : method === "update" && isAdmin ? (
+                    <Dropdown>
+                      <DropdownTrigger>
+                        <div>
+                          <Tooltip
+                            content={format(
+                              tm?.createdAt,
+                              "EEEE, dd/MM/yyyy HH:mm"
+                            )}
+                            className="dark:text-black dark:bg-white text-white bg-black"
+                          >
+                            <p className={`lg:text-[14px] text-[13px]`}>
+                              {tm?.message}
+                            </p>
+                          </Tooltip>
+                        </div>
+                      </DropdownTrigger>
+                      <DropdownMenu aria-label="options">
+                        <DropdownItem
+                          key="delete"
+                          endContent={<TrashIcon />}
+                          onPress={() => mutateDeleteTicketMessage(tm.id)}
+                        >
+                          Delete
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </Dropdown>
+                  ) : (
+                    <Tooltip
+                      content={format(tm?.createdAt, "EEEE, dd/MM/yyyy HH:mm")}
+                      className="dark:text-black dark:bg-white text-white bg-black"
+                    >
+                      <p className="lg:text-[14px] text-[13px]">
+                        {tm?.message}
+                      </p>
+                    </Tooltip>
+                  )}
                 </div>
               </div>
             );

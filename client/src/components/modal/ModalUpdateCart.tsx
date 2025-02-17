@@ -84,6 +84,7 @@ const ModalUpdateCart: React.FC<ModalUpdateCartProps> = ({ cart }) => {
         onOpenChange={() => {
           onOpenChange();
           setQuantity(cart.quantity);
+          setError("");
         }}
         motionProps={{
           variants: {
@@ -132,6 +133,15 @@ const ModalUpdateCart: React.FC<ModalUpdateCartProps> = ({ cart }) => {
                   <p>{cart.product.price}$ / item</p>
                 </div>
 
+                <div
+                  className="flex lg:flex-row flex-col lg:items-center 
+                lg:justify-between lg:gap-2 p-2 px-4 border dark:border-white/30
+                 border-black/60 rounded-xl lg:text-left text-center"
+                >
+                  <h1>Quantity</h1>
+                  <p>{cart.quantity}</p>
+                </div>
+
                 <Separator className="px-6 dark:bg-white/60 bg-black/60" />
 
                 <div className="flex flex-col gap-1">
@@ -145,7 +155,7 @@ const ModalUpdateCart: React.FC<ModalUpdateCartProps> = ({ cart }) => {
                       onChange={(e) => {
                         setQuantity(Number(e.target.value));
                         if (Number(e.target.value) <= 0) {
-                          setError("Invalid quantity.");
+                          setError("Quantity must be greater than 0.");
                         } else {
                           setError("");
                         }
@@ -169,7 +179,10 @@ const ModalUpdateCart: React.FC<ModalUpdateCartProps> = ({ cart }) => {
                 </div>
 
                 {error && (
-                  <p className="lg:text-[14px] text-[12px] dark:text-red-400 text-red-500">
+                  <p
+                    className="lg:text-[14px] font-medium text-[12px]
+                   dark:text-red-400 text-red-500"
+                  >
                     {error}
                   </p>
                 )}
@@ -185,6 +198,7 @@ const ModalUpdateCart: React.FC<ModalUpdateCartProps> = ({ cart }) => {
                   onPress={() => {
                     onClose();
                     setQuantity(cart.quantity);
+                    setError("");
                   }}
                 >
                   Cancel

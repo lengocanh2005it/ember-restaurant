@@ -1,6 +1,6 @@
 "use client";
-import { DeleteSupportTicketDto } from "@/api/support-ticket/utils/types";
 import LoadingPage from "@/components/LoadingPage";
+import ModalConfirmDeleteRequest from "@/components/modal/ModalConfirmDeleteRequest";
 import ModalUpdateRequest from "@/components/modal/ModalUpdateRequest";
 import ModalViewResponse from "@/components/modal/ModalViewResponse";
 import { useDeleteSupportTicket } from "@/hooks/use-delete-support-ticket";
@@ -17,10 +17,8 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-  Tooltip,
 } from "@heroui/react";
 import { format } from "date-fns";
-import { TrashIcon } from "lucide-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 const columns = [
@@ -42,8 +40,6 @@ const TableOfRequests: React.FC = () => {
   const { user } = useUserStore();
   const initialPages = 4;
 
-  const { mutate: mutateDeleteSupportTicket } = useDeleteSupportTicket();
-
   const { data, isLoading, isError } = useRequestsOfUser(user?.id!);
 
   useEffect(() => {
@@ -51,18 +47,6 @@ const TableOfRequests: React.FC = () => {
       setRequests(data as Request[]);
     }
   }, [data]);
-
-  const handleClick = useCallback(
-    (requestId: string, userId: string) => {
-      const data: DeleteSupportTicketDto = {
-        userId,
-        requestId,
-      };
-
-      mutateDeleteSupportTicket(data);
-    },
-    [mutateDeleteSupportTicket]
-  );
 
   const totalPages = useMemo(() => {
     return Math.ceil(requests?.length / initialPages) ?? 0;
@@ -75,65 +59,56 @@ const TableOfRequests: React.FC = () => {
     return requests?.slice(start, end) ?? [];
   }, [requests, page]);
 
-  const renderCell = useCallback(
-    (request: Request, columnKey: React.Key) => {
-      const cellValue = request[columnKey as keyof Request];
+  const renderCell = useCallback((request: Request, columnKey: React.Key) => {
+    const cellValue = request[columnKey as keyof Request];
 
-      switch (columnKey) {
-        case "status": {
-          return (
-            <Chip
-              className="border-none"
-              color={statusColorMap[request.status]}
-              variant="dot"
-            >
-              {(cellValue as string).charAt(0).toUpperCase() +
-                (cellValue as string).substring(1)}
-            </Chip>
-          );
-        }
-
-        case "options":
-          return (
-            <div className="relative flex items-center gap-2">
-              <ModalUpdateRequest requestData={request} />
-
-              <Tooltip content="Delete" className="dark:bg-white text-black">
-                <TrashIcon
-                  className="cursor-pointer"
-                  onClick={() => handleClick(request.id, user?.id!)}
-                />
-              </Tooltip>
-
-              {request.ticket_messages &&
-                request.ticket_messages.length > 1 && (
-                  <ModalViewResponse request={request} />
-                )}
-            </div>
-          );
-
-        case "original_request": {
-          return (
-            <p className="lg:max-w-[400px] max-w-full break-words truncate">
-              {cellValue as string}
-            </p>
-          );
-        }
-
-        case "createdAt": {
-          return (
-            <p className="lg:max-w-[150px] truncate max-w-fit">
-              {format(request.createdAt, "dd/MM/yyyy HH:mm:ss")}
-            </p>
-          );
-        }
-
-        default:
-          return <p>{cellValue as string}</p>;
+    switch (columnKey) {
+      case "status": {
+        return (
+          <Chip
+            className="border-none"
+            color={statusColorMap[request.status]}
+            variant="dot"
+          >
+            {(cellValue as string).charAt(0).toUpperCase() +
+              (cellValue as string).substring(1)}
+          </Chip>
+        );
       }
-    },
-    [handleClick, user]
-  );
+
+      case "options":
+        return (
+          <div className="relative flex items-center gap-2">
+            <ModalUpdateRequest requestData={request} />
+
+            <ModalConfirmDeleteRequest requestId={request.id} />
+
+            {request.ticket_messages && request.ticket_messages.length > 1 && (
+              <ModalViewResponse request={request} />
+            )}
+          </div>
+        );
+
+      case "original_request": {
+        return (
+          <p className="lg:max-w-[80%] max-w-full break-words">
+            {cellValue as string}
+          </p>
+        );
+      }
+
+      case "createdAt": {
+        return (
+          <p className="lg:max-w-[150px] truncate max-w-fit">
+            {format(request.createdAt, "dd/MM/yyyy HH:mm:ss")}
+          </p>
+        );
+      }
+
+      default:
+        return <p>{cellValue as string}</p>;
+    }
+  }, []);
 
   if (isLoading) {
     return <LoadingPage />;

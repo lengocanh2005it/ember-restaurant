@@ -40,7 +40,7 @@ export default function CustomerSupport() {
   const { user } = useUserStore();
   const router = useRouter();
 
-  const { mutate: mutateCreateSupportTicket } = useAddSupportTicket();
+  const { mutate: mutateCreateSupportTicket } = useAddSupportTicket(user?.id!);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -72,6 +72,15 @@ export default function CustomerSupport() {
     onClose();
   };
 
+  const handleCloseClick = () => {
+    onClose();
+    setTimeout(() => {
+      form.reset({
+        request: "",
+      });
+    }, 800);
+  };
+
   return (
     <>
       <Tooltip
@@ -92,7 +101,10 @@ export default function CustomerSupport() {
         size="xl"
         isDismissable={false}
         isKeyboardDismissDisabled={false}
-        onOpenChange={onOpenChange}
+        onOpenChange={() => {
+          onOpenChange();
+          handleCloseClick();
+        }}
         motionProps={{
           variants: {
             enter: {
@@ -177,7 +189,7 @@ export default function CustomerSupport() {
                     gap-2 lg:justify-end items-center justify-center"
                     >
                       <Button
-                        onPress={onClose}
+                        onPress={handleCloseClick}
                         color="primary"
                         className="dark:bg-white dark:text-black w-fit"
                         startContent={<XIcon />}

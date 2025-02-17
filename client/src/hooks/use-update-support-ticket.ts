@@ -10,6 +10,7 @@ export const useUpdateRequest = (userId: string) => {
     onSuccess: (data: any) => {
       query.setQueryData(["profile"], data.profile);
       query.setQueryData(["support-tickets", userId], data.support_tickets);
+      query.setQueryData(["support-tickets"], data.support_tickets);
     },
     onError: (error: any) => {
       console.error(error);

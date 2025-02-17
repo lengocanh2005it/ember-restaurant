@@ -14,6 +14,7 @@ import { useUserStore } from "@/store";
 import { Request } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  Chip,
   Input,
   Modal,
   ModalBody,
@@ -22,10 +23,25 @@ import {
   Tooltip,
   useDisclosure,
 } from "@heroui/react";
-import { SendIcon, SquarePenIcon } from "lucide-react";
+import { SendIcon, SquarePenIcon, TrashIcon } from "lucide-react";
 import React from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
+import {
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 const formSchema = z.object({
   request: z
@@ -95,14 +111,18 @@ const ModalUpdateRequest: React.FC<ModalUpdateRequestProps> = ({
   return (
     <>
       <Tooltip content="Edit" className="dark:bg-white text-black">
-        <SquarePenIcon onClick={onOpen} className="cursor-pointer" />
+        <SquarePenIcon
+          onClick={onOpen}
+          className="cursor-pointer opacity-60 hover:opacity-100 duration-250 ease-in-out
+              transition-opacity"
+        />
       </Tooltip>
 
       <Modal
         backdrop="opaque"
         isOpen={isOpen}
         placement="center"
-        size="xl"
+        size="2xl"
         isDismissable={false}
         isKeyboardDismissDisabled={false}
         onOpenChange={onOpenChange}
@@ -139,7 +159,7 @@ const ModalUpdateRequest: React.FC<ModalUpdateRequestProps> = ({
 
               <ModalBody className="flex flex-col gap-2 py-4">
                 <ScrollArea className="max-h-[400px] rounded-md p-4 flex flex-col gap-2">
-                  <RequestDetails request={requestData} />
+                  <RequestDetails request={requestData} method="update" />
                 </ScrollArea>
 
                 <Form {...form}>

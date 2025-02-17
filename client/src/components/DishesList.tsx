@@ -65,8 +65,8 @@ const DishesList: React.FC = () => {
                    lg:px-8 gap-2 items-center justify-center"
                   >
                     <div
-                      className="lg:w-[15vw] md:w-1/2 w-3/4 lg:h-[25vh] md:h-[30vh] 
-                      h-[20vh] relative flex items-center justify-center"
+                      className="lg:w-[15vw] md:w-1/2 w-3/4 lg:h-[25vh] h-[30vh] relative 
+                      flex items-center justify-center"
                     >
                       {dish.image && (
                         <Image
@@ -93,7 +93,7 @@ const DishesList: React.FC = () => {
                             Name
                           </h1>
 
-                          <p className="lg:text-2xl text-xl text-nowrap">
+                          <p className="lg:text-2xl text-xl text-center break-words font-medium">
                             {dish?.name}
                           </p>
                         </div>
@@ -103,7 +103,9 @@ const DishesList: React.FC = () => {
                             Price
                           </h1>
 
-                          <p className="lg:text-2xl text-xl">{dish.price}$</p>
+                          <p className="lg:text-2xl text-xl font-medium">
+                            {dish.price}$
+                          </p>
                         </div>
 
                         <div className="flex flex-col gap-2 flex-1 items-center justify-center">
@@ -111,7 +113,7 @@ const DishesList: React.FC = () => {
                             Rate Star
                           </h1>
 
-                          <p className="lg:text-2xl text-xl">
+                          <p className="lg:text-2xl text-xl font-medium">
                             {dish.average_rating}⭐
                           </p>
                         </div>
@@ -119,10 +121,12 @@ const DishesList: React.FC = () => {
 
                       <div className="flex flex-col items-center flex-1 justify-center gap-2">
                         <h1 className="dark:text-white/80 text-black/80">
-                          View
+                          Stock Quantity
                         </h1>
 
-                        <ModalViewDish dish={dish} />
+                        <p className="lg:text-2xl text-xl font-medium">
+                          {dish.stock}
+                        </p>
                       </div>
 
                       <div className="flex flex-col items-center flex-1 justify-center gap-4">
@@ -130,7 +134,9 @@ const DishesList: React.FC = () => {
                           Options
                         </h1>
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center lg:gap-2 gap-1">
+                          <ModalViewDish dish={dish} />
+
                           <ModalUpdateDish dish={dish} />
 
                           <ModalConfirm id={dish.id} />

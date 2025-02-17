@@ -56,11 +56,14 @@ const NotificationDetailsItem: React.FC<NotificationDetailsItemProps> = ({
           </p>
 
           <div
-            className="flex flex-row items-center justify-between w-full
-             dark:text-gray-300 text-black lg:gap-1 gap-2"
+            className="flex md:flex-row md:items-center md:justify-between flex-col 
+            justify-center items-center w-full dark:text-gray-300 text-black lg:gap-1 gap-2"
           >
             <div className="flex items-center gap-1">
-              <Tooltip content="Date" className="dark:text-white text-black">
+              <Tooltip
+                content="Posted Date"
+                className="dark:text-white text-black"
+              >
                 <ClockIcon />
               </Tooltip>
 

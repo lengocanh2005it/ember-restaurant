@@ -101,7 +101,7 @@ const Promotions: React.FC = () => {
                   >
                     <div
                       className="absolute lg:left-[-20px] lg:top-[-30px] z-[10] 
-                lg:w-[120px] lg:h-[120px] w-[100px] h-[100px] right-[-20px] top-[-30px]"
+                lg:w-[120px] lg:h-[120px] w-[100px] h-[100px] rounded-lg right-[-20px] top-[-30px]"
                     >
                       <Image
                         src="/new_logo.png"
@@ -109,7 +109,7 @@ const Promotions: React.FC = () => {
                         sizes="(max-width:600px) 100vw, 50vw"
                         priority
                         fill
-                        className="object-cover select-none"
+                        className="object-cover select-none rounded-lg"
                       />
                     </div>
 

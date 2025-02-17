@@ -17,7 +17,7 @@ const NotificationsPage: React.FC = () => {
         className="flex flex-col lg:items-start items-center lg:justify-start 
         justify-center lg:text-left text-center"
       >
-        <div className="flex items-center lg:gap-4 gap-2 lg:flex-row flex-col lg:text-left text-center">
+        <div className="flex items-center lg:gap-2 lg:flex-row flex-col lg:text-left text-center">
           <h1 className="lg:text-2xl text-xl font-bold md:text-left text-center">
             Ember&apos; Notifications
           </h1>

@@ -94,11 +94,9 @@ const Footer: React.FC = () => {
               Register to receive news
             </h2>
             <form action="#" className="flex flex-col lg:gap-4 gap-2">
-              <Input label="Email" className="dark:text-white" />
+              <Input label="Email" />
 
-              <Button color="primary" className="dark:bg-white dark:text-black">
-                Register
-              </Button>
+              <Button className="text-black bg-white">Register</Button>
             </form>
           </div>
         </div>

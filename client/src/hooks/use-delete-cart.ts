@@ -8,8 +8,10 @@ export const useDeleteCart = (userId: string) => {
   return useMutation({
     mutationFn: handleDeleteCartOfUser,
     onSuccess: (data: any) => {
-      query.setQueryData(["carts", userId], data);
-      showSuccessToast("Deleted a cart successfully!", "bottom-right", {
+      console.log(data);
+      query.setQueryData(["carts", userId], data.carts);
+      query.setQueryData(["products"], data.products);
+      showSuccessToast("Deleted the cart successfully!", "bottom-right", {
         backgroundColor: "#28a745",
         color: "#fff",
       });

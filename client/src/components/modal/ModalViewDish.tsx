@@ -11,6 +11,7 @@ import {
   CardBody,
   Card,
   Chip,
+  Tooltip,
 } from "@heroui/react";
 import { EyeIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -33,7 +34,7 @@ const ModalViewDish: React.FC<ModalViewDishProps> = ({ dish }) => {
 
   const rows = [
     { key: 1, title: "Name", value: dish.name },
-    { key: 2, title: "Price", value: dish.price + " $" },
+    { key: 2, title: "Price", value: dish.price + " $ (USD)" },
     { key: 3, title: "Ingredients", value: dish.ingredients },
     { key: 4, title: "Ratings Number", value: dish.average_rating + "⭐" },
     { key: 5, title: "Description", value: dish.description },
@@ -41,11 +42,13 @@ const ModalViewDish: React.FC<ModalViewDishProps> = ({ dish }) => {
 
   return (
     <>
-      <EyeIcon
-        className="cursor-pointer opacity-80 hover:opacity-100 
+      <Tooltip content="Edit" className="dark:text-white text-black">
+        <EyeIcon
+          className="cursor-pointer opacity-80 hover:opacity-100 
          duration-250 ease-in-out transition-opacity"
-        onClick={onOpen}
-      />
+          onClick={onOpen}
+        />
+      </Tooltip>
 
       <Modal
         backdrop="opaque"
@@ -78,7 +81,7 @@ const ModalViewDish: React.FC<ModalViewDishProps> = ({ dish }) => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1 lg:text-left text-center">
-                View Details
+                View Dish Details
               </ModalHeader>
 
               <ModalBody>

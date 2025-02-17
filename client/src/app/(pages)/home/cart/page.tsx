@@ -1,5 +1,6 @@
 "use client";
 import LoadingPage from "@/components/LoadingPage";
+import ModalConfirmDeleteCart from "@/components/modal/ModalConfirmDeleteCart";
 import ModalNoteCart from "@/components/modal/ModalNoteCart";
 import ModalUpdateCart from "@/components/modal/ModalUpdateCart";
 import Order from "@/components/Order";
@@ -212,27 +213,7 @@ const CartPage: React.FC = () => {
                         <ModalUpdateCart cart={item} />
                       </span>
 
-                      <Tooltip
-                        content="Delete"
-                        showArrow
-                        className="dark:text-white text-black"
-                      >
-                        <TrashIcon
-                          size={30}
-                          className="opacity-60 hover:opacity-100"
-                          onClick={() => {
-                            mutateDeleteCart({
-                              userId: user?.id!,
-                              cartId: item.id!,
-                            });
-                            setSelectedCarts(
-                              selectedCarts.filter(
-                                (cart) => cart.id !== item.id
-                              )
-                            );
-                          }}
-                        />
-                      </Tooltip>
+                      <ModalConfirmDeleteCart cartId={item.id} />
                     </div>
                   </div>
                 </div>

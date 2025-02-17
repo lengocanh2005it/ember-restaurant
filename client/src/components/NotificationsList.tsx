@@ -1,9 +1,9 @@
 "use client";
 import LoadingPage from "@/components/LoadingPage";
 import { useNotifications } from "@/hooks/use-notifications";
-import { useAppStore, useNotificationStore } from "@/store";
+import { useAppStore, useNotificationStore, useUserStore } from "@/store";
 import { Notification } from "@/utils";
-import { Button, Tooltip } from "@heroui/react";
+import { Badge, Button, Tooltip } from "@heroui/react";
 import { format } from "date-fns";
 import { ArrowDownIcon, ArrowUpIcon, ClockIcon } from "lucide-react";
 import Image from "next/image";
@@ -20,6 +20,7 @@ interface NotificationListProps {
 const NotificationsList: React.FC<NotificationListProps> = ({ setIsClick }) => {
   const [notifications, setNotifications] = React.useState<Notification[]>([]);
   const router = useRouter();
+  const { user } = useUserStore();
 
   const { setNotification } = useNotificationStore();
   const { isAdmin } = useAppStore();
@@ -98,10 +99,10 @@ const NotificationsList: React.FC<NotificationListProps> = ({ setIsClick }) => {
               <SwiperSlide
                 key={notification.id}
                 className="h-fit flex-1 border dark:border-white/20
-                relative flex gap-5 p-2 rounded-xl lg:flex-row flex-col
-                hover:dark:border-white/40 hover:cursor-pointer
-                 ease-in-out transition-opacity duration-250 group
-                px-3 shadow-custom"
+            relative flex gap-5 p-2 rounded-xl lg:flex-row flex-col
+            hover:dark:border-white/40 hover:cursor-pointer
+             ease-in-out transition-opacity duration-250 group
+            px-3 shadow-custom lg:py-2 py-3"
                 onClick={() => {
                   setNotification(notification as Notification);
                   setIsClick(true);
@@ -116,7 +117,7 @@ const NotificationsList: React.FC<NotificationListProps> = ({ setIsClick }) => {
                   className="dark:text-white text-black"
                 >
                   <div
-                    className="relative lg:w-[40%] w-full h-full rounded-md"
+                    className="relative lg:w-[40%] w-full h-full rounded-xl"
                     onClick={() => {
                       setNotification(notification);
                       setIsClick(true);
@@ -133,39 +134,68 @@ const NotificationsList: React.FC<NotificationListProps> = ({ setIsClick }) => {
                         priority
                         sizes="(max-width: 600px) 100vw, 50vw"
                         className="object-cover cursor-pointer rounded-xl
-                      ease-in-out transition-opacity opacity-70 group-hover:opacity-100"
+                ease-in-out transition-opacity opacity-70 group-hover:opacity-100"
                       />
                     )}
                   </div>
                 </Tooltip>
 
                 <div
-                  className="relative flex flex-col justify-between 
-                lg:text-base text-[14px] font-medium w-full"
+                  className="relative flex flex-col lg:justify-between  lg:items-end
+            lg:text-base text-[14px] font-medium w-full justify-center items-center"
                 >
                   <div
                     className="flex flex-col gap-1 lg:items-start items-center
-                   lg:text-left text-center"
+               lg:text-left text-center"
                   >
-                    <Tooltip
-                      showArrow
-                      content={notification.title}
-                      className="dark:text-white text-black"
-                    >
-                      <h1
-                        onClick={() => {
-                          setNotification(notification);
-                          setIsClick(true);
-                          setTimeout(() => {
-                            setIsClick(false);
-                          }, 1000);
-                        }}
-                        className="lg:text-lg text-base font-medium w-fit text-wrap hover:underline
-                         hover:text-blue-700 hover:cursor-pointer lg:text-left text-center"
+                    {notification.userNotifications &&
+                    notification.userNotifications.length !== 0 &&
+                    notification.userNotifications.every(
+                      (un) => un.user.id !== user?.id!
+                    ) &&
+                    !isAdmin ? (
+                      <Badge color="danger" content="New">
+                        <Tooltip
+                          showArrow
+                          content={notification.title}
+                          className="dark:text-white text-black"
+                        >
+                          <h1
+                            onClick={() => {
+                              setNotification(notification);
+                              setIsClick(true);
+                              setTimeout(() => {
+                                setIsClick(false);
+                              }, 1000);
+                            }}
+                            className="lg:text-lg text-base font-medium w-fit text-wrap hover:underline
+                   hover:text-blue-700 hover:cursor-pointer lg:text-left text-center"
+                          >
+                            {notification.title}
+                          </h1>
+                        </Tooltip>
+                      </Badge>
+                    ) : (
+                      <Tooltip
+                        showArrow
+                        content={notification.title}
+                        className="dark:text-white text-black"
                       >
-                        {notification.title}
-                      </h1>
-                    </Tooltip>
+                        <h1
+                          onClick={() => {
+                            setNotification(notification);
+                            setIsClick(true);
+                            setTimeout(() => {
+                              setIsClick(false);
+                            }, 1000);
+                          }}
+                          className="lg:text-lg text-base font-medium w-fit text-wrap hover:underline
+                     hover:text-blue-700 hover:cursor-pointer lg:text-left text-center"
+                        >
+                          {notification.title}
+                        </h1>
+                      </Tooltip>
+                    )}
 
                     <p className="line-clamp-2 text-[14px] dark:text-white/80 text-black/80">
                       {notification.content}
@@ -174,7 +204,7 @@ const NotificationsList: React.FC<NotificationListProps> = ({ setIsClick }) => {
 
                   <p
                     className="flex items-center justify-end
-                   gap-2 dark:text-gray-300 text-black/60"
+               gap-2 dark:text-gray-300 text-black/60"
                   >
                     <ClockIcon />{" "}
                     {format(
