@@ -5,11 +5,9 @@ export const handleDeleteSupportTicket = async (
   deleteSupportTicketDto: DeleteSupportTicketDto
 ): Promise<any> => {
   try {
-    const { requestId, userId } = deleteSupportTicketDto;
+    const { requestId } = deleteSupportTicketDto;
 
-    const response = await axios.delete(
-      `/support-ticket/${requestId}/?userId=${userId}`
-    );
+    const response = await axios.delete(`/support-ticket/${requestId}`);
 
     if (!response.data) throw new Error("Internal Server Error!");
 

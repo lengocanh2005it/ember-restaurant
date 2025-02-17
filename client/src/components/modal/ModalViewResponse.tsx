@@ -28,7 +28,11 @@ const ModalViewResponse: React.FC<ModalViewResponseProps> = ({ request }) => {
         content="View Response Of Request"
         className="dark:bg-white text-black"
       >
-        <MessageSquareQuote className="cursor-pointer" onClick={onOpen} />
+        <MessageSquareQuote
+          className="cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-250
+        ease-in-out"
+          onClick={onOpen}
+        />
       </Tooltip>
 
       <Modal
@@ -70,7 +74,7 @@ const ModalViewResponse: React.FC<ModalViewResponseProps> = ({ request }) => {
 
               <ModalBody>
                 <ScrollArea className="max-h-[400px] rounded-md p-4 flex flex-col gap-2">
-                  <RequestDetails request={request} />
+                  <RequestDetails request={request} method="view" />
                 </ScrollArea>
               </ModalBody>
 

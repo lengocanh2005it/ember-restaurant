@@ -20,6 +20,7 @@ import { useDeleteSupportTicket } from "@/hooks/use-delete-support-ticket";
 import { format } from "date-fns";
 import { Request } from "@/utils";
 import { useUserStore } from "@/store";
+import ModalConfirmDeleteRequest from "@/components/modal/ModalConfirmDeleteRequest";
 
 const columns = [
   { name: "DATE TIME", uid: "date" },
@@ -46,18 +47,6 @@ const TableRequestsOfCustomers: React.FC<TableRequestsOfCustomersProps> = ({
   const initialPages = 3;
   const { user } = useUserStore();
 
-  const { mutate: mutateDeleteRequestAdmin } = useDeleteSupportTicket();
-
-  const handleClick = useCallback(
-    (requestId: string, userId: string) => {
-      mutateDeleteRequestAdmin({
-        requestId,
-        userId,
-      });
-    },
-    [mutateDeleteRequestAdmin]
-  );
-
   const totalPages = useMemo(() => {
     return Math.ceil(requests?.length / initialPages) ?? 0;
   }, [requests]);
@@ -69,92 +58,80 @@ const TableRequestsOfCustomers: React.FC<TableRequestsOfCustomersProps> = ({
     return requests?.slice(start, end) ?? [];
   }, [page, requests]);
 
-  const renderCell = useCallback(
-    (request: Request, columnKey: React.Key) => {
-      const cellValue = request[columnKey as keyof Request];
+  const renderCell = useCallback((request: Request, columnKey: React.Key) => {
+    const cellValue = request[columnKey as keyof Request];
 
-      switch (columnKey) {
-        case "date": {
-          return <p>{format(request.createdAt, "dd/MM/yyyy HH:mm:ss")}</p>;
-        }
-
-        case "user": {
-          const { image, name, username, email } = request.user;
-
-          return (
-            <div className="relative flex items-center gap-2">
-              <div className="relative w-[50px] h-[50px] rounded-full sm:block hidden">
-                {image && (
-                  <Image
-                    src={image}
-                    alt=""
-                    priority
-                    sizes="(max-width:600px) 100vw, 50vw"
-                    fill
-                    className="object-cover select-none rounded-full"
-                  />
-                )}
-              </div>
-
-              <div className="flex flex-col">
-                <h1>{name ? name : username}</h1>
-
-                <p className="dark:text-white/50 text-black/60">
-                  {email ? email : "Email: Null"}
-                </p>
-              </div>
-            </div>
-          );
-        }
-
-        case "original_request": {
-          return (
-            <p className="lg:max-w-[400px] max-w-full break-words truncate">
-              {cellValue as string}
-            </p>
-          );
-        }
-
-        case "status": {
-          return (
-            <Chip
-              color={statusColorMap[cellValue as string]}
-              variant="dot"
-              className="border-none"
-            >
-              {(cellValue as string).charAt(0).toUpperCase() +
-                (cellValue as string).substring(1)}
-            </Chip>
-          );
-        }
-
-        case "options": {
-          return (
-            <div className="relative flex items-center gap-2">
-              <ModalViewRequest request={request} user={request.user} />
-
-              <ModalReply request={request} />
-
-              <Tooltip content="Delete" className="dark:text-white text-black">
-                <TrashIcon
-                  className="cursor-pointer opacity-60 hover:opacity-100 duration-250 ease-in-out
-              transition-opacity"
-                  onClick={() => {
-                    const { id } = request;
-                    handleClick(id, user?.id!);
-                  }}
-                />
-              </Tooltip>
-            </div>
-          );
-        }
-
-        default:
-          return <p>{cellValue as string}</p>;
+    switch (columnKey) {
+      case "date": {
+        return <p>{format(request.createdAt, "dd/MM/yyyy HH:mm:ss")}</p>;
       }
-    },
-    [handleClick, user]
-  );
+
+      case "user": {
+        const { image, name, username, email } = request.user;
+
+        return (
+          <div className="relative flex items-center gap-2">
+            <div className="relative w-[50px] h-[50px] rounded-full sm:block hidden">
+              {image && (
+                <Image
+                  src={image}
+                  alt=""
+                  priority
+                  sizes="(max-width:600px) 100vw, 50vw"
+                  fill
+                  className="object-cover select-none rounded-full"
+                />
+              )}
+            </div>
+
+            <div className="flex flex-col">
+              <h1>{name ? name : username}</h1>
+
+              <p className="dark:text-white/50 text-black/60">
+                {email ? email : "Email: Null"}
+              </p>
+            </div>
+          </div>
+        );
+      }
+
+      case "original_request": {
+        return (
+          <p className="lg:max-w-[400px] max-w-full break-words truncate">
+            {cellValue as string}
+          </p>
+        );
+      }
+
+      case "status": {
+        return (
+          <Chip
+            color={statusColorMap[cellValue as string]}
+            variant="dot"
+            className="border-none"
+          >
+            {(cellValue as string).charAt(0).toUpperCase() +
+              (cellValue as string).substring(1)}
+          </Chip>
+        );
+      }
+
+      case "options": {
+        return (
+          <div className="relative flex items-center gap-2">
+            <ModalViewRequest request={request} user={request.user} />
+
+            <ModalReply request={request} />
+
+            <ModalConfirmDeleteRequest requestId={request.id} />
+          </div>
+        );
+      }
+
+      default:
+        return <p>{cellValue as string}</p>;
+    }
+  }, []);
 
   return (
     <>

@@ -45,6 +45,16 @@ export const statusOptions = [
   { name: "Pending", uid: "pending" },
 ];
 
+export const categoryMap: Record<string, string> = {
+  appetizer: "Appetizer",
+  dessert: "Dessert",
+  main_course: "Main Course",
+  snack: "Snack",
+  signature_dishes: "Signature Dishes",
+  beverage: "Beverage",
+  hotpot: "Hot Pot",
+};
+
 export const MAX_VOUCHER_USAGE = 1;
 export const MIN_ORDER_AMOUNT = 100000;
 export const DEFAULT_STALE_TIME = 20 * 1000 * 60;

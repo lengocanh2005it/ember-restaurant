@@ -129,7 +129,7 @@ const ModalReply: React.FC<ModalReplyProps> = ({ request }) => {
 
               <ModalBody className="flex flex-col gap-2 py-4">
                 <ScrollArea className="max-h-[350px] rounded-md p-4 flex flex-col gap-2">
-                  <RequestDetails request={request} />
+                  <RequestDetails request={request} method="update" />
                 </ScrollArea>
 
                 <Form {...form}>

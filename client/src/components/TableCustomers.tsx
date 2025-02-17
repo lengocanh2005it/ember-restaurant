@@ -99,6 +99,14 @@ const TableCustomers: React.FC<TableCustomersProps> = ({ users }) => {
         return <p>Local</p>;
       }
 
+      case "address": {
+        return (
+          <p className="max-w-full break-words">
+            {user.address ? user.address : "Null"}
+          </p>
+        );
+      }
+
       case "status":
         return (
           <Chip
@@ -136,7 +144,7 @@ const TableCustomers: React.FC<TableCustomersProps> = ({ users }) => {
         );
       default:
         return (
-          <p className="max-w-full truncate">
+          <p className="max-w-[500px] break-words">
             {(cellValue as string | number)
               ? (cellValue as string | number)
               : "Null"}

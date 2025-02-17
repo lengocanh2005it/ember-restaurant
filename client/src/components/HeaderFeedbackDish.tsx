@@ -23,7 +23,7 @@ const HeaderFeedbackDish: React.FC<HeaderFeedbackDishProps> = ({ product }) => {
       </div>
 
       <div className="relative flex items-center lg:gap-4 gap-1 lg:flex-row flex-col lg:px-10 px-0">
-        <div className="relative lg:w-[10vw] lg:h-[20vh] w-[30vw] h-[30vh]">
+        <div className="relative lg:w-[10vw] lg:h-[20vh] w-[35vw] h-[25vh]">
           {product.image && (
             <Image
               src={product.image}
@@ -41,10 +41,7 @@ const HeaderFeedbackDish: React.FC<HeaderFeedbackDishProps> = ({ product }) => {
             {product?.name ? product.name : ""}
           </h1>
 
-          <p
-            className="lg:text-base text-[14px] dark:text-white/70 text-black/70 
-          lg:max-w-[90%] w-full"
-          >
+          <p className="lg:text-base text-[14px] dark:text-white/70 text-black/70 break-words">
             {product?.description ? product.description : ""}
           </p>
         </div>

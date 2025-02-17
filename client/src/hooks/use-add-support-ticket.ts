@@ -1,17 +1,14 @@
 import { handleCreateSupportTicket } from "@/api/support-ticket/create-support-ticket";
-import { useUserStore } from "@/store";
-import { showErrorToast, showSuccessToast, User } from "@/utils";
+import { showErrorToast, showSuccessToast } from "@/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export const useAddSupportTicket = () => {
+export const useAddSupportTicket = (userId: string) => {
   const query = useQueryClient();
-  const { setUser } = useUserStore();
 
   return useMutation({
     mutationFn: handleCreateSupportTicket,
     onSuccess: (data: any) => {
-      query.setQueryData(["profile"], data);
-      setUser(data as User);
+      query.setQueryData(["support-tickets", userId], data.support_tickets);
       showSuccessToast(
         "Thank you for your request. We will get back to you as soon as possible!",
         "bottom-right",

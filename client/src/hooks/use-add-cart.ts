@@ -8,7 +8,7 @@ export const useAddCart = (userId: string) => {
   return useMutation({
     mutationFn: handleCreateCart,
     onSuccess: (data: any) => {
-      query.setQueryData(["carts", userId], data);
+      query.setQueryData(["carts", userId], data.carts);
       query.setQueryData(["products"], data.products);
       showSuccessToast("Added product to cart successfully!", "top-right", {
         backgroundColor: "#28a745",

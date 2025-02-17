@@ -3,6 +3,7 @@ import ButtonOrder from "@/components/buttons/ButtonOrder";
 import ModalRatingDish from "@/components/modal/ModalRatingDish";
 import ModalViewItemMenu from "@/components/modal/ModalViewItemMenu";
 import { Separator } from "@/components/ui/separator";
+import { categoryMap } from "@/config/constants";
 import { useAppStore } from "@/store";
 import { Product } from "@/utils/types";
 import { Chip, Tooltip } from "@heroui/react";
@@ -13,16 +14,6 @@ import React from "react";
 interface MenuItemProps {
   item: Product;
 }
-
-const categoryMap: Record<string, string> = {
-  appetizer: "Appetizer",
-  dessert: "Dessert",
-  main_course: "Main Course",
-  snack: "Snack",
-  signature_dishes: "Signature Dishes",
-  beverage: "Beverage",
-  hotpot: "Hot Pot",
-};
 
 const MenuItems: React.FC<MenuItemProps> = ({ item }) => {
   const { isAdmin } = useAppStore();
@@ -51,7 +42,7 @@ const MenuItems: React.FC<MenuItemProps> = ({ item }) => {
             : "opacity-100 pointer-events-auto"
         }`}
       >
-        <div className="flex items-center gap-1 lg:text-[14px] text-[13px]">
+        <div className="flex items-center gap-1 lg:text-[14px] text-[13px] lg:justify-start justify-center">
           <Tooltip content="Category" className="dark:text-white text-black">
             <TagIcon size={15} />
           </Tooltip>

@@ -84,7 +84,12 @@ const ModalViewItemMenu: React.FC<ModalViewItemMenuProps> = ({ product }) => {
         <ModalContent className="dark:text-white text-black">
           {(onClose) => (
             <>
-              <ModalHeader>Dish Details</ModalHeader>
+              <ModalHeader
+                className="flex flex-col lg:justify-start justify-center 
+              lg:text-left text-center"
+              >
+                Dish Details
+              </ModalHeader>
 
               <ModalBody
                 className="relative flex lg:flex-row flex-col
@@ -142,14 +147,18 @@ const ModalViewItemMenu: React.FC<ModalViewItemMenuProps> = ({ product }) => {
                     </div>
                   </div>
 
-                  <div className="relative flex lg:items-center flex-row gap-1">
+                  <div
+                    className="relative flex lg:items-center flex-row gap-1 
+                  lg:justify-start justify-center"
+                  >
                     <p>Items in Stock: </p>
+
                     <p className="lg:text-xl text-base dark:text-red-400 text-red-500 font-bold">
                       {product.stock}
                     </p>
                   </div>
 
-                  <div className="relative flex flex-row gap-2 items-center justify-end">
+                  <div className="relative flex flex-row gap-2 items-center lg:justify-end justify-center">
                     <p className="lg:text-xl text-base font-bold">
                       {product?.average_rating ? product.average_rating : 0}⭐
                     </p>

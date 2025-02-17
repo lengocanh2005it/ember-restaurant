@@ -94,7 +94,7 @@ const TableOfReviewDetailsDish: React.FC<TableOfReviewDetailsDishProps> = ({
                 )}
               </div>
 
-              <div className="flex flex-col relative">
+              <div className="flex flex-col relative max-w-full truncate">
                 <h1 className="lg:text-[14px] text-[12px] font-semibold">
                   {name ? name : username}
                 </h1>
@@ -129,7 +129,7 @@ const TableOfReviewDetailsDish: React.FC<TableOfReviewDetailsDishProps> = ({
         }
 
         case "comment": {
-          return <p className="max-w-[500px]">{cellValue as string}</p>;
+          return <p className="max-w-full truncate">{cellValue as string}</p>;
         }
 
         default: {

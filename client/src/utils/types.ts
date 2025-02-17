@@ -52,6 +52,7 @@ export type TicketMessage = {
   updatedAt: Date;
   sender: User;
   support_ticket: Request;
+  deletedAt?: Date;
 };
 
 export type Product = {
@@ -188,6 +189,15 @@ export type Notification = {
   number: number;
   content: string;
   name: string;
+  userNotifications?: UserNotification[];
+};
+
+export type UserNotification = {
+  id: string;
+  viewed_at: Date;
+  view_count: number;
+  user: User;
+  notification: Notification;
 };
 
 export type Review = {

@@ -11,13 +11,15 @@ const OrdersReservationsPoints: React.FC = () => {
   const items = [
     {
       title: "Total Orders",
-      description: "This is the total number of orders placed.",
+      description:
+        "This is the total number of orders you have successfully paid.",
       number: user?.total_orders ? user?.total_orders : 0,
       image: "/svg/shopping-cart-svgrepo-com.svg",
     },
     {
       title: "Total Reservations",
-      description: "This is the total number of reservations placed.",
+      description:
+        "This is the total number of reservations you have successfully paid.",
       number: user?.total_reservations ? user?.total_reservations : 0,
       image: "/svg/calendar-svgrepo-com.svg",
     },

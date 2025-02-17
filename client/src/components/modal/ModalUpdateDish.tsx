@@ -22,9 +22,10 @@ import {
   Select,
   SelectItem,
   Textarea,
+  Tooltip,
   useDisclosure,
 } from "@heroui/react";
-import { PencilLineIcon } from "lucide-react";
+import { PencilLineIcon, SquarePenIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -150,11 +151,13 @@ const ModalUpdateDish: React.FC<ModalUpdateDishProps> = ({ dish }) => {
 
   return (
     <>
-      <PencilLineIcon
-        className="cursor-pointer opacity-80 hover:opacity-100 duration-250
+      <Tooltip content="Update" className="dark:text-white text-black">
+        <SquarePenIcon
+          className="cursor-pointer opacity-80 hover:opacity-100 duration-250
          ease-in-out transition-opacity"
-        onClick={onOpen}
-      />
+          onClick={onOpen}
+        />
+      </Tooltip>
 
       <Modal
         backdrop="opaque"

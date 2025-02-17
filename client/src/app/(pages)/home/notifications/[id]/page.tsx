@@ -60,7 +60,7 @@ const NotificationPage: React.FC = () => {
 
         <div className="flex flex-col gap-2 container mx-auto">
           <div className="flex flex-col lg:gap-4 gap-2 relative">
-            <h1 className="lg:text-2xl text-xl font-bold">
+            <h1 className="lg:text-2xl text-xl font-bold lg:text-left text-center">
               {notification?.title ? notification?.title : ""}
             </h1>
 

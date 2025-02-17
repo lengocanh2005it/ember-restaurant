@@ -68,7 +68,7 @@ const ModalViewRequest: React.FC<ModalViewRequestProps> = ({ request }) => {
 
               <ModalBody>
                 <ScrollArea className="max-h-[400px] rounded-md p-4 flex flex-col gap-2">
-                  <RequestDetails request={request} />
+                  <RequestDetails request={request} method="view" />
                 </ScrollArea>
               </ModalBody>
 

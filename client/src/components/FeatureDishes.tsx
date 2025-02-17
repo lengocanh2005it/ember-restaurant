@@ -1,9 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import { InputNumber } from "antd";
-import { Button } from "@heroui/react";
-import { CircleDollarSignIcon, ShoppingCartIcon } from "lucide-react";
+import { CreateCartDto } from "@/api/carts/utils/types";
+import EditAdminButton from "@/components/EditAdminButton";
+import LoadingPage from "@/components/LoadingPage";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
@@ -12,14 +10,17 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
-import { useFeaturedProducts } from "@/hooks/use-featured-products";
+import { categoryMap } from "@/config/constants";
 import { useAddCart } from "@/hooks/use-add-cart";
-import LoadingPage from "@/components/LoadingPage";
-import EditAdminButton from "@/components/EditAdminButton";
-import { Cart, Product } from "@/utils/types";
-import { CreateCartDto } from "@/api/carts/utils/types";
+import { useFeaturedProducts } from "@/hooks/use-featured-products";
 import { useAppStore, useUserStore } from "@/store";
+import { Product } from "@/utils/types";
+import { Button, Tooltip } from "@heroui/react";
+import { InputNumber } from "antd";
+import Autoplay from "embla-carousel-autoplay";
+import { CircleDollarSignIcon, ShoppingCartIcon } from "lucide-react";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
 
 const FeatureDishes: React.FC = () => {
   const { data, isLoading: isFetching } = useFeaturedProducts();
@@ -76,7 +77,8 @@ const FeatureDishes: React.FC = () => {
               </div>
 
               <p className="lg:text-base text-[14px] dark:text-white/70 text-black/80">
-                Discover our most popular and highly recommended dishes.
+                Discover our most popular and highly recommended dishes. Go to
+                the Menu page to see the full list of dishes.
               </p>
             </div>
 
@@ -139,15 +141,33 @@ const FeatureDishes: React.FC = () => {
                           </div>
 
                           <div
-                            className="w-full px-12 space-y-2 relative opacity-90
+                            className="w-full lg:px-12 px-6 space-y-2 relative opacity-90
                              group-hover:opacity-100 ease-in-out duration-250 transition-all"
                           >
-                            <h1
-                              className="text-center lg:text-xl text-base font-medium text-black
+                            <div className="flex flex-col items-center text-center">
+                              <h1
+                                className="text-center lg:text-xl text-base font-medium text-black
                        dark:text-white"
-                            >
-                              {dish.name}
-                            </h1>
+                              >
+                                {dish.name}
+                              </h1>
+
+                              <Tooltip
+                                content="Category"
+                                className="dark:text-white text-black"
+                              >
+                                <p
+                                  className="lg:text-[15px] text-[14px] dark:text-white/80
+                                 text-black/80"
+                                >
+                                  {
+                                    categoryMap[
+                                      dish.category as keyof typeof categoryMap
+                                    ]
+                                  }
+                                </p>
+                              </Tooltip>
+                            </div>
 
                             <div
                               className={`flex xl:flex-row flex-col

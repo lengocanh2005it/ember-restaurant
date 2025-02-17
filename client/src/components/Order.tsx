@@ -31,7 +31,7 @@ const Order: React.FC<OrderProps> = ({ setCheckedItems }) => {
 
   return (
     <div
-      className="lg:w-[450px] sm:w-[500px] w-full mx-auto flex flex-col gap-4 p-4 rounded-lg
+      className="lg:w-[450px] sm:w-[500px] w-full mx-auto flex flex-col gap-4 p-4 rounded-xl
      border dark:border-white/30 shadow-custom"
     >
       <div className="flex flex-col">
