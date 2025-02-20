@@ -39,6 +39,8 @@ import { UsersService } from 'src/users/users.service';
 import { SessionSerializer } from 'src/utils/common/serializers/session.serialize';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { EmailsService } from 'src/emails/emails.service';
+import { Email } from 'src/emails/entities/emails.entity';
 
 @Global()
 @Module({
@@ -52,6 +54,7 @@ import { AuthService } from './auth.service';
       Payment,
       Promotion,
       Table,
+      Email,
     ]),
     PassportModule,
     UsersModule,
@@ -95,6 +98,7 @@ import { AuthService } from './auth.service';
     PaymentsService,
     StripeService,
     PaymentGateway,
+    EmailsService,
   ],
 })
 export class AuthModule {}

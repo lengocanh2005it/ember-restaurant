@@ -31,6 +31,9 @@ import { UserDiscountService } from 'src/user-discount/user-discount.service';
 import { User } from 'src/users/entities/users.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { Email } from 'src/emails/entities/emails.entity';
+import { EmailsService } from 'src/emails/emails.service';
+import { UploadsService } from 'src/uploads/uploads.service';
 
 @Module({
   imports: [
@@ -46,6 +49,7 @@ import { UsersService } from './users.service';
       Payment,
       Promotion,
       Table,
+      Email,
     ]),
     OrdersModule,
     RolesModule,
@@ -68,6 +72,8 @@ import { UsersService } from './users.service';
     OrdersService,
     AuthService,
     JwtService,
+    EmailsService,
+    UploadsService,
   ],
   controllers: [UsersController],
   exports: [UsersService],

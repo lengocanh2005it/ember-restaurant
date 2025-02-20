@@ -31,6 +31,8 @@ import { User } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
 import { UploadsController } from './uploads.controller';
 import { UploadsService } from './uploads.service';
+import { EmailsService } from 'src/emails/emails.service';
+import { Email } from 'src/emails/entities/emails.entity';
 
 @Module({
   imports: [
@@ -51,6 +53,7 @@ import { UploadsService } from './uploads.service';
       Permission,
       Table,
       Area,
+      Email,
     ]),
     DiscountsModule,
     PaymentsModule,
@@ -71,6 +74,7 @@ import { UploadsService } from './uploads.service';
     PromotionsService,
     PermissionsService,
     TablesService,
+    EmailsService,
   ],
   exports: [UploadsService],
 })

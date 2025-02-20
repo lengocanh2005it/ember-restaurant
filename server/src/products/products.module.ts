@@ -34,6 +34,9 @@ import { PaymentStrategyFactory } from 'src/payments/payment.factory';
 import { PayPalService } from 'src/payments/services/paypal.service';
 import { ApplePayService } from 'src/payments/services/apple-pay.service';
 import { CodService } from 'src/payments/services/cod.service';
+import { Email } from 'src/emails/entities/emails.entity';
+import { EmailsService } from 'src/emails/emails.service';
+import { UploadsService } from 'src/uploads/uploads.service';
 
 @Module({
   imports: [
@@ -50,6 +53,7 @@ import { CodService } from 'src/payments/services/cod.service';
       Promotion,
       Table,
       Area,
+      Email,
     ]),
     RolesModule,
     DiscountsModule,
@@ -74,6 +78,8 @@ import { CodService } from 'src/payments/services/cod.service';
     PayPalService,
     ApplePayService,
     CodService,
+    EmailsService,
+    UploadsService,
   ],
   controllers: [ProductsController],
   exports: [ProductsService],

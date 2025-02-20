@@ -5,6 +5,8 @@ import { AuthService } from 'src/auth/auth.service';
 import { DiscountsModule } from 'src/discounts/discounts.module';
 import { DiscountsService } from 'src/discounts/discounts.service';
 import { Discount } from 'src/discounts/entities/discounts.entity';
+import { EmailsService } from 'src/emails/emails.service';
+import { Email } from 'src/emails/entities/emails.entity';
 import { OrderProduct } from 'src/order-product/entities/order-product.entity';
 import { OrderProductModule } from 'src/order-product/order-product.module';
 import { OrderProductService } from 'src/order-product/order-product.service';
@@ -30,6 +32,7 @@ import { Role } from 'src/roles/entities/roles.entity';
 import { RolesModule } from 'src/roles/roles.module';
 import { Table } from 'src/tables/entities/tables.entity';
 import { TablesModule } from 'src/tables/tables.module';
+import { UploadsService } from 'src/uploads/uploads.service';
 import { UserDiscount } from 'src/user-discount/entities/user-discount.entity';
 import { UserDiscountModule } from 'src/user-discount/user-discount.module';
 import { User } from 'src/users/entities/users.entity';
@@ -51,6 +54,7 @@ import { UsersService } from 'src/users/users.service';
       Table,
       User,
       Role,
+      Email,
     ]),
     ProductsModule,
     OrdersModule,
@@ -77,6 +81,8 @@ import { UsersService } from 'src/users/users.service';
     PaymentGateway,
     JwtService,
     AuthService,
+    EmailsService,
+    UploadsService,
   ],
   controllers: [ReviewsController],
   exports: [ReviewsService],

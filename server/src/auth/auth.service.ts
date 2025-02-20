@@ -9,13 +9,23 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import * as cookieSignature from 'cookie-signature';
 import { Request, Response } from 'express';
-import { LocalLoginDto } from 'src/auth/dtos/auth.dto';
+import * as QRCode from 'qrcode';
+import * as speakeasy from 'speakeasy';
+import {
+  Confirm2FADto,
+  LocalLoginDto,
+  UpdatePasswordDto,
+} from 'src/auth/dtos/auth.dto';
+import { EmailsService } from 'src/emails/emails.service';
 import { RedisService } from 'src/redis/redis.service';
 import { User } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
 import {
   CreateSocialAccount,
   GenerateTokensType,
+  generateVerificationCode,
+  handleDecryptSecret,
+  handleEncryptSecret,
   initializeCookies,
   JwtPayload,
   SESSION_MAX_AGE,
@@ -30,6 +40,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly redisService: RedisService,
+    private readonly emailsService: EmailsService,
   ) {}
 
   async validateLocalAccount(localLoginDto: LocalLoginDto): Promise<User> {
@@ -178,5 +189,138 @@ export class AuthService {
     const data = JSON.parse(cachedData) as SessionDataRedisType;
 
     return data.user;
+  };
+
+  public handleVerify2FA = async (
+    otp: string,
+    userId: string,
+  ): Promise<User> => {
+    const { two_factor_secret, encrypted_iv } =
+      await this.usersService.handleGetSecretAndIvEncryptedOfUser(userId);
+
+    const secret = handleDecryptSecret(two_factor_secret, encrypted_iv);
+
+    const isValid = speakeasy.totp.verify({
+      secret,
+      encoding: 'base32',
+      token: otp,
+      window: 1,
+    });
+
+    if (!isValid)
+      throw new BadRequestException(
+        'Your OTP is not correct. Please try again.',
+      );
+
+    await this.usersService.handleUpdate2FAEnableForUser(userId);
+
+    return await this.usersService.findOne(userId);
+  };
+
+  public handleGenerate2FA = async (
+    user: User,
+    type: string,
+  ): Promise<Record<string, string | User>> => {
+    if (type === 'generate') {
+      const secret = speakeasy.generateSecret({
+        length: 20,
+        name: `Ember Restaurant: ${user.username ?? user.name}`,
+      });
+
+      const { encryptedData, iv } = handleEncryptSecret(secret.base32);
+
+      await this.usersService.handleUpdate2FAOfUser(user.id, encryptedData, iv);
+
+      const qrCodeImage = await QRCode.toDataURL(secret.otpauth_url);
+
+      return {
+        qrCodeImage,
+      };
+    } else if (type === 'cancel') {
+      await this.usersService.handleCancel2FAOfUser(user.id);
+
+      return {
+        profile: await this.usersService.findOne(user.id),
+      };
+    }
+  };
+
+  public handleConfirm2FA = async (
+    userId: string,
+    confirm2FADto: Confirm2FADto,
+  ) => {
+    const { otp, email } = confirm2FADto;
+
+    const userWithEmail = await this.usersService.handleFindUserByField(
+      'email',
+      email,
+    );
+
+    if (userWithEmail && userWithEmail.id !== userId)
+      throw new BadRequestException(
+        'This email has already been registered with an account in the system. Please choose a different email.',
+      );
+
+    const isValidVerificationCode =
+      await this.emailsService.handleVerifyVerificationCode(
+        otp,
+        email,
+        'verify',
+      );
+
+    if (!isValidVerificationCode)
+      throw new NotFoundException(
+        'Incorrect OTP or verification code has expired.',
+      );
+
+    await this.usersService.handleUpdateEmailOfUser(userId, email);
+
+    return {
+      success: true,
+    };
+  };
+
+  public handleSendOTPToEmail = async (
+    email: string,
+  ): Promise<Record<string, string>> => {
+    const verificationCode = generateVerificationCode();
+
+    await this.emailsService.sendVerificationCode(email, verificationCode);
+
+    return {
+      message: 'OTP has been sent to this email.',
+    };
+  };
+
+  public handleUpdatePassword = async (
+    userId: string,
+    updatePasswordDto: UpdatePasswordDto,
+  ): Promise<Record<string, string>> => {
+    const { otp, password, newPassword } = updatePasswordDto;
+
+    const { encrypted_iv, two_factor_secret } =
+      await this.usersService.handleGetSecretAndIvEncryptedOfUser(userId);
+
+    const secret = handleDecryptSecret(two_factor_secret, encrypted_iv);
+
+    const isValidOTP = speakeasy.totp.verify({
+      secret,
+      window: 1,
+      token: otp,
+      encoding: 'base32',
+    });
+
+    if (!isValidOTP)
+      throw new BadRequestException(
+        'OTP is incorrect or expired. Please try again.',
+      );
+
+    await this.usersService.handleUpdatePasswordOfUser(
+      userId,
+      password,
+      newPassword,
+    );
+
+    return { msg: 'Password updated successfully.' };
   };
 }

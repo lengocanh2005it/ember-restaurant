@@ -40,6 +40,9 @@ import { PaymentsController } from './payments.controller';
 import { PaymentsService } from './payments.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from 'src/auth/auth.service';
+import { Email } from 'src/emails/entities/emails.entity';
+import { EmailsService } from 'src/emails/emails.service';
+import { UploadsService } from 'src/uploads/uploads.service';
 
 @Module({
   imports: [
@@ -55,6 +58,7 @@ import { AuthService } from 'src/auth/auth.service';
       Promotion,
       Table,
       Area,
+      Email,
     ]),
     RolesModule,
     PermissionsModule,
@@ -88,6 +92,8 @@ import { AuthService } from 'src/auth/auth.service';
     PaymentGateway,
     JwtService,
     AuthService,
+    EmailsService,
+    UploadsService,
   ],
   controllers: [PaymentsController],
   exports: [

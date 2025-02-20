@@ -24,6 +24,7 @@ import {
 } from 'src/utils';
 import { EntityManager, Repository } from 'typeorm';
 import { SeederFactory, SeederFactoryManager } from 'typeorm-extension';
+import * as crypto from 'crypto';
 
 config();
 
@@ -226,4 +227,40 @@ export const getFactories = (
     promotionFactory: factoryManager.get(Promotion),
     reviewFactory: factoryManager.get(Review),
   };
+};
+
+const MASTER_KEY_HEX = process.env.MASTER_KEY;
+
+export const handleEncryptSecret = (
+  secret: string,
+): { encryptedData: string; iv: string } => {
+  const algorithm = 'aes-256-cbc';
+  const iv = crypto.randomBytes(16);
+  const MASTER_KEY = Buffer.from(MASTER_KEY_HEX, 'hex');
+  const cipher = crypto.createCipheriv(algorithm, MASTER_KEY, iv);
+  let encrypted = cipher.update(secret, 'utf-8', 'hex');
+  encrypted += cipher.final('hex');
+
+  return {
+    encryptedData: encrypted,
+    iv: iv.toString('hex'),
+  };
+};
+
+export const handleDecryptSecret = (
+  encryptedData: string,
+  iv: string,
+): string => {
+  const algorithm = 'aes-256-cbc';
+  const MASTER_KEY = Buffer.from(MASTER_KEY_HEX, 'hex');
+  const decipher = crypto.createDecipheriv(
+    algorithm,
+    MASTER_KEY,
+    Buffer.from(iv, 'hex'),
+  );
+
+  let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+
+  return decrypted;
 };

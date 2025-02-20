@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 
 export class LocalLoginDto {
   @IsString()
@@ -30,13 +36,28 @@ export class SocialLoginDto {
   readonly provider!: string;
 }
 
-export class CreateSessionDto {
-  @IsOptional()
-  readonly userId?: string;
+export class Confirm2FADto {
+  @IsString()
+  @IsNotEmpty()
+  @Length(6)
+  readonly otp!: string;
 
-  @IsOptional()
-  readonly accessToken?: string;
+  @IsString()
+  @IsEmail()
+  readonly email!: string;
+}
 
-  @IsOptional()
-  readonly refreshToken?: string;
+export class UpdatePasswordDto {
+  @IsString()
+  @IsNotEmpty()
+  readonly password!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  readonly newPassword!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @Length(6)
+  readonly otp!: string;
 }

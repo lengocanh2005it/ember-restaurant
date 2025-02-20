@@ -34,6 +34,9 @@ import { UsersService } from 'src/users/users.service';
 import { SupportTicketController } from './support-ticket.controller';
 import { SupportTicketService } from './support-ticket.service';
 import { AuthService } from 'src/auth/auth.service';
+import { Email } from 'src/emails/entities/emails.entity';
+import { EmailsService } from 'src/emails/emails.service';
+import { UploadsService } from 'src/uploads/uploads.service';
 
 @Module({
   imports: [
@@ -49,6 +52,7 @@ import { AuthService } from 'src/auth/auth.service';
       OrderProduct,
       Promotion,
       TicketMessage,
+      Email,
     ]),
     UsersModule,
     RolesModule,
@@ -75,6 +79,8 @@ import { AuthService } from 'src/auth/auth.service';
     PaymentGateway,
     JwtService,
     AuthService,
+    EmailsService,
+    UploadsService,
   ],
   controllers: [SupportTicketController],
   exports: [SupportTicketService],

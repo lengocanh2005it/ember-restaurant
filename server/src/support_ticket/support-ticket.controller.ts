@@ -63,13 +63,9 @@ export class SupportTicketController {
 
     await this.supportTicketService.updateOne(updateSupportTicketDto, id);
 
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    const { password, createdAt, updatedAt, ...res } =
-      await this.usersService.findOne(userId);
-
     return {
       support_tickets: await this.supportTicketService.getAll(),
-      profile: res,
+      profile: await this.usersService.findOne(userId),
     };
   }
 

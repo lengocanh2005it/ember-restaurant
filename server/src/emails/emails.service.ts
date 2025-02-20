@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import * as fs from 'fs';
@@ -33,21 +38,30 @@ export class EmailsService implements OnModuleInit {
   }
 
   async onModuleInit(): Promise<void> {
-    // await this.emailRepository.delete({
-    //   expired_at: LessThan(new Date()),
-    // });
+    await this.emailRepository.delete({
+      expired_at: LessThan(new Date()),
+    });
   }
 
-  public findOneByCode = async (
+  public handleVerifyVerificationCode = async (
     code: string,
     email: string,
-  ): Promise<Email> => {
+    type: string,
+  ): Promise<boolean> => {
     const findCode = await this.emailRepository.findOneBy({
       verification_code: code,
       recipient: email,
+      type,
     });
 
-    return await this.emailRepository.save(findCode);
+    if (!findCode)
+      throw new NotFoundException(
+        'The provided verification code is invalid or does not match our records.',
+      );
+
+    const now = new Date();
+
+    return findCode.expired_at.getTime() > now.getTime();
   };
 
   public sendVerificationCode = async (
@@ -122,18 +136,23 @@ export class EmailsService implements OnModuleInit {
       .getRepository(User)
       .findOneBy({ email });
 
-    if (localAccountWithEmail) {
-      const { google_id, facebook_id } = localAccountWithEmail;
+    if (!localAccountWithEmail)
+      throw new BadRequestException(
+        'There is no account linked to this email in the system, please enter the correct email.',
+      );
 
-      const methodAccount = google_id
-        ? 'Google'
-        : facebook_id
-          ? 'Facebook'
-          : 'Another';
+    const { google_id, facebook_id } = localAccountWithEmail;
 
+    const methodAccount = google_id
+      ? 'Google'
+      : facebook_id
+        ? 'Facebook'
+        : 'Local';
+
+    if (google_id || facebook_id) {
       throw new BadRequestException(
         `The account linked to this email is a ${methodAccount} login account, not a username and 
-        password login account, so the password cannot be recovered.`,
+            password login account, so the password cannot be recovered.`,
       );
     }
 
