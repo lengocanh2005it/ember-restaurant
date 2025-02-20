@@ -5,11 +5,9 @@ import ModalNoteCart from "@/components/modal/ModalNoteCart";
 import ModalUpdateCart from "@/components/modal/ModalUpdateCart";
 import Order from "@/components/Order";
 import { useCart } from "@/hooks/use-carts-of-user";
-import { useDeleteCart } from "@/hooks/use-delete-cart";
 import { useCartStore, useUserStore } from "@/store";
 import { Cart } from "@/utils";
-import { Checkbox, Pagination, Tooltip } from "@heroui/react";
-import { TrashIcon } from "lucide-react";
+import { Checkbox, Pagination } from "@heroui/react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
@@ -43,9 +41,12 @@ const CartPage: React.FC = () => {
     if (data) {
       setCarts(data);
     }
-  }, [data, setCarts]);
 
-  const { mutate: mutateDeleteCart } = useDeleteCart(user?.id!);
+    return () => {
+      setSelectedCarts([]);
+      setCheckedItems({});
+    };
+  }, [data, setCarts, setSelectedCarts]);
 
   const array = React.useMemo(() => {
     const start = (page - 1) * itemsPerPage;

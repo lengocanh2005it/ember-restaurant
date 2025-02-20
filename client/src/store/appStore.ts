@@ -20,6 +20,12 @@ interface AppState {
   setTheme: (theme: string) => void;
   type: string;
   setType: (type: string) => void;
+  isModalQRShow: boolean;
+  setIsModalQRShow: (isModalQRShow: boolean) => void;
+  isEnabled: boolean;
+  setIsEnabled: (isEnabled: boolean) => void;
+  isRegistered: boolean;
+  setIsRegistered: (isRegistered: boolean) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -34,6 +40,9 @@ export const useAppStore = create<AppState>()(
       otp: "",
       isExistedEmail: false,
       type: "",
+      isModalQRShow: false,
+      isEnabled: false,
+      isRegistered: false,
       setAccessToken: (accessToken) => set({ accessToken }),
       setCategory: (category) => set({ category }),
       setIsClose: (isClose) => set({ isClose }),
@@ -43,6 +52,9 @@ export const useAppStore = create<AppState>()(
       setIsExistedEmail: (isExistedEmail) => set({ isExistedEmail }),
       setTheme: (theme) => set({ theme }),
       setType: (type) => set({ type }),
+      setIsModalQRShow: (isModalQRShow) => set({ isModalQRShow }),
+      setIsEnabled: (isEnabled: boolean) => set({ isEnabled }),
+      setIsRegistered: (isRegistered: boolean) => set({ isRegistered }),
     }),
     {
       name: "app-storage",
@@ -55,6 +67,8 @@ export const useAppStore = create<AppState>()(
         isDarkMode: state.isDarkMode,
         otp: state.otp,
         isExistedEmail: state.isExistedEmail,
+        isEnabled: state.isEnabled,
+        isModalQRShow: state.isModalQRShow,
       }),
     }
   )

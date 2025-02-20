@@ -37,3 +37,18 @@ export type CreateSessionOfUserDto = {
   accessToken: string;
   refreshToken: string;
 };
+
+export type Create2FADto = {
+  type: "generate" | "cancel";
+};
+
+export type Confirm2FADto = {
+  otp: string;
+  email: string;
+};
+
+export type UpdatePasswordDto = {
+  password: string;
+  newPassword: string;
+  otp: string;
+};

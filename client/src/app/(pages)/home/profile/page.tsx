@@ -244,7 +244,7 @@ const ProfilePage: React.FC = () => {
                       <Button
                         isLoading
                         color="primary"
-                        className="dark:bg-black dark:text-white"
+                        className="dark:bg-white dark:text-black text-white"
                       >
                         Please wait...
                       </Button>
@@ -253,7 +253,7 @@ const ProfilePage: React.FC = () => {
                     <>
                       <Button
                         color="primary"
-                        className="dark:bg-white dark:text-black"
+                        className="dark:bg-white dark:text-black text-white"
                         onPress={handleClick}
                       >
                         <GiftIcon />

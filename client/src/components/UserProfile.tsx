@@ -7,7 +7,9 @@ import {
 import { useLogout } from "@/hooks/use-logout";
 import { useAppStore, useUserStore } from "@/store";
 import {
+  LockIcon,
   LogOutIcon,
+  SettingsIcon,
   ShieldIcon,
   ShoppingCartIcon,
   UserIcon,
@@ -33,6 +35,11 @@ const UserProfile = () => {
     ...(!isAdmin
       ? [{ name: "Your cart", icon: <ShoppingCartIcon />, path: "/home/cart" }]
       : []),
+    {
+      name: "Settings",
+      icon: <SettingsIcon />,
+      path: "/home/settings",
+    },
     ...(isAdmin
       ? [{ name: "Admin page", icon: <ShieldIcon />, path: "/home/admin" }]
       : []),

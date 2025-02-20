@@ -31,7 +31,7 @@ const ModalOTP: React.FC<ModalOTPProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [countdown, setCountdown] = useState(120);
   const [isDisabled, setIsDisabled] = useState(true);
-  const { otp, setOTP, setIsExistedEmail } = useAppStore();
+  const { otp, setOTP } = useAppStore();
   const { mutate: mutateUpdateEmail } = useUpdateEmail();
   const { mutate: mutateVerifyEmail } = useVerifyEmail();
 

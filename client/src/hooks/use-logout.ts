@@ -12,7 +12,6 @@ export const useLogout = () => {
   return useMutation({
     mutationFn: handleLogout,
     onSuccess: async (data: any) => {
-      localStorage.removeItem("accessToken");
       localStorage.removeItem("app-storage");
       localStorage.removeItem("user-storage");
 
