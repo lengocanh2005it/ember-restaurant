@@ -15,6 +15,7 @@ import { JwtService } from '@nestjs/jwt';
 import { SkipThrottle } from '@nestjs/throttler';
 import { Request, Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
+import { Confirm2FADto, UpdatePasswordDto } from 'src/auth/dtos/auth.dto';
 import { FacebookAuthGuard } from 'src/auth/guards/facebook.guard';
 import { GoogleAuthGuard } from 'src/auth/guards/google.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
@@ -180,11 +181,7 @@ export class AuthController {
 
     await this.usersService.handleUpdateThemeOfUser(userId, theme);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, createdAt, updatedAt, ...res } =
-      await this.usersService.findOne(userId);
-
-    return res;
+    return await this.usersService.findOne(userId);
   }
 
   @Get('profile')
@@ -198,14 +195,10 @@ export class AuthController {
 
     if (!user) throw new UnauthorizedException('User Not Authenticated.');
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, createdAt, updatedAt, ...res } =
-      await this.usersService.findOne(user.id);
-
     return response.status(200).json({
       statusCode: 200,
       message: 'Get profile of user successfully.',
-      data: res,
+      data: await this.usersService.findOne(user.id),
     });
   }
 
@@ -293,13 +286,73 @@ export class AuthController {
     @Body('verificationCode') verificationCode: string,
     @Body('newEmail') newEmail: string,
   ): Promise<Record<string, string | number>> {
-    const code = await this.emailsService.findOneByCode(
-      verificationCode,
-      newEmail,
-    );
+    const isValidVerificationCode =
+      await this.emailsService.handleVerifyVerificationCode(
+        verificationCode,
+        newEmail,
+        'verify',
+      );
 
-    if (!code) throw new BadRequestException('Verify failed!');
+    if (!isValidVerificationCode)
+      throw new BadRequestException(
+        'Verify failed due to expired verification code!',
+      );
 
     return { msg: 'Verify successfully!' };
+  }
+
+  @Post('2fa')
+  @UseGuards(JwtAuthGuard, RoleAuthGuard)
+  @Roles(Role.ADMIN, Role.USER)
+  async handleGenerate2FA(
+    @Req() request: Request,
+    @Body('type') type: string,
+  ): Promise<Record<string, User | string>> {
+    return await this.authService.handleGenerate2FA(request.user, type);
+  }
+
+  @Post('verify/2fa')
+  @UseGuards(JwtAuthGuard, RoleAuthGuard)
+  @Roles(Role.ADMIN, Role.USER)
+  async handleVerify2FA(
+    @Req() request: Request,
+    @Body('otp') otp: string,
+  ): Promise<User> {
+    return await this.authService.handleVerify2FA(otp, request.user.id);
+  }
+
+  @Post('confirm/2fa')
+  @UseGuards(JwtAuthGuard, RoleAuthGuard)
+  @Roles(Role.ADMIN, Role.USER)
+  async handleConfirmGenerate2FA(
+    @Req() request: Request,
+    @Body() confirm2FaDto: Confirm2FADto,
+  ) {
+    return await this.authService.handleConfirm2FA(
+      request.user.id,
+      confirm2FaDto,
+    );
+  }
+
+  @Post('otp')
+  @UseGuards(JwtAuthGuard, RoleAuthGuard)
+  @Roles(Role.ADMIN, Role.USER)
+  async handleSendOTPToEmail(
+    @Body('email') email: string,
+  ): Promise<Record<string, string>> {
+    return await this.authService.handleSendOTPToEmail(email);
+  }
+
+  @Post('update-password')
+  @UseGuards(JwtAuthGuard, RoleAuthGuard)
+  @Roles(Role.ADMIN, Role.USER)
+  async handleUpdatePassword(
+    @Req() request: Request,
+    @Body() updatePasswordDto: UpdatePasswordDto,
+  ): Promise<Record<string, string>> {
+    return await this.authService.handleUpdatePassword(
+      request.user.id,
+      updatePasswordDto,
+    );
   }
 }

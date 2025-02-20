@@ -22,6 +22,7 @@ import { UpdateUserDto } from 'src/users/dtos/update-user.dto';
 import { User } from 'src/users/entities/users.entity';
 import { CreateSocialAccount, encodePassword } from 'src/utils';
 import { DataSource, Like, Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -107,8 +108,11 @@ export class UsersService {
       return await this.handleQueries(queries, id);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, two_factor_secret, encrypted_iv, ...res } = user;
+
     return {
-      ...user,
+      ...res,
       roles: user.roles.map((role) => role.name),
     } as any;
   }
@@ -531,4 +535,108 @@ export class UsersService {
 
     throw new Error('Invalid query parameter');
   }
+
+  public handleUpdate2FAOfUser = async (
+    userId: string,
+    secret: string,
+    iv: string,
+  ): Promise<void> => {
+    const user = await this.userRepository.findOneBy({ id: userId });
+
+    if (!user) throw new NotFoundException('User Not Found.');
+
+    await this.userRepository.update(
+      {
+        id: userId,
+      },
+      {
+        two_factor_secret: secret,
+        encrypted_iv: iv,
+      },
+    );
+  };
+
+  public handleGetSecretAndIvEncryptedOfUser = async (userId: string) => {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: {
+        id: true,
+        two_factor_enabled: true,
+        two_factor_secret: true,
+        encrypted_iv: true,
+      },
+    });
+
+    if (!user) throw new NotFoundException('User Not Found.');
+
+    return user;
+  };
+
+  public handleUpdate2FAEnableForUser = async (
+    userId: string,
+  ): Promise<void> => {
+    const user = await this.userRepository.findOneBy({ id: userId });
+
+    if (!user) throw new NotFoundException('User Not Found.');
+
+    await this.userRepository.update(
+      {
+        id: userId,
+      },
+      { two_factor_enabled: true },
+    );
+  };
+
+  public handleCancel2FAOfUser = async (userId: string): Promise<void> => {
+    const user = await this.userRepository.findOneBy({ id: userId });
+
+    if (!user) throw new NotFoundException('User Not Found.');
+
+    await this.userRepository.update(
+      { id: userId },
+      {
+        two_factor_enabled: false,
+        two_factor_secret: null,
+        encrypted_iv: null,
+      },
+    );
+  };
+
+  public handleUpdateEmailOfUser = async (
+    userId: string,
+    email: string,
+  ): Promise<void> => {
+    const user = await this.userRepository.findOneBy({ id: userId });
+
+    if (!user) throw new NotFoundException('User Not Found.');
+
+    await this.userRepository.update(
+      { id: userId },
+      {
+        email,
+      },
+    );
+  };
+
+  public handleUpdatePasswordOfUser = async (
+    userId: string,
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<void> => {
+    const user = await this.userRepository.findOneBy({ id: userId });
+
+    if (!user) throw new NotFoundException('User Not Found.');
+
+    const isValidOldPassword = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isValidOldPassword)
+      throw new BadRequestException('Current password did not matched.');
+
+    await this.userRepository.update(
+      { id: userId },
+      {
+        password: encodePassword(newPassword),
+      },
+    );
+  };
 }

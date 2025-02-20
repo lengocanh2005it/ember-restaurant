@@ -35,6 +35,9 @@ import { User } from 'src/users/entities/users.entity';
 import { OrdersService } from 'src/orders/orders.service';
 import { RolesModule } from 'src/roles/roles.module';
 import { Role } from 'src/roles/entities/roles.entity';
+import { Email } from 'src/emails/entities/emails.entity';
+import { UploadsService } from 'src/uploads/uploads.service';
+import { EmailsService } from 'src/emails/emails.service';
 
 @Module({
   imports: [
@@ -50,6 +53,7 @@ import { Role } from 'src/roles/entities/roles.entity';
       Promotion,
       User,
       Role,
+      Email,
     ]),
     TablesModule,
     AreasModule,
@@ -77,6 +81,8 @@ import { Role } from 'src/roles/entities/roles.entity';
     AuthService,
     UsersService,
     OrdersService,
+    EmailsService,
+    UploadsService,
   ],
   exports: [ReservationsService],
 })

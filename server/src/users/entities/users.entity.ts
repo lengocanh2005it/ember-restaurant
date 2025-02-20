@@ -71,6 +71,22 @@ export class User {
   })
   image?: string;
 
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  readonly two_factor_enabled?: boolean;
+
+  @Column({
+    nullable: true,
+  })
+  readonly two_factor_secret?: string;
+
+  @Column({
+    nullable: true,
+  })
+  readonly encrypted_iv?: string;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt!: Date;
 

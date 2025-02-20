@@ -44,7 +44,8 @@ export class ReviewsService {
 
       return reviews.map((review) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password, ...res } = review.user;
+        const { password, two_factor_secret, encrypted_iv, ...res } =
+          review.user;
 
         return {
           ...review,

@@ -40,6 +40,9 @@ import { Permission } from 'src/permissions/entities/permissions.entity';
 import { OrderProductModule } from 'src/order-product/order-product.module';
 import { PermissionsModule } from 'src/permissions/permissions.module';
 import { UserDiscountModule } from 'src/user-discount/user-discount.module';
+import { EmailsService } from 'src/emails/emails.service';
+import { UploadsService } from 'src/uploads/uploads.service';
+import { Email } from 'src/emails/entities/emails.entity';
 
 @Module({
   imports: [
@@ -59,6 +62,7 @@ import { UserDiscountModule } from 'src/user-discount/user-discount.module';
       Promotion,
       Table,
       Permission,
+      Email,
     ]),
     UserDiscountModule,
     OrderProductModule,
@@ -88,6 +92,8 @@ import { UserDiscountModule } from 'src/user-discount/user-discount.module';
     CodService,
     RolesService,
     ProductsService,
+    EmailsService,
+    UploadsService,
   ],
   controllers: [EventsController],
   exports: [EventsService],

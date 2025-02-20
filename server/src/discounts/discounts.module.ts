@@ -1,14 +1,17 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { DiscountContext } from 'src/discounts/discount.context';
-import { Discount } from 'src/discounts/entities/discounts.entity';
-import { DiscountsController } from './discounts.controller';
-import { DiscountsService } from './discounts.service';
-import { DiscountStrategyFactory } from 'src/discounts/discount.factory';
 import { JwtService } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AreasService } from 'src/areas/areas.service';
+import { Area } from 'src/areas/entities/areas.entity';
 import { AuthService } from 'src/auth/auth.service';
+import { DiscountContext } from 'src/discounts/discount.context';
+import { DiscountStrategyFactory } from 'src/discounts/discount.factory';
+import { Discount } from 'src/discounts/entities/discounts.entity';
+import { OrderProduct } from 'src/order-product/entities/order-product.entity';
+import { OrderProductModule } from 'src/order-product/order-product.module';
+import { Order } from 'src/orders/entities/orders.entity';
 import { OrdersService } from 'src/orders/orders.service';
+import { Payment } from 'src/payments/entities/payments.entity';
 import { PaymentContext } from 'src/payments/payment.context';
 import { PaymentStrategyFactory } from 'src/payments/payment.factory';
 import { PaymentGateway } from 'src/payments/payment.gateway';
@@ -17,27 +20,27 @@ import { ApplePayService } from 'src/payments/services/apple-pay.service';
 import { CodService } from 'src/payments/services/cod.service';
 import { PayPalService } from 'src/payments/services/paypal.service';
 import { StripeService } from 'src/payments/services/stripe.service';
-import { PromotionsService } from 'src/promotions/promotions.service';
-import { ReservationsService } from 'src/reservations/reservations.service';
-import { TablesService } from 'src/tables/tables.service';
-import { UsersService } from 'src/users/users.service';
-import { Area } from 'src/areas/entities/areas.entity';
-import { OrderProduct } from 'src/order-product/entities/order-product.entity';
-import { Order } from 'src/orders/entities/orders.entity';
-import { Payment } from 'src/payments/entities/payments.entity';
+import { Permission } from 'src/permissions/entities/permissions.entity';
+import { PermissionsModule } from 'src/permissions/permissions.module';
 import { Product } from 'src/products/entities/products.entity';
+import { ProductsService } from 'src/products/products.service';
 import { Promotion } from 'src/promotions/entities/promotions.entity';
+import { PromotionsService } from 'src/promotions/promotions.service';
 import { Reservation } from 'src/reservations/entities/reservations.entity';
-import { UserDiscount } from 'src/user-discount/entities/user-discount.entity';
-import { User } from 'src/users/entities/users.entity';
-import { Table } from 'typeorm';
+import { ReservationsService } from 'src/reservations/reservations.service';
 import { Role } from 'src/roles/entities/roles.entity';
 import { RolesService } from 'src/roles/roles.service';
-import { OrderProductModule } from 'src/order-product/order-product.module';
+import { TablesService } from 'src/tables/tables.service';
+import { UserDiscount } from 'src/user-discount/entities/user-discount.entity';
 import { UserDiscountModule } from 'src/user-discount/user-discount.module';
-import { ProductsService } from 'src/products/products.service';
-import { PermissionsModule } from 'src/permissions/permissions.module';
-import { Permission } from 'src/permissions/entities/permissions.entity';
+import { User } from 'src/users/entities/users.entity';
+import { UsersService } from 'src/users/users.service';
+import { Table } from 'typeorm';
+import { DiscountsController } from './discounts.controller';
+import { DiscountsService } from './discounts.service';
+import { EmailsService } from 'src/emails/emails.service';
+import { Email } from 'src/emails/entities/emails.entity';
+import { UploadsService } from 'src/uploads/uploads.service';
 
 @Module({
   imports: [
@@ -56,6 +59,7 @@ import { Permission } from 'src/permissions/entities/permissions.entity';
       Table,
       Area,
       Permission,
+      Email,
     ]),
     UserDiscountModule,
     OrderProductModule,
@@ -84,6 +88,8 @@ import { Permission } from 'src/permissions/entities/permissions.entity';
     CodService,
     RolesService,
     ProductsService,
+    EmailsService,
+    UploadsService,
   ],
   exports: [DiscountsService, DiscountContext, DiscountStrategyFactory],
 })

@@ -20,6 +20,9 @@ import { AuthService } from 'src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserNotificationModule } from 'src/user-notification/user-notification.module';
 import { UserNotification } from 'src/user-notification/entities/user-notification.entity';
+import { Email } from 'src/emails/entities/emails.entity';
+import { EmailsService } from 'src/emails/emails.service';
+import { UploadsService } from 'src/uploads/uploads.service';
 
 @Module({
   imports: [
@@ -32,6 +35,7 @@ import { UserNotification } from 'src/user-notification/entities/user-notificati
       UserDiscount,
       Reservation,
       UserNotification,
+      Email,
     ]),
     UsersModule,
     OrdersModule,
@@ -42,7 +46,14 @@ import { UserNotification } from 'src/user-notification/entities/user-notificati
     UserNotificationModule,
   ],
   controllers: [NotificationsController],
-  providers: [NotificationsService, UsersService, AuthService, JwtService],
+  providers: [
+    NotificationsService,
+    UsersService,
+    AuthService,
+    JwtService,
+    EmailsService,
+    UploadsService,
+  ],
   exports: [NotificationsService],
 })
 export class NotificationsModule {}
