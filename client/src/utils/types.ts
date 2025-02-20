@@ -17,6 +17,7 @@ export type User = {
   facebook_id?: string;
   createdAt: Date;
   updatedAt: Date;
+  two_factor_enabled: boolean;
 };
 
 export type Payment = {

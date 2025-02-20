@@ -30,19 +30,7 @@ const formSchema = z
       .date({ required_error: "Start date is required." })
       .refine((date) => !isNaN(date.getTime()), {
         message: "Invalid Start date.",
-      })
-      .refine(
-        (date) => {
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-          date.setHours(0, 0, 0, 0);
-
-          return date >= today;
-        },
-        {
-          message: "Start date must be greater than or equal to current date.",
-        }
-      ),
+      }),
     end_date: z
       .date({ required_error: "End date is required." })
       .refine((date) => !isNaN(date.getTime()), {

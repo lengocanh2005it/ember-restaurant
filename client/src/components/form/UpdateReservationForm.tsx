@@ -217,7 +217,7 @@ const UpdateReservationForm: React.FC<UpdateReservationFormProps> = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col lg:gap-3 gap-3"
+        className="flex flex-col gap-3"
       >
         <div className="relative grid lg:grid-cols-2 grid-cols-1 gap-2">
           {/* Date */}
