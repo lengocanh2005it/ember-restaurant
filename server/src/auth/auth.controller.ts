@@ -22,7 +22,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { LocalAuthGuard } from 'src/auth/guards/local.guard';
 import { RoleAuthGuard } from 'src/auth/guards/role.guard';
 import { EmailsService } from 'src/emails/emails.service';
-import { RedisService } from 'src/redis/redis.service';
 import { Roles } from 'src/roles/role.decorator';
 import { Role } from 'src/roles/role.enum';
 import { User } from 'src/users/entities/users.entity';
@@ -47,7 +46,6 @@ export class AuthController {
     private readonly emailsService: EmailsService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly redisService: RedisService,
   ) {}
 
   @Get('google/login')
