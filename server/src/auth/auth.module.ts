@@ -76,7 +76,9 @@ import { Email } from 'src/emails/entities/emails.entity';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET_KEY'),
-        expiresIn: configService.get('ACCESS_TOKEN_LIFE'),
+        signOptions: {
+          expiresIn: configService.get('ACCESS_TOKEN_LIFE'),
+        },
       }),
     }),
     PassportModule.register({

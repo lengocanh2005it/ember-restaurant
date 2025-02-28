@@ -120,7 +120,6 @@ export class AuthService {
     };
 
     return this.jwtService.sign(payload, {
-      expiresIn: this.configService.get('ACCESS_TOKEN_LIFE'),
       secret: this.configService.get<string>('JWT_SECRET_KEY'),
     });
   }
@@ -129,7 +128,6 @@ export class AuthService {
     const payload = { email };
 
     return this.jwtService.sign(payload, {
-      expiresIn: this.configService.get('ACCESS_TOKEN_LIFE'),
       secret: this.configService.get<string>('JWT_SECRET_KEY'),
     });
   }
